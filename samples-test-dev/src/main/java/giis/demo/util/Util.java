@@ -7,134 +7,115 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.beanutils.BeanUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * Utilidades varias con metodos generales de serializacion, conversion a csv y conversion de fechas
- */
 public class Util {
-	private Util() {
-	    throw new IllegalStateException("Utility class");
-	}
 
-	/**
-	 * Serializa una lista de objetos a formato json insertando saltos de linea entre cada elemento 
-	 * para facilitar la comparacion de resultados en las pruebas utilizando jackson-databind
-	 * (opcionalmente permite obtene una representacion similar a csv).
-	 * @param pojoList Lista de objetos a serializar
-	 * @param asArray si es true codifica los diferentes campos del objeto como un array 
-	 * y elimina comillas para facilitar la comparacion, si es false devuelve el json completo
-	 * @return el string que representa la lista serializada
-	 */
-	public static String serializeToJson(Class<?> pojoClass, List<?> pojoList, boolean asArray) {
-		try {
-			ObjectMapper mapper=new ObjectMapper();
-			if (asArray) {
-		        mapper.configOverride(pojoClass).setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.ARRAY));
-		        String value=mapper.writeValueAsString(pojoList);
-		    	return value.replace("],", "],\n").replace("\"", ""); //con saltos de linea y sin comillas
-				//otra alternativa es utilizar las clases especificas para csv que suministra Jackson (jackson-dataformat-csv)
-			} else {
-				return mapper.writeValueAsString(pojoList).replaceAll("},", "},\n"); //con saltos de linea
-			}
-		} catch (JsonProcessingException e) {
-			throw new ApplicationException(e);
-		}
-	}
-	
-	/**
-	 * Convierte una lista de objetos a formato csv
-	 * @param pojoList Lista de objetos a serializar
-	 * @param fields campos de cada objeto a incluir en el csv
-	 */
-	public static String pojosToCsv(List<?> pojoList, String[] fields) {
-		return pojosToCsv(pojoList,fields,false,",","","","");
-	}
-	/**
-	 * Convierte una lista de objetos a formato csv con varios parametros para personalizar el aspecto
-	 * @param pojoList Lista de objetos a serializar
-	 * @param fields campos de cada objeto a incluir en el csv
-	 * @param headers si es true incluye una primera fila con las cabeceras
-	 * @param separator caracter que separa cada columna
-	 * @param begin caracter a incluir al principio de cada linea
-	 * @param end caracter a incluir al final de cada linea
-	 * @param nullAs Texto que se incluira cuando el valor es null
-	 * @return el string que representa la lista serializada en csv
-	 */
-	public static String pojosToCsv(List<?> pojoList, String[] fields, boolean headers, String separator, String begin, String end, String nullAs) {
-		StringBuilder sb=new StringBuilder();
-		if (headers) 
-			addPojoLineToCsv(sb,null,fields,separator,begin,end,nullAs);
-		for (int i=0; i<pojoList.size(); i++) {
-			try {
-				//utiliza Apache commons BeanUtils para obtener los atributos del objeto en un map
-				Map<String, String> objectAsMap = BeanUtils.describe(pojoList.get(i));
-				addPojoLineToCsv(sb,objectAsMap,fields,separator,begin,end,nullAs);
-			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				throw new ApplicationException(e);
-			}
-		}
-		return sb.toString();
-	}
-	private static void addPojoLineToCsv(StringBuilder sb, Map<String, String> objectAsMap, String[] fields, String separator, String begin, String end, String nullAs) {
-		sb.append(begin);
-		for (int j=0; j<fields.length; j++) {
-			String value;
-			if (objectAsMap==null) //nombre del campo si no hay map
-				value = fields[j];
-			else //valor del campo o el especificado para null
-				value = objectAsMap.get(fields[j])==null ? nullAs : objectAsMap.get(fields[j]);
-			sb.append((j==0 ? "" : separator) + value);
-		}
-		sb.append(end + "\n");
-	}
+    // Evitar la creación de instancias de la clase
+    private Util() {
+        throw new IllegalStateException("Utility class");
+    }
 
-	/**
-	 * Convierte un array bidimensional de strings a csv (usado para comparaciones del ui con AssertJ Swing)
-	 */
-	public static String arraysToCsv(String[][] arrays) {
-		return arraysToCsv(arrays,null,",","","");
-	}
-	/**
-	 * Convierte un array bidimensional de strings a csv permitiendo parametrizacion
-	 * (usado para comparaciones del ui con AssertJ Swing y JBehave)
-	 */
-	public static String arraysToCsv(String[][] arrays, String[] fields, String separator, String begin, String end) {
-		StringBuilder sb=new StringBuilder();
-		if (fields!=null)
-			addArrayLineToCsv(sb,fields,separator,begin,end);
-		for (int i=0; i<arrays.length; i++) 
-			addArrayLineToCsv(sb,arrays[i],separator,begin,end);
-		return sb.toString();
-	}
-	private static void addArrayLineToCsv(StringBuilder sb, String[] array, String separator, String begin, String end) {
-		sb.append(begin);
-		for (int j=0; j<array.length; j++)
-			sb.append((j==0 ? "" : separator) + array[j]);
-		sb.append(end);
-		sb.append("\n");
-	}
-	
-	/** 
-	 * Convierte fecha repesentada como un string iso a fecha java (para conversion de entradas de tipo fecha)
-	 */
-	public static Date isoStringToDate(String isoDateString) {
-		try {
-		return new SimpleDateFormat("yyyy-MM-dd").parse(isoDateString);
-		} catch (ParseException e) {
-			throw new ApplicationException("Formato ISO incorrecto para fecha: "+isoDateString);
-		}
-	}
-	/** 
-	 * Convierte fecha java a un string formato iso (para display o uso en sql) 
-	 */
-	public static String dateToIsoString(Date javaDate) {
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-		return formatter.format(javaDate);
-	}
-	
+    /**
+     * Serializa una lista de objetos a formato JSON insertando saltos de línea entre cada elemento.
+     * 
+     * @param pojoClass Clase de los objetos a serializar.
+     * @param pojoList Lista de objetos a serializar.
+     * @param asArray si es true codifica los campos como un array.
+     * @return el string que representa la lista serializada en JSON.
+     */
+    public static String serializeToJson(Class<?> pojoClass, List<?> pojoList, boolean asArray) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            if (asArray) {
+                mapper.configOverride(pojoClass).setFormat(JsonFormat.Value.forShape(JsonFormat.Shape.ARRAY));
+                String value = mapper.writeValueAsString(pojoList);
+                return value.replace("],", "],\n").replace("\"", ""); // Con saltos de línea y sin comillas.
+            } else {
+                return mapper.writeValueAsString(pojoList).replaceAll("},", "},\n"); // Con saltos de línea.
+            }
+        } catch (JsonProcessingException e) {
+            throw new UnexpectedException(e);
+        }
+    }
+
+    /**
+     * Convierte una lista de objetos a formato CSV.
+     * 
+     * @param pojoList Lista de objetos a serializar.
+     * @param fields Campos de cada objeto a incluir en el CSV.
+     * @return el string que representa la lista serializada en CSV.
+     */
+    public static String pojosToCsv(List<?> pojoList, String[] fields) {
+        return pojosToCsv(pojoList, fields, false, ",", "", "", "");
+    }
+
+    /**
+     * Convierte una lista de objetos a formato CSV con varios parámetros de personalización.
+     * 
+     * @param pojoList Lista de objetos a serializar.
+     * @param fields Campos de cada objeto a incluir en el CSV.
+     * @param headers si es true, incluye una fila de cabeceras.
+     * @param separator Caracter que separa cada columna.
+     * @param begin Caracter a incluir al principio de cada línea.
+     * @param end Caracter a incluir al final de cada línea.
+     * @param nullAs Texto que se incluirá cuando el valor sea null.
+     * @return el string que representa la lista serializada en CSV.
+     */
+    public static String pojosToCsv(List<?> pojoList, String[] fields, boolean headers, String separator, String begin, String end, String nullAs) {
+        StringBuilder sb = new StringBuilder();
+        if (headers) {
+            addPojoLineToCsv(sb, null, fields, separator, begin, end, nullAs);
+        }
+        for (Object pojo : pojoList) {
+            try {
+                Map<String, String> objectAsMap = BeanUtils.describe(pojo);
+                addPojoLineToCsv(sb, objectAsMap, fields, separator, begin, end, nullAs);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new UnexpectedException(e);
+            }
+        }
+        return sb.toString();
+    }
+
+    private static void addPojoLineToCsv(StringBuilder sb, Map<String, String> objectAsMap, String[] fields, String separator, String begin, String end, String nullAs) {
+        sb.append(begin);
+        for (int j = 0; j < fields.length; j++) {
+            String value = (objectAsMap == null) ? fields[j] : objectAsMap.getOrDefault(fields[j], nullAs);
+            sb.append((j == 0 ? "" : separator) + value);
+        }
+        sb.append(end + "\n");
+    }
+
+    /**
+     * Convierte una fecha representada como un string ISO a una fecha Java.
+     * 
+     * @param isoDateString la fecha en formato ISO.
+     * @return la fecha convertida a tipo `Date`.
+     */
+    public static Date isoStringToDate(String isoDateString) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.parse(isoDateString);
+        } catch (ParseException e) {
+            throw new UnexpectedException("Formato ISO incorrecto para fecha: " + isoDateString, e);
+        }
+    }
+
+    /**
+     * Convierte una fecha Java a un string en formato ISO.
+     * 
+     * @param javaDate la fecha de tipo `Date`.
+     * @return la fecha convertida a formato ISO.
+     */
+    public static String dateToIsoString(Date javaDate) {
+        if (javaDate == null) {
+            throw new IllegalArgumentException("La fecha no puede ser nula");
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(javaDate);
+    }
 }

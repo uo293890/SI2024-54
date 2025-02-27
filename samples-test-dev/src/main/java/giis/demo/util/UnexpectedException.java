@@ -1,15 +1,22 @@
 package giis.demo.util;
 
-/**
- * Excepcion producida por la aplicacion antes situaciones incontroladas
- * (excepciones al acceder a la base de datos o al utlizar metodos que declaran excepciones throwable, etc)
- */
-@SuppressWarnings("serial")
+import java.sql.SQLException;
+
 public class UnexpectedException extends RuntimeException {
-	public UnexpectedException(Throwable e) {
-		super(e);
-	}
-	public UnexpectedException(String s) {
-		super(s);
-	}
+    private static final long serialVersionUID = 1L;
+
+    // Constructor que acepta un mensaje y una causa
+    public UnexpectedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    // Constructor que acepta solo un mensaje
+    public UnexpectedException(String message) {
+        super(message);
+    }
+
+    // Constructor que acepta solo una causa
+    public UnexpectedException(Throwable cause) {
+        super(cause);
+    }
 }
