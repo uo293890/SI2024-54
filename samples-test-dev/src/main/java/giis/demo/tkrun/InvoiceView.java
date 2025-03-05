@@ -1,71 +1,78 @@
 package giis.demo.tkrun;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
+
 import java.awt.*;
 
-public class InvoiceView {
-    private JFrame frame;
-    private JComboBox<String> activityComboBox;
+public class InvoiceView extends JDialog {
     private JTextField txtInvoiceDate;
-    private JTextField txtInvoiceId;
-    private JTextField txtName;
-    private JTextField txtTaxId;
-    private JTextField txtAddress;
+    private JTextField txtInvoiceNumber;
+    private JTextField txtRecipientName;
+    private JTextField txtRecipientTaxId;
+    private JTextField txtRecipientAddress;
+    private JTextField txtBaseAmount;
+    private JTextField txtVat;
+    private JTextField txtAgreementId; // Campo para agreement_id
     private JButton btnGenerateInvoice;
     private JButton btnSendInvoice;
-    private JLabel lblSentDate;
 
-    public InvoiceView() {
+    public InvoiceView(JFrame parent) {
+        super(parent, "Invoice Management", true);
         initialize();
     }
 
     private void initialize() {
-        frame = new JFrame("Generate and Send Invoice");
-        frame.setBounds(100, 100, 500, 400);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.getContentPane().setLayout(new GridLayout(0, 2, 10, 10));
+        setSize(500, 400);
+        setLayout(new GridLayout(0, 2, 10, 10));
 
-        // Activity Dropdown
-        frame.add(new JLabel("Activity:"));
-        activityComboBox = new JComboBox<>(new String[]{"AI Congress", "Hackathon", "Workshop"});
-        frame.add(activityComboBox);
+        // Campos de entrada
+        add(new JLabel("Agreement ID:"));
+        txtAgreementId = new JTextField(); // Campo para agreement_id
+        add(txtAgreementId);
 
-        // Invoice Date
-        frame.add(new JLabel("Invoice Date:"));
+        add(new JLabel("Invoice Date (YYYY-MM-DD):"));
         txtInvoiceDate = new JTextField();
-        frame.add(txtInvoiceDate);
+        add(txtInvoiceDate);
 
-        // Invoice ID
-        frame.add(new JLabel("Invoice ID:"));
-        txtInvoiceId = new JTextField();
-        frame.add(txtInvoiceId);
+        add(new JLabel("Invoice Number:"));
+        txtInvoiceNumber = new JTextField();
+        add(txtInvoiceNumber);
 
-        // Recipient Information
-        frame.add(new JLabel("Name:"));
-        txtName = new JTextField();
-        frame.add(txtName);
+        add(new JLabel("Recipient Name:"));
+        txtRecipientName = new JTextField();
+        add(txtRecipientName);
 
-        frame.add(new JLabel("Tax ID (NIF):"));
-        txtTaxId = new JTextField();
-        frame.add(txtTaxId);
+        add(new JLabel("Recipient Tax ID:"));
+        txtRecipientTaxId = new JTextField();
+        add(txtRecipientTaxId);
 
-        frame.add(new JLabel("Address:"));
-        txtAddress = new JTextField();
-        frame.add(txtAddress);
+        add(new JLabel("Recipient Address:"));
+        txtRecipientAddress = new JTextField();
+        add(txtRecipientAddress);
 
-        // Buttons
+        add(new JLabel("Base Amount:"));
+        txtBaseAmount = new JTextField();
+        add(txtBaseAmount);
+
+        add(new JLabel("VAT (%):"));
+        txtVat = new JTextField();
+        add(txtVat);
+
+        // Botón para generar la factura
         btnGenerateInvoice = new JButton("Generate Invoice");
-        frame.add(btnGenerateInvoice);
+        add(btnGenerateInvoice);
 
-        btnSendInvoice = new JButton("Send via Email");
-        frame.add(btnSendInvoice);
+        // Botón para enviar la factura
+        btnSendInvoice = new JButton("Send Invoice");
+        add(btnSendInvoice);
 
-        // Sent Date
-        frame.add(new JLabel("Sent date recorded:"));
-        lblSentDate = new JLabel("__/__/____");
-        frame.add(lblSentDate);
+        setLocationRelativeTo(null); // Centrar la ventana
+    }
 
-        frame.setVisible(true);
+    // Métodos getter para los campos de entrada
+    public int getAgreementId() {
+        return Integer.parseInt(txtAgreementId.getText()); // Obtener el agreement_id
     }
 
     public JButton getBtnGenerateInvoice() {
@@ -76,35 +83,31 @@ public class InvoiceView {
         return btnSendInvoice;
     }
 
-    public String getActivity() {
-        return (String) activityComboBox.getSelectedItem();
-    }
-
     public String getInvoiceDate() {
         return txtInvoiceDate.getText();
     }
 
-    public String getInvoiceId() {
-        return txtInvoiceId.getText();
+    public String getInvoiceNumber() {
+        return txtInvoiceNumber.getText();
     }
 
-    public String getName() {
-        return txtName.getText();
+    public String getRecipientName() {
+        return txtRecipientName.getText();
     }
 
-    public String getTaxId() {
-        return txtTaxId.getText();
+    public String getRecipientTaxId() {
+        return txtRecipientTaxId.getText();
     }
 
-    public String getAddress() {
-        return txtAddress.getText();
+    public String getRecipientAddress() {
+        return txtRecipientAddress.getText();
     }
 
-    public void setSentDate(String date) {
-        lblSentDate.setText(date);
+    public double getBaseAmount() {
+        return Double.parseDouble(txtBaseAmount.getText());
     }
 
-    public void showMessage(String message) {
-        JOptionPane.showMessageDialog(frame, message);
+    public double getVat() {
+        return Double.parseDouble(txtVat.getText());
     }
 }

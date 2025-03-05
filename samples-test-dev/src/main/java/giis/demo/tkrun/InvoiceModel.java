@@ -5,13 +5,18 @@ import giis.demo.util.Database;
 public class InvoiceModel {
     private Database db = new Database();
 
-    public void saveInvoice(String activity, String invoiceDate, String invoiceId, String name, String taxId, String address) {
-        String sql = "INSERT INTO invoices (activity, invoice_date, invoice_id, name, tax_id, address) VALUES (?, ?, ?, ?, ?, ?)";
-        db.executeUpdate(sql, activity, invoiceDate, invoiceId, name, taxId, address);
+    public void generateInvoice(int agreementId, String invoiceDate, String invoiceNumber, 
+                               String recipientName, String recipientTaxId, 
+                               String recipientAddress, double baseAmount, double vat) {
+        String sql = "INSERT INTO Invoice (agreement_id, invoice_date, invoice_number, "
+                   + "recipient_name, recipient_tax_id, recipient_address, base_amount, vat) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        db.executeUpdate(sql, agreementId, invoiceDate, invoiceNumber, recipientName, recipientTaxId, recipientAddress, baseAmount, vat);
     }
 
-    public void sendInvoice(String invoiceId) {
-        String sql = "UPDATE invoices SET sent_date = CURRENT_DATE WHERE invoice_id = ?";
-        db.executeUpdate(sql, invoiceId);
+    public void sendInvoice(String invoiceNumber) {
+        String sql = "UPDATE Invoice SET sent_date = CURRENT_DATE WHERE invoice_number = ?";
+        db.executeUpdate(sql, invoiceNumber);
     }
 }

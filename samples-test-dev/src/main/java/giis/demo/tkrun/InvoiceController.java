@@ -1,6 +1,7 @@
 package giis.demo.tkrun;
 
 import giis.demo.util.SwingUtil;
+import javax.swing.*;
 
 public class InvoiceController {
     private InvoiceModel model;
@@ -9,31 +10,43 @@ public class InvoiceController {
     public InvoiceController(InvoiceModel m, InvoiceView v) {
         this.model = m;
         this.view = v;
-        this.initController();
+        initController();
     }
 
     public void initController() {
-        view.getBtnGenerateInvoice().addActionListener(e -> SwingUtil.exceptionWrapper(() -> generateInvoice()));
-        view.getBtnSendInvoice().addActionListener(e -> SwingUtil.exceptionWrapper(() -> sendInvoice()));
+        // Vincular el botón de generar factura
+        view.getBtnGenerateInvoice().addActionListener(e -> generateInvoice());
+
+        // Vincular el botón de enviar factura
+        view.getBtnSendInvoice().addActionListener(e -> sendInvoice());
     }
 
     private void generateInvoice() {
-        String activity = view.getActivity();
+        // Obtener los datos de entrada de la vista
+        int agreementId = view.getAgreementId(); // Obtener el agreement_id
         String invoiceDate = view.getInvoiceDate();
-        String invoiceId = view.getInvoiceId();
-        String name = view.getName();
-        String taxId = view.getTaxId();
-        String address = view.getAddress();
+        String invoiceNumber = view.getInvoiceNumber();
+        String recipientName = view.getRecipientName();
+        String recipientTaxId = view.getRecipientTaxId();
+        String recipientAddress = view.getRecipientAddress();
+        double baseAmount = view.getBaseAmount();
+        double vat = view.getVat();
 
-        // Guardar en la base de datos
-        model.saveInvoice(activity, invoiceDate, invoiceId, name, taxId, address);
-        view.showMessage("Invoice generated successfully!");
+        // Generar la factura usando el modelo
+        model.generateInvoice(agreementId, invoiceDate, invoiceNumber, recipientName, recipientTaxId, recipientAddress, baseAmount, vat);
+
+        // Mostrar un mensaje de éxito
+        JOptionPane.showMessageDialog(view, "Invoice generated successfully!");
     }
 
     private void sendInvoice() {
-        String invoiceId = view.getInvoiceId();
-        model.sendInvoice(invoiceId);
-        view.setSentDate("10/10/2023"); // Ejemplo de fecha de envío
-        view.showMessage("Invoice sent successfully!");
+        // Obtener el número de factura de la vista
+        String invoiceNumber = view.getInvoiceNumber();
+
+        // Enviar la factura usando el modelo
+        model.sendInvoice(invoiceNumber);
+
+        // Mostrar un mensaje de éxito
+        JOptionPane.showMessageDialog(view, "Invoice sent successfully!");
     }
 }

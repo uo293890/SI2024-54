@@ -1,26 +1,35 @@
 package giis.demo.tkrun;
 
 public class ActivityDTO {
-    private String date;
     private String name;
+    private String startDate;
+    private String endDate;
     private String status;
     private double income;
     private double expenses;
+    private double balance;
 
-    public ActivityDTO(String date, String name, String status, double income, double expenses) {
-        this.date = date;
+    public ActivityDTO(String name, String startDate, String endDate, String status, 
+                       double income, double expenses, double balance) {
         this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.status = status;
         this.income = income;
         this.expenses = expenses;
-    }
-
-    public String getDate() {
-        return date;
+        this.balance = balance;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
     }
 
     public String getStatus() {
@@ -33,5 +42,9 @@ public class ActivityDTO {
 
     public double getExpenses() {
         return expenses;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 }
