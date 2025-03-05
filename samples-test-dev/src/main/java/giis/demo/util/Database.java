@@ -2,37 +2,42 @@ package giis.demo.util;
 
 import java.sql.*;
 import java.util.List;
-
 import org.apache.commons.dbutils.*;
 import org.apache.commons.dbutils.handlers.*;
-
 import giis.demo.tkrun.ActivityDTO;
 
 public class Database {
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:sports-competition-management.db");
+        String dbPath = "C:/Users/Alex/Documents/sisinfo/SI2024-54/samples-test-dev/sports-competition-management.db";
+        return DriverManager.getConnection("jdbc:sqlite:" + dbPath);
     }
 
     public void createDatabase(boolean clean) {
+        System.out.println("Creating database...");
         executeScript("src/main/resources/schema.sql", clean);
+        System.out.println("Database created successfully!");
     }
 
     public void loadDatabase() {
+        System.out.println("Loading initial data...");
         executeScript("src/main/resources/data.sql", false);
+        System.out.println("Initial data loaded successfully!");
     }
 
     private void executeScript(String path, boolean clean) {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
-            if (clean) stmt.executeUpdate("DROP TABLE IF EXISTS invoices");
+            System.out.println("Executing script: " + path);
+            if (clean) stmt.executeUpdate("DROP TABLE IF EXISTS financial_reports");
             stmt.executeUpdate(new String(java.nio.file.Files.readAllBytes(
                 java.nio.file.Paths.get(path))));
         } catch (Exception e) {
-            throw new RuntimeException("Error ejecutando script SQL", e);
+            System.err.println("Error executing script: " + e.getMessage());
+            throw new RuntimeException("Error executing script SQL", e);
         }
     }
 
-    public <T> java.util.List<T> queryForList(Class<T> type, String sql, Object... params) {
+    public <T> List<T> queryForList(Class<T> type, String sql, Object... params) {
         try (Connection conn = getConnection()) {
             return new QueryRunner().query(conn, sql, new BeanListHandler<>(type), params);
         } catch (SQLException e) {

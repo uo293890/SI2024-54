@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
@@ -47,7 +48,14 @@ public class SwingMain {
         frame.setTitle("Main");
         frame.setBounds(0, 0, 287, 185);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+        addFinancialReportButton();
+        addInvoiceManagementButton();
+        addInitializeDatabaseButton();
+    }
+
+    private void addFinancialReportButton() {
         JButton btnFinancialReport = new JButton("Financial Report");
         btnFinancialReport.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -55,9 +63,10 @@ public class SwingMain {
                 controller.initController();
             }
         });
-        frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
         frame.getContentPane().add(btnFinancialReport);
+    }
 
+    private void addInvoiceManagementButton() {
         JButton btnInvoiceManagement = new JButton("Invoice Management");
         btnInvoiceManagement.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -66,13 +75,20 @@ public class SwingMain {
             }
         });
         frame.getContentPane().add(btnInvoiceManagement);
+    }
 
+    private void addInitializeDatabaseButton() {
         JButton btnInitializeDatabase = new JButton("Initialize Database");
         btnInitializeDatabase.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Database db = new Database();
-                db.createDatabase(false);
-                db.loadDatabase();
+                try {
+                    Database db = new Database();
+                    db.createDatabase(false); // Reinicia la base de datos
+                    db.loadDatabase();       // Carga datos iniciales
+                    JOptionPane.showMessageDialog(frame, "Database initialized successfully!");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frame, "Error initializing database: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         frame.getContentPane().add(btnInitializeDatabase);
