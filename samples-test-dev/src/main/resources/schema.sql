@@ -1,62 +1,79 @@
-CREATE TABLE IF NOT EXISTS Sponsor (
-    sponsor_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    contact_name TEXT,
-    contact_number TEXT,
-    contact_email TEXT
-);
-
-CREATE TABLE IF NOT EXISTS Agreement (
-    agreement_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    edition_id INTEGER NOT NULL,
-    sponsor_id INTEGER NOT NULL,
-    level_amount DECIMAL(10, 2) NOT NULL,
-    date TEXT NOT NULL,
-    negotiator TEXT,
-    paid_cancelled INTEGER,
-    FOREIGN KEY (edition_id) REFERENCES Edition(edition_id),
-    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id)
-);
-
+-- schema.sql
+DROP TABLE Event;
 CREATE TABLE IF NOT EXISTS Event (
-    event_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    edition_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
+    event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    title          TEXT NOT NULL,
+    event_date     DATE NOT NULL,
+    location       TEXT,
+    status         TEXT DEFAULT 'Planned',
+    description    TEXT,
+    created_date   DATE NOT NULL
 );
 
+DROP TABLE GBMember;
+CREATE TABLE IF NOT EXISTS GBMember (
+    gb_member_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    name           TEXT NOT NULL,
+    role           TEXT,
+    email          TEXT,
+    phone          TEXT
+);
+
+DROP TABLE Sponsor;
+CREATE TABLE IF NOT EXISTS Sponsor (
+    sponsor_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    sponsor_name       TEXT NOT NULL,
+    tax_id             TEXT,
+    billing_address    TEXT,
+    contact_name       TEXT,
+    contact_email      TEXT,
+    contact_phone      TEXT
+);
+
+DROP TABLE Sponsorship;
+CREATE TABLE IF NOT EXISTS Sponsorship (
+    sponsorship_id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id           INTEGER NOT NULL,
+    sponsor_id         INTEGER NOT NULL,
+    gb_member_id       INTEGER NOT NULL,
+    agreement_date     DATE NOT NULL,
+    sponsorship_level  TEXT,
+    agreed_amount      REAL NOT NULL,
+    sponsorship_status TEXT DEFAULT 'Active',
+    FOREIGN KEY (event_id) REFERENCES Event(event_id),
+    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id),
+    FOREIGN KEY (gb_member_id) REFERENCES GBMember(gb_member_id)
+);
+
+DROP TABLE Invoice;
 CREATE TABLE IF NOT EXISTS Invoice (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    agreement_id INTEGER NOT NULL,
-    amount REAL NOT NULL,
-    vat_percentage REAL NOT NULL,
-    profit_or_nonprofit TEXT NOT NULL,
-    FOREIGN KEY (agreement_id) REFERENCES Agreement(id)
+    invoice_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    sponsorship_id     INTEGER NOT NULL,
+    agreement_id       INTEGER,
+    invoice_date       DATE NOT NULL,
+    invoice_number     TEXT NOT NULL,
+    recipient_name     TEXT NOT NULL,
+    recipient_tax_id   TEXT NOT NULL,
+    recipient_address  TEXT,
+    base_amount        REAL NOT NULL,
+    vat                REAL NOT NULL,
+    invoice_amount     REAL NOT NULL,
+    sent_date          DATE,
+    FOREIGN KEY (sponsorship_id) REFERENCES Sponsorship(sponsorship_id)
 );
 
-CREATE TABLE IF NOT EXISTS Date (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_id INTEGER NOT NULL,
-    initial DATE NOT NULL,
-    final DATE NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES Event(id)
-);
-
-CREATE TABLE IF NOT EXISTS Payment (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    invoice_id INTEGER NOT NULL,
-    date DATE NOT NULL,
-    amount REAL NOT NULL,
-    FOREIGN KEY (invoice_id) REFERENCES Invoice(id)
-);
-
-CREATE TABLE IF NOT EXISTS SponsorshipAgreements (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    sponsor_organization_name VARCHAR(255) NOT NULL,
-    sponsor_contact_name VARCHAR(255) NOT NULL,
-    sponsor_contact_email VARCHAR(255) NOT NULL,
-    agreed_amount DECIMAL(10, 2) NOT NULL,
-    activity_supported VARCHAR(255) NOT NULL,
-    governing_board_member_name VARCHAR(255) NOT NULL,
-    governing_board_member_role VARCHAR(255) NOT NULL,
-    agreement_date DATE NOT NULL
+DROP TABLE Transactions;
+CREATE TABLE IF NOT EXISTS Transactions (
+    transaction_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id        INTEGER NOT NULL,
+    invoice_id      INTEGER,
+    transaction_type TEXT NOT NULL,
+    status          TEXT NOT NULL,
+    record_date     DATE NOT NULL,
+    payment_date    DATE,
+    concept         TEXT NOT NULL,
+    details         TEXT,
+    amount          REAL NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES Event(event_id),
+    FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
 );

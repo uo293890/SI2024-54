@@ -3,77 +3,33 @@ package giis.demo.tkrun;
 import java.time.LocalDate;
 
 public class SponsorshipAgreementRegistrationDTO {
-    private String sponsorOrganizationName;
-    private String sponsorContactName;
-    private String sponsorContactEmail;
-    private double agreedAmount;
-    private String activitySupported;
-    private String governingBoardMemberName;
-    private String governingBoardMemberRole;
+    private Integer eventId;
+    private Integer sponsorId;
+    private Integer gbMemberId;
     private LocalDate agreementDate;
+    private String sponsorshipLevel;
+    private Double agreedAmount;
+    private String sponsorshipStatus;
 
     // Getters and Setters
-    public String getSponsorOrganizationName() {
-        return sponsorOrganizationName;
-    }
+    public Integer getEventId() { return eventId; }
+    public void setEventId(Integer eventId) { this.eventId = eventId; }
 
-    public void setSponsorOrganizationName(String sponsorOrganizationName) {
-        this.sponsorOrganizationName = sponsorOrganizationName;
-    }
+    public Integer getSponsorId() { return sponsorId; }
+    public void setSponsorId(Integer sponsorId) { this.sponsorId = sponsorId; }
 
-    public String getSponsorContactName() {
-        return sponsorContactName;
-    }
+    public Integer getGbMemberId() { return gbMemberId; }
+    public void setGbMemberId(Integer gbMemberId) { this.gbMemberId = gbMemberId; }
 
-    public void setSponsorContactName(String sponsorContactName) {
-        this.sponsorContactName = sponsorContactName;
-    }
+    public LocalDate getAgreementDate() { return agreementDate; }
+    public void setAgreementDate(LocalDate agreementDate) { this.agreementDate = agreementDate; }
 
-    public String getSponsorContactEmail() {
-        return sponsorContactEmail;
-    }
+    public String getSponsorshipLevel() { return sponsorshipLevel; }
+    public void setSponsorshipLevel(String sponsorshipLevel) { this.sponsorshipLevel = sponsorshipLevel; }
 
-    public void setSponsorContactEmail(String sponsorContactEmail) {
-        this.sponsorContactEmail = sponsorContactEmail;
-    }
+    public Double getAgreedAmount() { return agreedAmount; }
+    public void setAgreedAmount(Double agreedAmount) { this.agreedAmount = agreedAmount; }
 
-    public double getAgreedAmount() {
-        return agreedAmount;
-    }
-
-    public void setAgreedAmount(double agreedAmount) {
-        this.agreedAmount = agreedAmount;
-    }
-
-    public String getActivitySupported() {
-        return activitySupported;
-    }
-
-    public void setActivitySupported(String activitySupported) {
-        this.activitySupported = activitySupported;
-    }
-
-    public String getGoverningBoardMemberName() {
-        return governingBoardMemberName;
-    }
-
-    public void setGoverningBoardMemberName(String governingBoardMemberName) {
-        this.governingBoardMemberName = governingBoardMemberName;
-    }
-
-    public String getGoverningBoardMemberRole() {
-        return governingBoardMemberRole;
-    }
-
-    public void setGoverningBoardMemberRole(String governingBoardMemberRole) {
-        this.governingBoardMemberRole = governingBoardMemberRole;
-    }
-
-    public LocalDate getAgreementDate() {
-        return agreementDate;
-    }
-
-    public void setAgreementDate(LocalDate agreementDate) {
-        this.agreementDate = agreementDate;
-    }
+    public String getSponsorshipStatus() { return sponsorshipStatus; }
+    public void setSponsorshipStatus(String sponsorshipStatus) { this.sponsorshipStatus = sponsorshipStatus; }
 }
