@@ -1,172 +1,68 @@
 package giis.demo.tkrun;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class ActivityFinancialStatusDTO {
-    private String activityName;
-    private String activityEdition;
-    private String activityDate;
-    private String activityStatus;
+    private String eventTitle;
+    private LocalDate eventDate;
+    private String eventStatus;
     private List<SponsorshipDTO> sponsorships;
-    private List<IncomeDTO> incomes;
-    private List<ExpenseDTO> expenses;
+    private List<FinancialCategoryDTO> incomes;
+    private List<FinancialCategoryDTO> expenses;
 
     // Getters and Setters
-    public String getActivityName() {
-        return activityName;
-    }
+    public String getEventTitle() { return eventTitle; }
+    public void setEventTitle(String eventTitle) { this.eventTitle = eventTitle; }
 
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
-    }
+    public LocalDate getEventDate() { return eventDate; }
+    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
 
-    public String getActivityEdition() {
-        return activityEdition;
-    }
+    public String getEventStatus() { return eventStatus; }
+    public void setEventStatus(String eventStatus) { this.eventStatus = eventStatus; }
 
-    public void setActivityEdition(String activityEdition) {
-        this.activityEdition = activityEdition;
-    }
+    public List<SponsorshipDTO> getSponsorships() { return sponsorships; }
+    public void setSponsorships(List<SponsorshipDTO> sponsorships) { this.sponsorships = sponsorships; }
 
-    public String getActivityDate() {
-        return activityDate;
-    }
+    public List<FinancialCategoryDTO> getIncomes() { return incomes; }
+    public void setIncomes(List<FinancialCategoryDTO> incomes) { this.incomes = incomes; }
 
-    public void setActivityDate(String activityDate) {
-        this.activityDate = activityDate;
-    }
-
-    public String getActivityStatus() {
-        return activityStatus;
-    }
-
-    public void setActivityStatus(String activityStatus) {
-        this.activityStatus = activityStatus;
-    }
-
-    public List<SponsorshipDTO> getSponsorships() {
-        return sponsorships;
-    }
-
-    public void setSponsorships(List<SponsorshipDTO> sponsorships) {
-        this.sponsorships = sponsorships;
-    }
-
-    public List<IncomeDTO> getIncomes() {
-        return incomes;
-    }
-
-    public void setIncomes(List<IncomeDTO> incomes) {
-        this.incomes = incomes;
-    }
-
-    public List<ExpenseDTO> getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(List<ExpenseDTO> expenses) {
-        this.expenses = expenses;
-    }
+    public List<FinancialCategoryDTO> getExpenses() { return expenses; }
+    public void setExpenses(List<FinancialCategoryDTO> expenses) { this.expenses = expenses; }
 }
 
 class SponsorshipDTO {
     private String sponsorName;
-    private String agreementDate;
-    private double amount; // Added amount field
+    private LocalDate agreementDate;
+    private Double amount;
     private String status;
 
     // Getters and Setters
-    public String getSponsorName() {
-        return sponsorName;
-    }
+    public String getSponsorName() { return sponsorName; }
+    public void setSponsorName(String sponsorName) { this.sponsorName = sponsorName; }
 
-    public void setSponsorName(String sponsorName) {
-        this.sponsorName = sponsorName;
-    }
+    public LocalDate getAgreementDate() { return agreementDate; }
+    public void setAgreementDate(LocalDate agreementDate) { this.agreementDate = agreementDate; }
 
-    public String getAgreementDate() {
-        return agreementDate;
-    }
+    public Double getAmount() { return amount; }
+    public void setAmount(Double amount) { this.amount = amount; }
 
-    public void setAgreementDate(String agreementDate) {
-        this.agreementDate = agreementDate;
-    }
-
-    public double getAmount() { // Added getAmount method
-        return amount;
-    }
-
-    public void setAmount(double amount) { // Added setAmount method
-        this.amount = amount;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
 
-class IncomeDTO {
+class FinancialCategoryDTO {
     private String category;
-    private double estimatedAmount;
-    private double paidAmount;
+    private Double estimated;
+    private Double paid;
 
     // Getters and Setters
-    public String getCategory() {
-        return category;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public Double getEstimated() { return estimated; }
+    public void setEstimated(Double estimated) { this.estimated = estimated; }
 
-    public double getEstimatedAmount() {
-        return estimatedAmount;
-    }
-
-    public void setEstimatedAmount(double estimatedAmount) {
-        this.estimatedAmount = estimatedAmount;
-    }
-
-    public double getPaidAmount() {
-        return paidAmount;
-    }
-
-    public void setPaidAmount(double paidAmount) {
-        this.paidAmount = paidAmount;
-    }
-}
-
-class ExpenseDTO {
-    private String category;
-    private double estimatedAmount;
-    private double paidAmount;
-
-    // Getters and Setters
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public double getEstimatedAmount() {
-        return estimatedAmount;
-    }
-
-    public void setEstimatedAmount(double estimatedAmount) {
-        this.estimatedAmount = estimatedAmount;
-    }
-
-    public double getPaidAmount() {
-        return paidAmount;
-    }
-
-    public void setPaidAmount(double paidAmount) {
-        this.paidAmount = paidAmount;
-    }
+    public Double getPaid() { return paid; }
+    public void setPaid(Double paid) { this.paid = paid; }
 }

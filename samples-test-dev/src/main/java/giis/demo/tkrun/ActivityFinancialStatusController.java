@@ -9,8 +9,10 @@ public class ActivityFinancialStatusController {
         this.view = view;
     }
 
-    public void updateFinancialStatus(String activityName) {
-        ActivityFinancialStatusDTO dto = model.getFinancialStatus(activityName);
-        view.displayFinancialStatus(dto);
+    /**
+     * Fetches the financial status of an activity.
+     */
+    public ActivityFinancialStatusDTO getFinancialStatus(int eventId) {
+        return model.getFinancialStatus(eventId);
     }
 }

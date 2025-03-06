@@ -1,79 +1,72 @@
--- schema.sql
+DROP TABLE Movement;
+DROP TABLE Otherie;
+DROP TABLE Invoice;
+DROP TABLE Agreement;
+DROP TABLE Sponsor;
+DROP TABLE Edition;
 DROP TABLE Event;
+
 CREATE TABLE IF NOT EXISTS Event (
     event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    title          TEXT NOT NULL,
-    event_date     DATE NOT NULL,
-    location       TEXT,
-    status         TEXT DEFAULT 'Planned',
-    description    TEXT,
-    created_date   DATE NOT NULL
+    event_title    TEXT NOT NULL
 );
 
-DROP TABLE GBMember;
-CREATE TABLE IF NOT EXISTS GBMember (
-    gb_member_id   INTEGER PRIMARY KEY AUTOINCREMENT,
-    name           TEXT NOT NULL,
-    role           TEXT,
-    email          TEXT,
-    phone          TEXT
+CREATE TABLE IF NOT EXISTS Edition (
+    edition_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id           INTEGER NOT NULL,
+    edition_title      TEXT NOT NULL,
+    edition_inidate    DATE,
+    edition_enddate    DATE,
+    edition_location   TEXT,
+    edition_status     TEXT DEFAULT 'Planned',
+    FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
 
-DROP TABLE Sponsor;
+CREATE TABLE IF NOT EXISTS Agreement (
+    agreement_id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    edition_id         INTEGER NOT NULL,
+    sponsor_id         INTEGER NOT NULL,
+    negotiator         TEXT NOT NULL,
+    contact_worker     TEXT NOT NULL,
+    contact_number     TEXT NOT NULL CHECK(contact_number LIKE '+%'),
+    contact_email      TEXT NOT NULL CHECK(contact_email LIKE '%@%'),
+    agreement_date     DATE NOT NULL,
+    agreement_amount   DOUBLE NOT NULL,
+    agreement_status   TEXT DEFAULT 'Estimated',
+    FOREIGN KEY (edition_id) REFERENCES Edition(edition_id),
+    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id)
+);
+
 CREATE TABLE IF NOT EXISTS Sponsor (
     sponsor_id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    sponsor_name       TEXT NOT NULL,
-    tax_id             TEXT,
-    billing_address    TEXT,
-    contact_name       TEXT,
-    contact_email      TEXT,
-    contact_phone      TEXT
+    sponsor_name       TEXT NOT NULL
 );
 
-DROP TABLE Sponsorship;
-CREATE TABLE IF NOT EXISTS Sponsorship (
-    sponsorship_id     INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_id           INTEGER NOT NULL,
-    sponsor_id         INTEGER NOT NULL,
-    gb_member_id       INTEGER NOT NULL,
-    agreement_date     DATE NOT NULL,
-    sponsorship_level  TEXT,
-    agreed_amount      REAL NOT NULL,
-    sponsorship_status TEXT DEFAULT 'Active',
-    FOREIGN KEY (event_id) REFERENCES Event(event_id),
-    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id),
-    FOREIGN KEY (gb_member_id) REFERENCES GBMember(gb_member_id)
-);
-
-DROP TABLE Invoice;
 CREATE TABLE IF NOT EXISTS Invoice (
     invoice_id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    sponsorship_id     INTEGER NOT NULL,
-    agreement_id       INTEGER,
+    agreement_id       INTEGER NOT NULL,
     invoice_date       DATE NOT NULL,
-    invoice_number     TEXT NOT NULL,
-    recipient_name     TEXT NOT NULL,
-    recipient_tax_id   TEXT NOT NULL,
-    recipient_address  TEXT,
-    base_amount        REAL NOT NULL,
-    vat                REAL NOT NULL,
-    invoice_amount     REAL NOT NULL,
-    sent_date          DATE,
-    FOREIGN KEY (sponsorship_id) REFERENCES Sponsorship(sponsorship_id)
+    invoice_number     TEXT NOT NULL CHECK (invoice_number GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+    invoice_vat        DOUBLE NOT NULL,
+    FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
 );
 
-DROP TABLE Transactions;
-CREATE TABLE IF NOT EXISTS Transactions (
-    transaction_id  INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_id        INTEGER NOT NULL,
-    invoice_id      INTEGER,
-    transaction_type TEXT NOT NULL,
-    status          TEXT NOT NULL,
-    record_date     DATE NOT NULL,
-    payment_date    DATE,
-    concept         TEXT NOT NULL,
-    details         TEXT,
-    amount          REAL NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES Event(event_id),
+CREATE TABLE IF NOT EXISTS Otherie (
+    otherie_id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    edition_id          INTEGER NOT NULL,
+    otherie_amount      DOUBLE NOT NULL,
+    otherie_description TEXT NOT NULL,
+    otherie_status      TEXT DEFAULT 'Estimated',
+    FOREIGN KEY (edition_id) REFERENCES Edition(edition_id)
+);
+
+CREATE TABLE IF NOT EXISTS Movement (
+    movement_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    otherie_id          INTEGER,
+    invoice_id          INTEGER,
+    movement_date       DATE NOT NULL,
+    movement_concept    TEXT NOT NULL,
+    movement_amount     DOUBLE NOT NULL,
+    FOREIGN KEY (otherie_id) REFERENCES Otherie(otherie_id),
     FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
 );

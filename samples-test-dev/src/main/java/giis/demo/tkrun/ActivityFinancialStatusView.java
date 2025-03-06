@@ -4,16 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class ActivityFinancialStatusView extends JFrame {
-    private JComboBox<String> activityComboBox;
-    private JTable activityTable;
+    private JComboBox<String> eventComboBox;
     private JTable sponsorshipTable;
-    private JTextField incomeEstimatedField;
-    private JTextField incomePaidField;
-    private JTextField expenseEstimatedField;
-    private JTextField expensePaidField;
-    private JButton viewSummaryButton;
+    private JTable incomeTable;
+    private JTable expenseTable;
+    private JLabel totalIncomeLabel;
+    private JLabel totalExpenseLabel;
+
+    private ActivityFinancialStatusController controller;
 
     public ActivityFinancialStatusView() {
         initializeUI();
@@ -23,112 +24,111 @@ public class ActivityFinancialStatusView extends JFrame {
         setTitle("Activity Financial Status");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new GridLayout(6, 2));
 
-        // Activity Selection Panel
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(new JLabel("Select Activity:"));
-        activityComboBox = new JComboBox<>(new String[]{"Tech Conference", "Cybersecurity Forum"});
-        activityComboBox.addActionListener(new ActionListener() {
+        // Event Selection
+        add(new JLabel("Select Activity:"));
+        eventComboBox = new JComboBox<>();
+        eventComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedActivity = (String) activityComboBox.getSelectedItem();
-                new ActivityFinancialStatusController(new ActivityFinancialStatusModel(), ActivityFinancialStatusView.this)
-                        .updateFinancialStatus(selectedActivity);
+                updateFinancialStatus();
             }
         });
-        topPanel.add(activityComboBox);
-        add(topPanel, BorderLayout.NORTH);
-
-        // Activity Table
-        String[] activityColumns = {"Edition", "Name", "Date", "State"};
-        Object[][] activityData = {
-                {"2024", "Tech Conference", "2024-05-01", "Active"},
-                {"2025", "Cybersecurity Forum", "2025-06-01", "Planned"}
-        };
-        activityTable = new JTable(activityData, activityColumns);
-        add(new JScrollPane(activityTable), BorderLayout.CENTER);
+        add(eventComboBox);
 
         // Sponsorship Table
-        String[] sponsorshipColumns = {"Sponsor Name", "Agreement Date", "Amount ($)", "Status"};
-        Object[][] sponsorshipData = {
-                {"Company A", "01/02/2024", "5000", "Paid"},
-                {"Company B", "05/03/2024", "7000", "Estimated"}
-        };
+        String[] sponsorshipColumns = {"Sponsor Name", "Agreement Date", "Amount", "Status"};
+        Object[][] sponsorshipData = {};
         sponsorshipTable = new JTable(sponsorshipData, sponsorshipColumns);
-        add(new JScrollPane(sponsorshipTable), BorderLayout.WEST);
+        add(new JScrollPane(sponsorshipTable));
 
-        // Financial Overview Panel
-        JPanel financialPanel = new JPanel(new GridLayout(3, 3, 5, 5));
-        financialPanel.setBorder(BorderFactory.createTitledBorder("Financial Overview"));
+        // Income Table
+        String[] incomeColumns = {"Category", "Estimated", "Paid"};
+        Object[][] incomeData = {};
+        incomeTable = new JTable(incomeData, incomeColumns);
+        add(new JScrollPane(incomeTable));
 
-        financialPanel.add(new JLabel("Category"));
-        financialPanel.add(new JLabel("Estimated ($)"));
-        financialPanel.add(new JLabel("Paid ($)"));
+        // Expense Table
+        String[] expenseColumns = {"Category", "Estimated", "Paid"};
+        Object[][] expenseData = {};
+        expenseTable = new JTable(expenseData, expenseColumns);
+        add(new JScrollPane(expenseTable));
 
-        financialPanel.add(new JLabel("Income"));
-        incomeEstimatedField = new JTextField();
-        incomePaidField = new JTextField();
-        financialPanel.add(incomeEstimatedField);
-        financialPanel.add(incomePaidField);
+        // Totals
+        totalIncomeLabel = new JLabel("Total Income: $0.00");
+        totalExpenseLabel = new JLabel("Total Expense: $0.00");
+        add(totalIncomeLabel);
+        add(totalExpenseLabel);
 
-        financialPanel.add(new JLabel("Expenses"));
-        expenseEstimatedField = new JTextField();
-        expensePaidField = new JTextField();
-        financialPanel.add(expenseEstimatedField);
-        financialPanel.add(expensePaidField);
+        // Initialize Controller
+        controller = new ActivityFinancialStatusController(
+            new ActivityFinancialStatusModel(), this);
 
-        add(financialPanel, BorderLayout.EAST);
-
-        // View Financial Summary Button
-        viewSummaryButton = new JButton("View Financial Summary");
-        viewSummaryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Logic to display financial summary
-                JOptionPane.showMessageDialog(ActivityFinancialStatusView.this, "Financial Summary Displayed");
-            }
-        });
-        add(viewSummaryButton, BorderLayout.SOUTH);
+        // Load Events
+        loadEvents();
     }
 
-    public void displayFinancialStatus(ActivityFinancialStatusDTO dto) {
+    private void loadEvents() {
+        // Fetch events from the database (not implemented here)
+        // For now, add sample data
+        eventComboBox.addItem("Tech Conference");
+        eventComboBox.addItem("Cybersecurity Forum");
+    }
+
+    private void updateFinancialStatus() {
+        int eventId = eventComboBox.getSelectedIndex() + 1; // Assuming IDs start at 1
+        ActivityFinancialStatusDTO dto = controller.getFinancialStatus(eventId);
+
         // Update Sponsorship Table
         Object[][] sponsorshipData = new Object[dto.getSponsorships().size()][4];
         for (int i = 0; i < dto.getSponsorships().size(); i++) {
             SponsorshipDTO sponsorship = dto.getSponsorships().get(i);
             sponsorshipData[i][0] = sponsorship.getSponsorName();
             sponsorshipData[i][1] = sponsorship.getAgreementDate();
-            sponsorshipData[i][2] = sponsorship.getAmount(); // Use getAmount method
+            sponsorshipData[i][2] = sponsorship.getAmount();
             sponsorshipData[i][3] = sponsorship.getStatus();
         }
         sponsorshipTable.setModel(new javax.swing.table.DefaultTableModel(
-                sponsorshipData,
-                new String[]{"Sponsor Name", "Agreement Date", "Amount ($)", "Status"}
+            sponsorshipData,
+            new String[]{"Sponsor Name", "Agreement Date", "Amount", "Status"}
         ));
 
-        // Update Financial Overview
-        double totalIncomeEstimated = 0;
-        double totalIncomePaid = 0;
-        for (IncomeDTO income : dto.getIncomes()) {
-            totalIncomeEstimated += income.getEstimatedAmount();
-            totalIncomePaid += income.getPaidAmount();
+        // Update Income Table
+        Object[][] incomeData = new Object[dto.getIncomes().size()][3];
+        double totalIncome = 0;
+        for (int i = 0; i < dto.getIncomes().size(); i++) {
+            FinancialCategoryDTO income = dto.getIncomes().get(i);
+            incomeData[i][0] = income.getCategory();
+            incomeData[i][1] = income.getEstimated();
+            incomeData[i][2] = income.getPaid();
+            totalIncome += income.getPaid();
         }
-        incomeEstimatedField.setText(String.format("%.2f", totalIncomeEstimated));
-        incomePaidField.setText(String.format("%.2f", totalIncomePaid));
+        incomeTable.setModel(new javax.swing.table.DefaultTableModel(
+            incomeData,
+            new String[]{"Category", "Estimated", "Paid"}
+        ));
+        totalIncomeLabel.setText("Total Income: $" + totalIncome);
 
-        double totalExpenseEstimated = 0;
-        double totalExpensePaid = 0;
-        for (ExpenseDTO expense : dto.getExpenses()) {
-            totalExpenseEstimated += expense.getEstimatedAmount();
-            totalExpensePaid += expense.getPaidAmount();
+        // Update Expense Table
+        Object[][] expenseData = new Object[dto.getExpenses().size()][3];
+        double totalExpense = 0;
+        for (int i = 0; i < dto.getExpenses().size(); i++) {
+            FinancialCategoryDTO expense = dto.getExpenses().get(i);
+            expenseData[i][0] = expense.getCategory();
+            expenseData[i][1] = expense.getEstimated();
+            expenseData[i][2] = expense.getPaid();
+            totalExpense += expense.getPaid();
         }
-        expenseEstimatedField.setText(String.format("%.2f", totalExpenseEstimated));
-        expensePaidField.setText(String.format("%.2f", totalExpensePaid));
+        expenseTable.setModel(new javax.swing.table.DefaultTableModel(
+            expenseData,
+            new String[]{"Category", "Estimated", "Paid"}
+        ));
+        totalExpenseLabel.setText("Total Expense: $" + totalExpense);
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             ActivityFinancialStatusView view = new ActivityFinancialStatusView();
             view.setVisible(true);
         });
