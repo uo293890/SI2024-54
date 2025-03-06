@@ -1,6 +1,6 @@
 package giis.demo.util;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 public class SwingUtil {
     public static void exceptionWrapper(Runnable action) {
@@ -15,7 +15,7 @@ public class SwingUtil {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void showInfo(String message) {
-        JOptionPane.showMessageDialog(null, message, "Información", JOptionPane.INFORMATION_MESSAGE);
+    public static void showMessage(String message, String title) {
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -1,7 +1,7 @@
 -- Create the Event table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Event (
     event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_title    TEXT NOT NULL  -- Columna definida correctamente
+    event_title    TEXT NOT NULL  
 );
 
 -- Create the Edition table if it doesn't exist

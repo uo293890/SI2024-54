@@ -1,23 +1,35 @@
 package giis.demo.util;
 
-import java.awt.EventQueue;
-import giis.demo.tkrun.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class SwingMain {
-	public static void main(String[] args) {
-        Database db = new Database();
-        System.out.println("Creando la base de datos...");
-        db.createDatabase(true);  // Recrear tablas
-        System.out.println("Base de datos creada.");
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Main");
+            frame.setSize(300, 200);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        System.out.println("Cargando datos iniciales...");
-        db.loadDatabase();        // Cargar datos iniciales
-        System.out.println("Datos iniciales cargados.");
+            JButton btnInitDB = new JButton("Inicializar BD");
+            btnInitDB.addActionListener(e -> {
+                Database db = new Database();
+                db.createDatabase(false);
+                JOptionPane.showMessageDialog(frame, "Base de datos creada!");
+            });
 
-        EventQueue.invokeLater(() -> {
-            MainWindowView mainView = new MainWindowView();
-            MainWindowModel mainModel = new MainWindowModel();
-            new MainWindowController(mainModel, mainView);
+            JButton btnLoadData = new JButton("Cargar Datos");
+            btnLoadData.addActionListener(e -> {
+                Database db = new Database();
+                db.loadDatabase();
+                JOptionPane.showMessageDialog(frame, "Datos cargados!");
+            });
+
+            JPanel panel = new JPanel();
+            panel.add(btnInitDB);
+            panel.add(btnLoadData);
+            frame.add(panel);
+            frame.setVisible(true);
         });
     }
 }

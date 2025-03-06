@@ -4,24 +4,40 @@ import java.util.List;
 
 public class FinancialReportDTO {
     private List<ActivityDTO> activities;
-    private double totalIncome;
-    private double totalExpenses;
+    private double totalEstimatedIncome;
+    private double totalActualIncome;
+    private double totalEstimatedExpenses;
+    private double totalActualExpenses;
 
-    public FinancialReportDTO(List<ActivityDTO> activities, double totalIncome, double totalExpenses) {
+    // Constructor
+    public FinancialReportDTO(List<ActivityDTO> activities, double totalEstimatedIncome, 
+                              double totalActualIncome, double totalEstimatedExpenses, 
+                              double totalActualExpenses) {
         this.activities = activities;
-        this.totalIncome = totalIncome;
-        this.totalExpenses = totalExpenses;
+        this.totalEstimatedIncome = totalEstimatedIncome;
+        this.totalActualIncome = totalActualIncome;
+        this.totalEstimatedExpenses = totalEstimatedExpenses;
+        this.totalActualExpenses = totalActualExpenses;
     }
 
+    // Getters
     public List<ActivityDTO> getActivities() {
         return activities;
     }
 
-    public double getTotalIncome() {
-        return totalIncome;
+    public double getTotalEstimatedIncome() {
+        return totalEstimatedIncome;
     }
 
-    public double getTotalExpenses() {
-        return totalExpenses;
+    public double getTotalActualIncome() {
+        return totalActualIncome;
+    }
+
+    public double getTotalEstimatedExpenses() {
+        return totalEstimatedExpenses;
+    }
+
+    public double getTotalActualExpenses() {
+        return totalActualExpenses;
     }
 }

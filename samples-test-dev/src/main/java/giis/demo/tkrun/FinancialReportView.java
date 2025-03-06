@@ -1,101 +1,77 @@
 package giis.demo.tkrun;
 
 import javax.swing.*;
+import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 
-import giis.demo.util.TableColumnAdjuster;
-
-import java.awt.*;
-import java.text.NumberFormat;
-
 public class FinancialReportView extends JDialog {
+    private JTable table;
+    private JButton btnGenerate;
+    private JComboBox<String> cmbStatus;
     private JTextField txtStartDate;
     private JTextField txtEndDate;
-    private JComboBox<String> statusComboBox;
-    private JButton btnGenerateReport;
-    private JTable reportTable;
-    private DefaultTableModel tableModel;
 
     public FinancialReportView(JFrame parent) {
-        super(parent, "Financial Report", true); // true para modal
-        initialize();
+        super(parent, "Financial Report", true);
+        initializeUI();
     }
 
-    private void initialize() {
-        setSize(800, 600);
-        setLayout(new BorderLayout(10, 10));
-
+    private void initializeUI() {
+        setLayout(new BorderLayout());
+        
         // Panel de filtros
-        JPanel filterPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        JPanel filterPanel = new JPanel(new GridLayout(0, 2));
         filterPanel.add(new JLabel("Start Date:"));
-        txtStartDate = new JTextField();
+        txtStartDate = new JTextField(10);
         filterPanel.add(txtStartDate);
-
+        
         filterPanel.add(new JLabel("End Date:"));
-        txtEndDate = new JTextField();
+        txtEndDate = new JTextField(10);
         filterPanel.add(txtEndDate);
-
+        
         filterPanel.add(new JLabel("Status:"));
-        statusComboBox = new JComboBox<>(new String[]{"Planned", "Completed", "All"});
-        filterPanel.add(statusComboBox);
-
-        btnGenerateReport = new JButton("Generate Report");
-        filterPanel.add(btnGenerateReport);
-
+        cmbStatus = new JComboBox<>(new String[]{"Planned", "Completed", "All"});
+        filterPanel.add(cmbStatus);
+        
+        btnGenerate = new JButton("Generate Report");
+        filterPanel.add(btnGenerate);
+        
         add(filterPanel, BorderLayout.NORTH);
-
+        
         // Tabla de resultados
-        tableModel = new DefaultTableModel(
-            new Object[]{"Activity", "Start Date", "End Date", "Status", "Income", "Expenses", "Balance"}, 0);
-        reportTable = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(reportTable);
-        add(scrollPane, BorderLayout.CENTER);
-
-        setLocationRelativeTo(null); // Centrar la ventana
+        table = new JTable();
+        add(new JScrollPane(table), BorderLayout.CENTER);
+        
+        setSize(800, 600);
+        setLocationRelativeTo(null);
     }
-
-    public JButton getBtnGenerateReport() {
-        return btnGenerateReport;
-    }
-
-    public String getStartDate() {
-        return txtStartDate.getText();
-    }
-
-    public String getEndDate() {
-        return txtEndDate.getText();
-    }
-
-    public String getStatus() {
-        return (String) statusComboBox.getSelectedItem();
-    }
-
+    
     public void displayReport(FinancialReportDTO report) {
-        // Limpiar la tabla antes de agregar nuevos datos
-        tableModel.setRowCount(0);
-
-        NumberFormat currency = NumberFormat.getCurrencyInstance();
-
-        for (ActivityDTO activity : report.getActivities()) {
-            tableModel.addRow(new Object[]{
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[]{"Activity", "Start Date", "End Date", "Status", 
+                       "Estimated Income", "Actual Income", "Estimated Expenses", "Actual Expenses", "Balance"}, 0);
+        
+        for(ActivityDTO activity : report.getActivities()) {
+            double balance = (activity.getActualIncome() - activity.getActualExpenses());
+            model.addRow(new Object[]{
                 activity.getName(),
                 activity.getStartDate(),
                 activity.getEndDate(),
                 activity.getStatus(),
-                currency.format(activity.getIncome()),
-                currency.format(activity.getExpenses()),
-                currency.format(activity.getBalance())
+                activity.getEstimatedIncome(),
+                activity.getActualIncome(),
+                activity.getEstimatedExpenses(),
+                activity.getActualExpenses(),
+                balance
             });
         }
-
-        // Totales
-        tableModel.addRow(new Object[]{"TOTAL", "", "", "",
-            currency.format(report.getTotalIncome()),
-            currency.format(report.getTotalExpenses()),
-            currency.format(report.getTotalIncome() - report.getTotalExpenses())
-        });
-
-        // Ajustar el ancho de las columnas automáticamente
-        new TableColumnAdjuster(reportTable).adjustColumns();
+        
+        table.setModel(model);
     }
+    
+    // Getters para los componentes
+    public JButton getBtnGenerate() { return btnGenerate; }
+    public String getStartDate() { return txtStartDate.getText(); }
+    public String getEndDate() { return txtEndDate.getText(); }
+    public String getSelectedStatus() { return (String) cmbStatus.getSelectedItem(); }
 }

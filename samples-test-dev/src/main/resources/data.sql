@@ -1,6 +1,6 @@
 -- Eventos
 -- Datos para la tabla Event
-INSERT INTO Event (event_title) VALUES  -- Correcto
+INSERT INTO Event (event_title) VALUES  
     ('Tech Summit 2024'),
     ('Global Marketing Forum');
 

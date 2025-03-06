@@ -1,113 +1,107 @@
 package giis.demo.tkrun;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
+import java.util.List;
 
 public class InvoiceView extends JDialog {
-    private JTextField txtInvoiceDate;
-    private JTextField txtInvoiceNumber;
-    private JTextField txtRecipientName;
-    private JTextField txtRecipientTaxId;
-    private JTextField txtRecipientAddress;
-    private JTextField txtBaseAmount;
-    private JTextField txtVat;
-    private JTextField txtAgreementId; // Campo para agreement_id
-    private JButton btnGenerateInvoice;
-    private JButton btnSendInvoice;
+    private JComboBox<Integer> cmbActivities;
+    private JComboBox<Integer> cmbSponsors;
+    private JTextField txtAmount;
+    private JTextField txtTaxId;
+    private JButton btnGenerate;
+    private JButton btnSend;
+    private JTable invoiceTable;
+    private DefaultTableModel tableModel;
 
     public InvoiceView(JFrame parent) {
         super(parent, "Invoice Management", true);
-        initialize();
+        initializeUI();
     }
 
-    private void initialize() {
-        setSize(500, 400);
-        setLayout(new GridLayout(0, 2, 10, 10));
+    private void initializeUI() {
+        setLayout(new BorderLayout(10, 10));
+        setSize(800, 600);
 
-        // Campos de entrada
-        add(new JLabel("Agreement ID:"));
-        txtAgreementId = new JTextField(); // Campo para agreement_id
-        add(txtAgreementId);
+        // Panel superior con controles
+        JPanel controlPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        
+        controlPanel.add(new JLabel("Activity:"));
+        cmbActivities = new JComboBox<>();
+        controlPanel.add(cmbActivities);
+        
+        controlPanel.add(new JLabel("Sponsor:"));
+        cmbSponsors = new JComboBox<>();
+        controlPanel.add(cmbSponsors);
+        
+        controlPanel.add(new JLabel("Amount:"));
+        txtAmount = new JTextField();
+        controlPanel.add(txtAmount);
+        
+        controlPanel.add(new JLabel("Tax ID:"));
+        txtTaxId = new JTextField();
+        controlPanel.add(txtTaxId);
+        
+        btnGenerate = new JButton("Generate Invoice");
+        controlPanel.add(btnGenerate);
+        
+        btnSend = new JButton("Send Invoice");
+        controlPanel.add(btnSend);
+        
+        add(controlPanel, BorderLayout.NORTH);
 
-        add(new JLabel("Invoice Date (YYYY-MM-DD):"));
-        txtInvoiceDate = new JTextField();
-        add(txtInvoiceDate);
-
-        add(new JLabel("Invoice Number:"));
-        txtInvoiceNumber = new JTextField();
-        add(txtInvoiceNumber);
-
-        add(new JLabel("Recipient Name:"));
-        txtRecipientName = new JTextField();
-        add(txtRecipientName);
-
-        add(new JLabel("Recipient Tax ID:"));
-        txtRecipientTaxId = new JTextField();
-        add(txtRecipientTaxId);
-
-        add(new JLabel("Recipient Address:"));
-        txtRecipientAddress = new JTextField();
-        add(txtRecipientAddress);
-
-        add(new JLabel("Base Amount:"));
-        txtBaseAmount = new JTextField();
-        add(txtBaseAmount);
-
-        add(new JLabel("VAT (%):"));
-        txtVat = new JTextField();
-        add(txtVat);
-
-        // Botón para generar la factura
-        btnGenerateInvoice = new JButton("Generate Invoice");
-        add(btnGenerateInvoice);
-
-        // Botón para enviar la factura
-        btnSendInvoice = new JButton("Send Invoice");
-        add(btnSendInvoice);
-
-        setLocationRelativeTo(null); // Centrar la ventana
+        // Tabla de facturas
+        tableModel = new DefaultTableModel(
+            new Object[]{"Invoice Number", "Date", "Sponsor", "Amount", "Status"}, 0);
+        invoiceTable = new JTable(tableModel);
+        add(new JScrollPane(invoiceTable), BorderLayout.CENTER);
+        
+        setLocationRelativeTo(null);
     }
 
-    // Métodos getter para los campos de entrada
-    public int getAgreementId() {
-        return Integer.parseInt(txtAgreementId.getText()); // Obtener el agreement_id
+    public void loadSponsors(List<Integer> sponsorIds) {
+        sponsorIds.forEach(id -> cmbSponsors.addItem(id));
     }
 
-    public JButton getBtnGenerateInvoice() {
-        return btnGenerateInvoice;
+    public void loadActivities(List<Integer> activityIds) {
+        activityIds.forEach(id -> cmbActivities.addItem(id));
     }
 
-    public JButton getBtnSendInvoice() {
-        return btnSendInvoice;
+    public void refreshInvoices(List<InvoiceDTO> invoices) {
+        tableModel.setRowCount(0);
+        for(InvoiceDTO invoice : invoices) {
+            tableModel.addRow(new Object[]{
+                invoice.getInvoiceNumber(),
+                invoice.getInvoiceDate(),
+                invoice.getRecipientName(),
+                invoice.getTotalAmount(),
+                invoice.getSentDate() == null ? "Pending" : "Sent"
+            });
+        }
     }
 
-    public String getInvoiceDate() {
-        return txtInvoiceDate.getText();
-    }
+    // Getters
+    public JButton getBtnGenerate() { return btnGenerate; }
+    public JButton getBtnSend() { return btnSend; }
+    public int getSelectedActivity() { return (int) cmbActivities.getSelectedItem(); }
+    public int getSelectedSponsor() { return (int) cmbSponsors.getSelectedItem(); }
+    public double getAmount() { return Double.parseDouble(txtAmount.getText()); }
+    public String getTaxId() { return txtTaxId.getText(); }
 
-    public String getInvoiceNumber() {
-        return txtInvoiceNumber.getText();
-    }
+	public int getSelectedActivityId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    public String getRecipientName() {
-        return txtRecipientName.getText();
-    }
+	public int getSelectedSponsorId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    public String getRecipientTaxId() {
-        return txtRecipientTaxId.getText();
-    }
-
-    public String getRecipientAddress() {
-        return txtRecipientAddress.getText();
-    }
-
-    public double getBaseAmount() {
-        return Double.parseDouble(txtBaseAmount.getText());
-    }
-
-    public double getVat() {
-        return Double.parseDouble(txtVat.getText());
-    }
+	public void refreshData() {
+		// TODO Auto-generated method stub
+		
+	}
 }
