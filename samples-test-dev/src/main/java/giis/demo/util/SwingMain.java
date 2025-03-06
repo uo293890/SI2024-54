@@ -1,96 +1,117 @@
 package giis.demo.util;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
+import net.miginfocom.swing.MigLayout;
+
 /**
- * Main entry point that includes buttons for executing example application screens
- * and database initialization actions.
- * Does not follow MVC as it is only temporary for development purposes.
+ * Punto de entrada principal que incluye botones para la ejecucion de las pantallas 
+ * de las aplicaciones de ejemplo
+ * y acciones de inicializacion de la base de datos.
+ * No sigue MVC pues es solamente temporal para que durante el desarrollo se tenga posibilidad
+ * de realizar acciones de inicializacion
  */
 public class SwingMain {
 
-    private JFrame frame;
+	private JFrame frame;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() { //NOSONAR codigo autogenerado
-            public void run() {
-                try {
-                    SwingMain window = new SwingMain();
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace(); //NOSONAR codigo autogenerado
-                }
-            }
-        });
-    }
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() { //NOSONAR codigo autogenerado
+			public void run() {
+				try {
+					SwingMain window = new SwingMain();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace(); //NOSONAR codigo autogenerado
+				}
+			}
+		});
+	}
 
-    /**
-     * Create the application.
-     */
-    public SwingMain() {
-        initialize();
-    }
+	/**
+	 * Create the application.
+	 */
+	public SwingMain() {
+		initialize();
+	}
 
-    /**
-     * Initialize the contents of the frame.
-     */
-    private void initialize() {
-        frame = new JFrame();
-        frame.setTitle("Main");
-        frame.setBounds(0, 0, 350, 250); // Increased height to accommodate the new button
-        frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setTitle("Main");
+		frame.setBounds(0, 0, 287, 185);
+		frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		
+		JScrollPane scrollPane = new JScrollPane();
+        frame.getContentPane().setLayout(new BorderLayout(0, 0));
+        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        // Button for executing giis.demo.tkrun
-        JButton btnEjecutarTkrun = new JButton("Ejecutar giis.demo.tkrun");
-        btnEjecutarTkrun.addActionListener(new ActionListener() { //NOSONAR codigo autogenerado
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
-        frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-        frame.getContentPane().add(btnEjecutarTkrun);
-
-        // Button for initializing the database
+        JPanel panel = new JPanel();
+        panel.setLayout(new MigLayout("", "[grow]", "[][][][][]"));
+		
+     // Botón para inicializar base de datos
         JButton btnInicializarBaseDeDatos = new JButton("Inicializar Base de Datos en Blanco");
-        btnInicializarBaseDeDatos.addActionListener(new ActionListener() { //NOSONAR codigo autogenerado
+        btnInicializarBaseDeDatos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Database db = new Database();
                 db.createDatabase(false);
             }
         });
-        frame.getContentPane().add(btnInicializarBaseDeDatos);
-
-        // Button for loading initial test data
+        panel.add(btnInicializarBaseDeDatos, "grow, wrap");	
+			
+     // Botón para cargar datos iniciales
         JButton btnCargarDatosIniciales = new JButton("Cargar Datos Iniciales para Pruebas");
-        btnCargarDatosIniciales.addActionListener(new ActionListener() { //NOSONAR codigo autogenerado
+        btnCargarDatosIniciales.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Database db = new Database();
                 db.createDatabase(false);
                 db.loadDatabase();
             }
         });
-        frame.getContentPane().add(btnCargarDatosIniciales);
-
-        // Button for launching the Sponsorship Agreement Registration view
-        JButton btnSponsorshipAgreement = new JButton("Registrar Acuerdo de Patrocinio");
-        btnSponsorshipAgreement.addActionListener(new ActionListener() {
+        panel.add(btnCargarDatosIniciales, "grow, wrap");
+        
+     // Botón para SponsorshipAgreementRegistration
+        JButton btnSponsorshipAgreementRegistration = new JButton("Sponsorship Agreement Registration");
+        btnSponsorshipAgreementRegistration.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                // Launch the Sponsorship Agreement Registration view
+                SponsorshipAgreementRegistrationModel model = new SponsorshipAgreementRegistrationModel();
                 SponsorshipAgreementRegistrationView view = new SponsorshipAgreementRegistrationView();
+                new SponsorshipAgreementRegistrationController(model, view);
                 view.setVisible(true);
             }
         });
-        frame.getContentPane().add(btnSponsorshipAgreement);
-    }
+        panel.add(btnSponsorshipAgreementRegistration, "grow, wrap");
+        
+     // Botón para ActivityFinancialStatus
+        JButton btnActivityFinancialStatus = new JButton("Activity Financial Status");
+        btnActivityFinancialStatus.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	ActivityFinancialStatusModel model = new ActivityFinancialStatusModel();
+            	ActivityFinancialStatusView view = new ActivityFinancialStatusView();
+                new ActivityFinancialStatusController(model, view);
+                view.setVisible(true);
+            }
+        });
+        panel.add(btnActivityFinancialStatus, "grow, wrap");
+        
+        scrollPane.setViewportView(panel);
+	}
 
-    public JFrame getFrame() {
-        return this.frame;
-    }
+	public JFrame getFrame() { return this.frame; }
+	
 }
