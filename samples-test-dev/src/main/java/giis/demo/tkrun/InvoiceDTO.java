@@ -1,67 +1,27 @@
 package giis.demo.tkrun;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class InvoiceDTO {
     private String invoiceNumber;
     private Date invoiceDate;
     private String recipientName;
-    private String recipientTaxId;
-    private String recipientAddress;
-    private double baseAmount;
-    private double vat;
-    private double totalAmount;
-    private Date sentDate;
+    private String taxId;
+    private String address;
 
-    // Constructor
-    public InvoiceDTO(String invoiceNumber, Date invoiceDate, String recipientName, 
-                      String recipientTaxId, String recipientAddress, double baseAmount, 
-                      double vat, double totalAmount, Date sentDate) {
-        this.invoiceNumber = invoiceNumber;
-        this.invoiceDate = invoiceDate;
-        this.recipientName = recipientName;
-        this.recipientTaxId = recipientTaxId;
-        this.recipientAddress = recipientAddress;
-        this.baseAmount = baseAmount;
-        this.vat = vat;
-        this.totalAmount = totalAmount;
-        this.sentDate = sentDate;
-    }
+    // Getters and Setters
+    public String getInvoiceNumber() { return invoiceNumber; }
+    public void setInvoiceNumber(String invoiceNumber) { this.invoiceNumber = invoiceNumber; }
 
-    // Getters
-    public String getInvoiceNumber() {
-        return invoiceNumber;
-    }
+    public Date getInvoiceDate() { return invoiceDate; }
+    public void setInvoiceDate(Date invoiceDate) { this.invoiceDate = invoiceDate; }
 
-    public Date getInvoiceDate() {
-        return invoiceDate;
-    }
+    public String getRecipientName() { return recipientName; }
+    public void setRecipientName(String recipientName) { this.recipientName = recipientName; }
 
-    public String getRecipientName() {
-        return recipientName;
-    }
+    public String getTaxId() { return taxId; }
+    public void setTaxId(String taxId) { this.taxId = taxId; }
 
-    public String getRecipientTaxId() {
-        return recipientTaxId;
-    }
-
-    public String getRecipientAddress() {
-        return recipientAddress;
-    }
-
-    public double getBaseAmount() {
-        return baseAmount;
-    }
-
-    public double getVat() {
-        return vat;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public Date getSentDate() {
-        return sentDate;
-    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 }

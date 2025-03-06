@@ -7,7 +7,7 @@ VALUES
 
 INSERT INTO Edition (event_id, edition_title, edition_inidate, edition_enddate, edition_location)
 VALUES
-(1, 'Apr25', NULL, NULL, 'Asturias'),
+(1, 'Apr25', '2025-01-01', '2025-01-02', 'Asturias'),
 (1, 'Jul25', NULL, NULL, 'Madrid'),
 (2, 'May25', NULL, NULL, 'Asturias'),
 (2, 'Aug25', NULL, NULL, 'Madrid'),

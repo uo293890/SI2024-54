@@ -1,107 +1,68 @@
 package giis.demo.tkrun;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
-import java.util.List;
+import java.text.ParseException;
+import javax.swing.text.MaskFormatter;
 
-public class InvoiceView extends JDialog {
-    private JComboBox<Integer> cmbActivities;
-    private JComboBox<Integer> cmbSponsors;
-    private JTextField txtAmount;
-    private JTextField txtTaxId;
+public class InvoiceView extends JFrame {
+    private JTextField txtInvoiceDate;
+    private JTextField txtInvoiceNumber;
+    private JTextField txtRecipientName;
+    private JFormattedTextField txtTaxId;
+    private JTextField txtAddress;
     private JButton btnGenerate;
     private JButton btnSend;
-    private JTable invoiceTable;
-    private DefaultTableModel tableModel;
 
-    public InvoiceView(JFrame parent) {
-        super(parent, "Invoice Management", true);
-        initializeUI();
+    public InvoiceView() {
+        initialize();
     }
 
-    private void initializeUI() {
-        setLayout(new BorderLayout(10, 10));
-        setSize(800, 600);
+    private void initialize() {
+        setTitle("Generate Invoice");
+        setBounds(100, 100, 500, 400);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new GridLayout(6, 2, 5, 5));
 
-        // Panel superior con controles
-        JPanel controlPanel = new JPanel(new GridLayout(0, 2, 10, 10));
-        
-        controlPanel.add(new JLabel("Activity:"));
-        cmbActivities = new JComboBox<>();
-        controlPanel.add(cmbActivities);
-        
-        controlPanel.add(new JLabel("Sponsor:"));
-        cmbSponsors = new JComboBox<>();
-        controlPanel.add(cmbSponsors);
-        
-        controlPanel.add(new JLabel("Amount:"));
-        txtAmount = new JTextField();
-        controlPanel.add(txtAmount);
-        
-        controlPanel.add(new JLabel("Tax ID:"));
-        txtTaxId = new JTextField();
-        controlPanel.add(txtTaxId);
-        
-        btnGenerate = new JButton("Generate Invoice");
-        controlPanel.add(btnGenerate);
-        
-        btnSend = new JButton("Send Invoice");
-        controlPanel.add(btnSend);
-        
-        add(controlPanel, BorderLayout.NORTH);
+        add(new JLabel("Date (dd/MM/yyyy):"));
+        txtInvoiceDate = new JTextField(10);
+        add(txtInvoiceDate);
 
-        // Tabla de facturas
-        tableModel = new DefaultTableModel(
-            new Object[]{"Invoice Number", "Date", "Sponsor", "Amount", "Status"}, 0);
-        invoiceTable = new JTable(tableModel);
-        add(new JScrollPane(invoiceTable), BorderLayout.CENTER);
-        
-        setLocationRelativeTo(null);
-    }
+        add(new JLabel("Invoice Number:"));
+        txtInvoiceNumber = new JTextField(15);
+        txtInvoiceNumber.setEditable(false);
+        add(txtInvoiceNumber);
 
-    public void loadSponsors(List<Integer> sponsorIds) {
-        sponsorIds.forEach(id -> cmbSponsors.addItem(id));
-    }
+        add(new JLabel("Recipient Name:"));
+        txtRecipientName = new JTextField(20);
+        add(txtRecipientName);
 
-    public void loadActivities(List<Integer> activityIds) {
-        activityIds.forEach(id -> cmbActivities.addItem(id));
-    }
-
-    public void refreshInvoices(List<InvoiceDTO> invoices) {
-        tableModel.setRowCount(0);
-        for(InvoiceDTO invoice : invoices) {
-            tableModel.addRow(new Object[]{
-                invoice.getInvoiceNumber(),
-                invoice.getInvoiceDate(),
-                invoice.getRecipientName(),
-                invoice.getTotalAmount(),
-                invoice.getSentDate() == null ? "Pending" : "Sent"
-            });
+        add(new JLabel("Tax ID:"));
+        try {
+            txtTaxId = new JFormattedTextField(new MaskFormatter("U########A"));
+        } catch (ParseException e) {
+            txtTaxId = new JFormattedTextField();
         }
+        add(txtTaxId);
+
+        add(new JLabel("Address:"));
+        txtAddress = new JTextField(20);
+        add(txtAddress);
+
+        btnGenerate = new JButton("Generate");
+        btnSend = new JButton("Send");
+        add(btnGenerate);
+        add(btnSend);
     }
 
-    // Getters
-    public JButton getBtnGenerate() { return btnGenerate; }
-    public JButton getBtnSend() { return btnSend; }
-    public int getSelectedActivity() { return (int) cmbActivities.getSelectedItem(); }
-    public int getSelectedSponsor() { return (int) cmbSponsors.getSelectedItem(); }
-    public double getAmount() { return Double.parseDouble(txtAmount.getText()); }
+    public String getInvoiceDate() { return txtInvoiceDate.getText(); }
+    public String getInvoiceNumber() { return txtInvoiceNumber.getText(); }
+    public String getRecipientName() { return txtRecipientName.getText(); }
     public String getTaxId() { return txtTaxId.getText(); }
+    public String getAddress() { return txtAddress.getText(); }
+    public JButton getGenerateButton() { return btnGenerate; }
+    public JButton getSendButton() { return btnSend; }
 
-	public int getSelectedActivityId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getSelectedSponsorId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public void refreshData() {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setInvoiceNumber(String number) { txtInvoiceNumber.setText(number); }
+    public void setInvoiceDate(String date) { txtInvoiceDate.setText(date); }
 }
