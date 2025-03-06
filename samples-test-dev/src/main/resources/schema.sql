@@ -1,23 +1,27 @@
 CREATE TABLE IF NOT EXISTS Sponsor (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    sponsor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    contact_name TEXT,
+    contact_number TEXT,
+    contact_email TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Agreement (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    agreement_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    edition_id INTEGER NOT NULL,
     sponsor_id INTEGER NOT NULL,
-    kind TEXT NOT NULL,
-    date DATE NOT NULL,
-    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(id)
+    level_amount DECIMAL(10, 2) NOT NULL,
+    date TEXT NOT NULL,
+    negotiator TEXT,
+    paid_cancelled INTEGER,
+    FOREIGN KEY (edition_id) REFERENCES Edition(edition_id),
+    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id)
 );
 
 CREATE TABLE IF NOT EXISTS Event (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    agreement_id INTEGER NOT NULL,
+    event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    edition_id INTEGER NOT NULL,
     title TEXT NOT NULL,
-    price REAL NOT NULL,
-    amount INTEGER NOT NULL,
-    FOREIGN KEY (agreement_id) REFERENCES Agreement(id)
 );
 
 CREATE TABLE IF NOT EXISTS Invoice (
