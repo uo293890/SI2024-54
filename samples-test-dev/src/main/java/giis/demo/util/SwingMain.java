@@ -32,6 +32,8 @@ public class SwingMain {
     private JFrame frame;
     private JTable dataTable; // Table to display data
     private Database db = new Database(); // Single instance of Database
+    private JTextField textDate;
+    public Date date;
     
 	/**
 	 * Launch the application.
@@ -170,6 +172,22 @@ public class SwingMain {
             }
         });
         panel.add(btnOtherMovement, "grow, wrap");
+
+	textDate = new JTextField();
+    	textDate.setText(LocalDate.now().toString());
+    	panel.add(textDate, "grow, wrap");
+    			
+    	JButton btnSetDate = new JButton("Set Date");
+    	btnSetDate.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {	
+    			try{
+    				date = Util.isoStringToDate(textDate.getText());
+    			} catch(ApplicationException a) {
+    				JOptionPane.showMessageDialog(frame, "Date Format Invalid, Try: YYYY-MM-DD", "Set Date Error", JOptionPane.ERROR_MESSAGE);
+    			}
+    			JOptionPane.showMessageDialog(frame, "Date set correctly", "Date set", JOptionPane.INFORMATION_MESSAGE);
+    		}});
+    	panel.add(btnSetDate, "grow, wrap");
                 
         scrollPane.setViewportView(panel);
 	}
