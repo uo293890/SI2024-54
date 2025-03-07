@@ -1,68 +1,96 @@
 package giis.demo.tkrun;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class ActivityFinancialStatusDTO {
+    // Event details
+    private int eventId;
     private String eventTitle;
-    private LocalDate eventDate;
-    private String eventStatus;
-    private List<SponsorshipDTO> sponsorships;
-    private List<FinancialCategoryDTO> incomes;
-    private List<FinancialCategoryDTO> expenses;
+
+    // Edition details
+    private int editionId;
+    private String editionTitle;
+    private LocalDate editionStartDate;
+    private LocalDate editionEndDate;
+    private String editionStatus;
+
+    // Agreement details
+    private int agreementId;
+    private String sponsorName;
+    private LocalDate agreementDate;
+    private double agreementAmount;
+    private String agreementStatus;
+
+    // Otherie (expenses) details
+    private int otherieId;
+    private double otherieAmount;
+    private String otherieDescription;
+    private String otherieStatus;
+
+    // Invoice (income) details
+    private int invoiceId;
+    private LocalDate invoiceDate;
+    private double invoiceAmount;
+    private String invoiceStatus;
 
     // Getters and Setters
+    public int getEventId() { return eventId; }
+    public void setEventId(int eventId) { this.eventId = eventId; }
+
     public String getEventTitle() { return eventTitle; }
     public void setEventTitle(String eventTitle) { this.eventTitle = eventTitle; }
 
-    public LocalDate getEventDate() { return eventDate; }
-    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
+    public int getEditionId() { return editionId; }
+    public void setEditionId(int editionId) { this.editionId = editionId; }
 
-    public String getEventStatus() { return eventStatus; }
-    public void setEventStatus(String eventStatus) { this.eventStatus = eventStatus; }
+    public String getEditionTitle() { return editionTitle; }
+    public void setEditionTitle(String editionTitle) { this.editionTitle = editionTitle; }
 
-    public List<SponsorshipDTO> getSponsorships() { return sponsorships; }
-    public void setSponsorships(List<SponsorshipDTO> sponsorships) { this.sponsorships = sponsorships; }
+    public LocalDate getEditionStartDate() { return editionStartDate; }
+    public void setEditionStartDate(LocalDate editionStartDate) { this.editionStartDate = editionStartDate; }
 
-    public List<FinancialCategoryDTO> getIncomes() { return incomes; }
-    public void setIncomes(List<FinancialCategoryDTO> incomes) { this.incomes = incomes; }
+    public LocalDate getEditionEndDate() { return editionEndDate; }
+    public void setEditionEndDate(LocalDate editionEndDate) { this.editionEndDate = editionEndDate; }
 
-    public List<FinancialCategoryDTO> getExpenses() { return expenses; }
-    public void setExpenses(List<FinancialCategoryDTO> expenses) { this.expenses = expenses; }
-}
+    public String getEditionStatus() { return editionStatus; }
+    public void setEditionStatus(String editionStatus) { this.editionStatus = editionStatus; }
 
-class SponsorshipDTO {
-    private String sponsorName;
-    private LocalDate agreementDate;
-    private Double amount;
-    private String status;
+    public int getAgreementId() { return agreementId; }
+    public void setAgreementId(int agreementId) { this.agreementId = agreementId; }
 
-    // Getters and Setters
     public String getSponsorName() { return sponsorName; }
     public void setSponsorName(String sponsorName) { this.sponsorName = sponsorName; }
 
     public LocalDate getAgreementDate() { return agreementDate; }
     public void setAgreementDate(LocalDate agreementDate) { this.agreementDate = agreementDate; }
 
-    public Double getAmount() { return amount; }
-    public void setAmount(Double amount) { this.amount = amount; }
+    public double getAgreementAmount() { return agreementAmount; }
+    public void setAgreementAmount(double agreementAmount) { this.agreementAmount = agreementAmount; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-}
+    public String getAgreementStatus() { return agreementStatus; }
+    public void setAgreementStatus(String agreementStatus) { this.agreementStatus = agreementStatus; }
 
-class FinancialCategoryDTO {
-    private String category;
-    private Double estimated;
-    private Double paid;
+    public int getOtherieId() { return otherieId; }
+    public void setOtherieId(int otherieId) { this.otherieId = otherieId; }
 
-    // Getters and Setters
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public double getOtherieAmount() { return otherieAmount; }
+    public void setOtherieAmount(double otherieAmount) { this.otherieAmount = otherieAmount; }
 
-    public Double getEstimated() { return estimated; }
-    public void setEstimated(Double estimated) { this.estimated = estimated; }
+    public String getOtherieDescription() { return otherieDescription; }
+    public void setOtherieDescription(String otherieDescription) { this.otherieDescription = otherieDescription; }
 
-    public Double getPaid() { return paid; }
-    public void setPaid(Double paid) { this.paid = paid; }
+    public String getOtherieStatus() { return otherieStatus; }
+    public void setOtherieStatus(String otherieStatus) { this.otherieStatus = otherieStatus; }
+
+    public int getInvoiceId() { return invoiceId; }
+    public void setInvoiceId(int invoiceId) { this.invoiceId = invoiceId; }
+
+    public LocalDate getInvoiceDate() { return invoiceDate; }
+    public void setInvoiceDate(LocalDate invoiceDate) { this.invoiceDate = invoiceDate; }
+
+    public double getInvoiceAmount() { return invoiceAmount; }
+    public void setInvoiceAmount(double invoiceAmount) { this.invoiceAmount = invoiceAmount; }
+
+    public String getInvoiceStatus() { return invoiceStatus; }
+    public void setInvoiceStatus(String invoiceStatus) { this.invoiceStatus = invoiceStatus; }
 }
