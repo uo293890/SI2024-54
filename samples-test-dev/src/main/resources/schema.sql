@@ -6,13 +6,11 @@ DROP TABLE Sponsor;
 DROP TABLE Edition;
 DROP TABLE Event;
 
--- Create the Event table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Event (
     event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     event_title    TEXT NOT NULL
 );
 
--- Create the Edition table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Edition (
     edition_id         INTEGER PRIMARY KEY AUTOINCREMENT,
     event_id           INTEGER NOT NULL,
@@ -24,7 +22,6 @@ CREATE TABLE IF NOT EXISTS Edition (
     FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
 
--- Create the Agreement table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Agreement (
     agreement_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     edition_id         INTEGER NOT NULL,
@@ -40,13 +37,11 @@ CREATE TABLE IF NOT EXISTS Agreement (
     FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id)
 );
 
--- Create the Sponsor table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Sponsor (
     sponsor_id         INTEGER PRIMARY KEY AUTOINCREMENT,
     sponsor_name       TEXT NOT NULL
 );
 
--- Create the Invoice table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Invoice (
     invoice_id         INTEGER PRIMARY KEY AUTOINCREMENT,
     agreement_id       INTEGER NOT NULL,
@@ -56,7 +51,6 @@ CREATE TABLE IF NOT EXISTS Invoice (
     FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
 );
 
--- Create the Otherie table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Otherie (
     otherie_id          INTEGER PRIMARY KEY AUTOINCREMENT,
     edition_id          INTEGER NOT NULL,
@@ -66,7 +60,6 @@ CREATE TABLE IF NOT EXISTS Otherie (
     FOREIGN KEY (edition_id) REFERENCES Edition(edition_id)
 );
 
--- Create the Movement table if it doesn't exist
 CREATE TABLE IF NOT EXISTS Movement (
     movement_id         INTEGER PRIMARY KEY AUTOINCREMENT,
     otherie_id          INTEGER,

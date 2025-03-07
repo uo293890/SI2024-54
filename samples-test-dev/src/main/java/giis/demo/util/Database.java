@@ -1,14 +1,7 @@
 package giis.demo.util;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Properties;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -22,7 +15,6 @@ public class Database extends DbUtil {
 	private static final String APP_PROPERTIES = "src/main/resources/application.properties";
 	private static final String SQL_SCHEMA = "src/main/resources/schema.sql";
 	private static final String SQL_LOAD = "src/main/resources/data.sql";
-	private static final String URL = "jdbc:sqlite:event.db";
 	//parametros de la base de datos leidos de application.properties (base de datos local sin usuario/password)
 	private String driver;
 	private String url;
@@ -65,6 +57,5 @@ public class Database extends DbUtil {
 	public void loadDatabase() {
 		executeScript(SQL_LOAD);
 	}
-	
 	
 }
