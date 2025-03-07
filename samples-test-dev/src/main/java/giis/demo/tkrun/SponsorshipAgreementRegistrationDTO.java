@@ -3,49 +3,53 @@ package giis.demo.tkrun;
 import java.time.LocalDate;
 
 public class SponsorshipAgreementRegistrationDTO {
-    private Integer eventId;
-    private String eventTitle;
-    private Integer sponsorId;
+    private Integer agreementId; // Matches agreement_id in Agreement table
+    private Integer editionId; // Matches edition_id in Agreement table
+    private Integer sponsorId; // Matches sponsor_id in Agreement table
+    private String negotiator; // Matches negotiator in Agreement table
+    private String contactWorker; // Matches contact_worker in Agreement table
+    private String contactNumber; // Matches contact_number in Agreement table
+    private String contactEmail; // Matches contact_email in Agreement table
+    private LocalDate agreementDate; // Matches agreement_date in Agreement table
+    private Double agreementAmount; // Matches agreement_amount in Agreement table
+    private String agreementStatus; // Matches agreement_status in Agreement table
+    
+    private String editionTitle;
     private String sponsorName;
-    private String negotiator;
-    private LocalDate agreementDate;
-    private Double agreedAmount;
-    private String sponsorshipStatus;
-    private String sponsorContactName;
-    private String sponsorContactEmail;
-    private String sponsorContactPhone;
-    
-    // Getters and Setters
-    public Integer getEventId() { return eventId; }
-    public void setEventId(Integer eventId) { this.eventId = eventId; }
-    
-    public String getEventTitle() { return eventTitle; }
-    public void setEventTitle(String eventTitle) { this.eventTitle = eventTitle; }
-    
+	
+	public String getEditionTitle() { return editionTitle; }
+	public void setEditionTitle(String editionTitle) { this.editionTitle = editionTitle; }
+	
+    public String getSponsorName() { return sponsorName; }
+	public void setSponsorName(String sponsorName) { this.sponsorName = sponsorName; }
+
+    public Integer getAgreementId() { return agreementId; }
+    public void setAgreementId(Integer agreementId) { this.agreementId = agreementId; }
+
+    public Integer getEditionId() { return editionId; }
+    public void setEditionId(Integer editionId) { this.editionId = editionId; }
+
     public Integer getSponsorId() { return sponsorId; }
     public void setSponsorId(Integer sponsorId) { this.sponsorId = sponsorId; }
-    
-    public String getSponsorName() { return sponsorName; }
-    public void setSponsorName(String sponsorName) { this.sponsorName = sponsorName; }
-    
+
     public String getNegotiator() { return negotiator; }
     public void setNegotiator(String negotiator) { this.negotiator = negotiator; }
-    
+
+    public String getContactWorker() { return contactWorker; }
+    public void setContactWorker(String contactWorker) { this.contactWorker = contactWorker; }
+
+    public String getContactNumber() { return contactNumber; }
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
+
+    public String getContactEmail() { return contactEmail; }
+    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
+
     public LocalDate getAgreementDate() { return agreementDate; }
     public void setAgreementDate(LocalDate agreementDate) { this.agreementDate = agreementDate; }
-    
-    public Double getAgreedAmount() { return agreedAmount; }
-    public void setAgreedAmount(Double agreedAmount) { this.agreedAmount = agreedAmount; }
-    
-    public String getSponsorshipStatus() { return sponsorshipStatus; }
-    public void setSponsorshipStatus(String sponsorshipStatus) { this.sponsorshipStatus = sponsorshipStatus; }
-    
-    public String getSponsorContactName() { return sponsorContactName; }
-    public void setSponsorContactName(String sponsorContactName) { this.sponsorContactName = sponsorContactName; }
-    
-    public String getSponsorContactEmail() { return sponsorContactEmail; }
-    public void setSponsorContactEmail(String sponsorContactEmail) { this.sponsorContactEmail = sponsorContactEmail; }
-    
-    public String getSponsorContactPhone() { return sponsorContactPhone; }
-    public void setSponsorContactPhone(String sponsorContactPhone) { this.sponsorContactPhone = sponsorContactPhone; }
+
+    public Double getAgreementAmount() { return agreementAmount; }
+    public void setAgreementAmount(Double agreementAmount) { this.agreementAmount = agreementAmount; }
+
+    public String getAgreementStatus() { return agreementStatus; }
+    public void setAgreementStatus(String agreementStatus) { this.agreementStatus = agreementStatus; }
 }

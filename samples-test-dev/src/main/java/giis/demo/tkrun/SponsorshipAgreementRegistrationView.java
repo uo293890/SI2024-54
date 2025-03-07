@@ -1,17 +1,18 @@
 package giis.demo.tkrun;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class SponsorshipAgreementRegistrationView extends JFrame {
     private JComboBox<String> eventComboBox;
     private JComboBox<String> sponsorComboBox;
     private JTextField negotiatorField;
+    private JTextField contactWorkerField;
+    private JTextField contactNumberField;
+    private JTextField contactEmailField;
     private JTextField agreementDateField;
     private JTextField agreedAmountField;
-    private JTextField sponsorContactNameField;
-    private JTextField sponsorContactEmailField;
-    private JTextField sponsorContactPhoneField;
     private JButton registerButton;
 
     public SponsorshipAgreementRegistrationView() {
@@ -20,72 +21,151 @@ public class SponsorshipAgreementRegistrationView extends JFrame {
 
     private void initialize() {
         setTitle("Sponsorship Agreement Registration");
-        setSize(700, 400); // Wider window to accommodate longer text boxes
+        setSize(700, 500); // Adjusted window size for better spacing
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window on the screen (optional)
+        setLocationRelativeTo(null); // Center the window on the screen
 
-        // Use a GridLayout for a simple, aligned layout
-        setLayout(new GridLayout(9, 2, 10, 10)); // 9 rows, 2 columns, with spacing
+        // Use GridBagLayout for flexible and organized layout
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5); // Add padding around components
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Make components fill horizontally
 
-        // Add components to the form
-        add(new JLabel("Event:"));
+        // Add Event ComboBox
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(new JLabel("Event:"), gbc);
+
+        gbc.gridx = 1;
         eventComboBox = new JComboBox<>();
-        add(eventComboBox);
+        add(eventComboBox, gbc);
 
-        add(new JLabel("Sponsor:"));
+        // Add Sponsor ComboBox
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(new JLabel("Sponsor:"), gbc);
+
+        gbc.gridx = 1;
         sponsorComboBox = new JComboBox<>();
-        add(sponsorComboBox);
+        add(sponsorComboBox, gbc);
 
-        add(new JLabel("Negotiator:"));
-        negotiatorField = new JTextField(20); // Longer text field
-        add(negotiatorField);
+        // Add Negotiator Field
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(new JLabel("Negotiator:"), gbc);
 
-        add(new JLabel("Agreement Date (YYYY-MM-DD):"));
-        agreementDateField = new JTextField(20); // Longer text field
-        add(agreementDateField);
+        gbc.gridx = 1;
+        negotiatorField = new JTextField(20);
+        add(negotiatorField, gbc);
 
-        add(new JLabel("Agreed Amount:"));
-        agreedAmountField = new JTextField(20); // Longer text field
-        add(agreedAmountField);
+        // Create a panel for Sponsor Contact Information
+        JPanel contactPanel = new JPanel();
+        contactPanel.setLayout(new GridBagLayout());
+        contactPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.GRAY), 
+            "Sponsor Contact Information", 
+            TitledBorder.LEFT, 
+            TitledBorder.TOP
+        ));
 
-        add(new JLabel("Sponsor Contact Name:"));
-        sponsorContactNameField = new JTextField(20); // Longer text field
-        add(sponsorContactNameField);
+        GridBagConstraints gbcContact = new GridBagConstraints();
+        gbcContact.insets = new Insets(5, 5, 5, 5); // Add padding
+        gbcContact.fill = GridBagConstraints.HORIZONTAL;
 
-        add(new JLabel("Sponsor Contact Email:"));
-        sponsorContactEmailField = new JTextField(20); // Longer text field
-        add(sponsorContactEmailField);
+        // Add Contact Worker Field
+        gbcContact.gridx = 0;
+        gbcContact.gridy = 0;
+        contactPanel.add(new JLabel("Contact Worker:"), gbcContact);
 
-        add(new JLabel("Sponsor Contact Phone:"));
-        sponsorContactPhoneField = new JTextField(20); // Longer text field
-        add(sponsorContactPhoneField);
+        gbcContact.gridx = 1;
+        contactWorkerField = new JTextField(20);
+        contactPanel.add(contactWorkerField, gbcContact);
 
-        // Add a placeholder to align the button properly
-        add(new JLabel("")); // Empty label for spacing
+        // Add Contact Number Field
+        gbcContact.gridx = 0;
+        gbcContact.gridy = 1;
+        contactPanel.add(new JLabel("Contact Number:"), gbcContact);
+
+        gbcContact.gridx = 1;
+        contactNumberField = new JTextField(20);
+        contactPanel.add(contactNumberField, gbcContact);
+
+        // Add Contact Email Field
+        gbcContact.gridx = 0;
+        gbcContact.gridy = 2;
+        contactPanel.add(new JLabel("Contact Email:"), gbcContact);
+
+        gbcContact.gridx = 1;
+        contactEmailField = new JTextField(20);
+        contactPanel.add(contactEmailField, gbcContact);
+
+        // Add the Contact Panel to the main layout
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2; // Span across two columns
+        add(contactPanel, gbc);
+
+        // Add Agreement Date Field
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1; // Reset gridwidth
+        add(new JLabel("Agreement Date (YYYY-MM-DD):"), gbc);
+
+        gbc.gridx = 1;
+        agreementDateField = new JTextField(20);
+        add(agreementDateField, gbc);
+
+        // Add Agreed Amount Field
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        add(new JLabel("Agreed Amount:"), gbc);
+
+        gbc.gridx = 1;
+        agreedAmountField = new JTextField(20);
+        add(agreedAmountField, gbc);
+
+        // Add Register Button
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2; // Span across two columns
         registerButton = new JButton("Register Agreement");
-        registerButton.setFont(new Font("Arial", Font.BOLD, 14)); // Set a nicer font
-        registerButton.setBackground(new Color(0, 153, 204)); // Set a blue background
-        registerButton.setForeground(Color.WHITE); // Set white text
-        registerButton.setFocusPainted(false); // Remove the focus border
-        add(registerButton);
+        registerButton.setFont(new Font("Arial", Font.BOLD, 14));
+        registerButton.setBackground(new Color(0, 153, 204));
+        registerButton.setForeground(Color.WHITE);
+        registerButton.setFocusPainted(false);
+        add(registerButton, gbc);
     }
 
     // Getters for UI components
     public JComboBox<String> getEventComboBox() { return eventComboBox; }
     public JComboBox<String> getSponsorComboBox() { return sponsorComboBox; }
     public JTextField getNegotiatorField() { return negotiatorField; }
+    public JTextField getContactWorkerField() { return contactWorkerField; }
+    public JTextField getContactNumberField() { return contactNumberField; }
+    public JTextField getContactEmailField() { return contactEmailField; }
     public JTextField getAgreementDateField() { return agreementDateField; }
     public JTextField getAgreedAmountField() { return agreedAmountField; }
-    public JTextField getSponsorContactNameField() { return sponsorContactNameField; }
-    public JTextField getSponsorContactEmailField() { return sponsorContactEmailField; }
-    public JTextField getSponsorContactPhoneField() { return sponsorContactPhoneField; }
     public JButton getRegisterButton() { return registerButton; }
 
+    // Method to display a success message
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    // Method to display an error message
     public void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // Method to clear all input fields
+    public void clearForm() {
+        eventComboBox.setSelectedIndex(0);
+        sponsorComboBox.setSelectedIndex(0);
+        negotiatorField.setText("");
+        contactWorkerField.setText("");
+        contactNumberField.setText("");
+        contactEmailField.setText("");
+        agreementDateField.setText("");
+        agreedAmountField.setText("");
     }
 }
