@@ -8,7 +8,7 @@ public class InvoiceDTO {
     private int agreementId;
     private double invoiceVat;
     
-    // Getters and Setters
+    // Getters y Setters
     public String getInvoiceNumber() {
         return invoiceNumber;
     }

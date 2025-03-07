@@ -22,8 +22,8 @@ public class InvoiceModel {
     }
 
     public String generateInvoiceNumber() {
-        // Genera un número de factura de 9 dígitos, cumpliendo la restricción SQL
-        long number = System.currentTimeMillis() % 1000000000; // Se obtienen los últimos 9 dígitos
+        // Genera un número de factura de 9 dígitos usando los últimos 9 dígitos del tiempo actual en milisegundos.
+        long number = System.currentTimeMillis() % 1000000000;
         return String.format("%09d", number);
     }
 }
