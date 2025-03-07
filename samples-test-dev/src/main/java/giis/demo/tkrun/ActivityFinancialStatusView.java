@@ -3,16 +3,12 @@ package giis.demo.tkrun;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.util.List;
 
 public class ActivityFinancialStatusView extends JFrame {
-    private JTable eventGrid;
-    private JTable editionGrid;
-    private JTable agreementGrid;
-    private JTable otherieGrid;
-    private JTable invoiceGrid;
-    private JLabel totalIncomeLabel;
-    private JLabel totalExpenseLabel;
+    private JTable activityTable;
+    private JTable sponsorshipTable;
+    private JTable financialOverviewTable;
+    private JButton viewSummaryButton;
 
     public ActivityFinancialStatusView() {
         initialize();
@@ -20,155 +16,80 @@ public class ActivityFinancialStatusView extends JFrame {
 
     private void initialize() {
         setTitle("Activity Financial Status");
-        setSize(1200, 800); // Larger window to accommodate all grids
+        setSize(800, 600); // Adjusted window size
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
-        // Use GridBagLayout for flexible layout
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // Add padding
-        gbc.fill = GridBagConstraints.BOTH;
+        // Use BorderLayout for the main layout
+        setLayout(new BorderLayout(10, 10));
 
-        // Event Grid
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.weightx = 1;
-        gbc.weighty = 0.2;
-        eventGrid = new JTable();
-        add(new JScrollPane(eventGrid), gbc);
+        // Header Panel
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel titleLabel = new JLabel("Activity Financial Status");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        headerPanel.add(titleLabel);
+        add(headerPanel, BorderLayout.NORTH);
 
-        // Edition Grid
-        gbc.gridy = 1;
-        gbc.weighty = 0.2;
-        editionGrid = new JTable();
-        add(new JScrollPane(editionGrid), gbc);
+        // Main Content Panel
+        JPanel contentPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Agreement Grid
-        gbc.gridy = 2;
-        gbc.weighty = 0.2;
-        agreementGrid = new JTable();
-        add(new JScrollPane(agreementGrid), gbc);
+        // Select Activity Panel
+        JPanel activityPanel = new JPanel(new BorderLayout());
+        activityPanel.setBorder(BorderFactory.createTitledBorder("Select Activity"));
+        activityTable = createTable(new String[]{"Edition", "Name", "Date", "State"}, new Object[][]{
+                {"2024", "Activity A", "01/01/2024", "Active"},
+                {"2025", "Activity B", "01/01/2025", "Planned"}
+        });
+        activityPanel.add(new JScrollPane(activityTable), BorderLayout.CENTER);
+        contentPanel.add(activityPanel);
 
-        // Otherie Grid
-        gbc.gridy = 3;
-        gbc.weighty = 0.2;
-        otherieGrid = new JTable();
-        add(new JScrollPane(otherieGrid), gbc);
+        // Sponsorship List Panel
+        JPanel sponsorshipPanel = new JPanel(new BorderLayout());
+        sponsorshipPanel.setBorder(BorderFactory.createTitledBorder("Sponsorship List"));
+        sponsorshipTable = createTable(new String[]{"Sponsor Name", "Agreement Date", "Amount (€)", "Status"}, new Object[][]{
+                {"Company A", "01/02/2024", "500€", "Paid"},
+                {"Company B", "07/03/2024", "700€", "Estimated"}
+        });
+        sponsorshipPanel.add(new JScrollPane(sponsorshipTable), BorderLayout.CENTER);
+        contentPanel.add(sponsorshipPanel);
 
-        // Invoice Grid
-        gbc.gridy = 4;
-        gbc.weighty = 0.2;
-        invoiceGrid = new JTable();
-        add(new JScrollPane(invoiceGrid), gbc);
+        // Financial Overview Panel
+        JPanel financialPanel = new JPanel(new BorderLayout());
+        financialPanel.setBorder(BorderFactory.createTitledBorder("Financial Overview"));
+        financialOverviewTable = createTable(new String[]{"Category", "Estimated (€)", "Paid (€)"}, new Object[][]{
+                {"Income", "", ""},
+                {"Expenses", "", ""}
+        });
+        financialPanel.add(new JScrollPane(financialOverviewTable), BorderLayout.CENTER);
+        contentPanel.add(financialPanel);
 
-        // Totals Panel
-        gbc.gridy = 5;
-        gbc.weighty = 0.1;
-        JPanel totalsPanel = new JPanel(new GridLayout(1, 2));
-        totalsPanel.setBorder(BorderFactory.createTitledBorder("Totals"));
-        totalIncomeLabel = new JLabel("Total Income: 0.00");
-        totalExpenseLabel = new JLabel("Total Expenses: 0.00");
-        totalsPanel.add(totalIncomeLabel);
-        totalsPanel.add(totalExpenseLabel);
-        add(totalsPanel, gbc);
+        add(contentPanel, BorderLayout.CENTER);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        viewSummaryButton = new JButton("View Financial Summary");
+        viewSummaryButton.setFont(new Font("Arial", Font.BOLD, 14));
+        viewSummaryButton.setBackground(new Color(50, 150, 250)); // Blue background
+        viewSummaryButton.setForeground(Color.WHITE); // White text
+        viewSummaryButton.setFocusPainted(false);
+        buttonPanel.add(viewSummaryButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    // Helper method to create a table with consistent styling
+    private JTable createTable(String[] columnNames, Object[][] data) {
+        JTable table = new JTable(data, columnNames);
+        table.setFont(new Font("Arial", Font.PLAIN, 12));
+        table.setRowHeight(25); // Increase row height for better readability
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        return table;
     }
 
     // Getters for UI components
-    public JTable getEventGrid() { return eventGrid; }
-    public JTable getEditionGrid() { return editionGrid; }
-    public JTable getAgreementGrid() { return agreementGrid; }
-    public JTable getOtherieGrid() { return otherieGrid; }
-    public JTable getInvoiceGrid() { return invoiceGrid; }
-
-    // Methods to populate grids
-    public void populateEventGrid(List<ActivityFinancialStatusDTO> events) {
-        String[] columnNames = {"Event ID", "Event Title"};
-        Object[][] data = new Object[events.size()][2];
-        for (int i = 0; i < events.size(); i++) {
-            ActivityFinancialStatusDTO event = events.get(i);
-            data[i][0] = event.getEventId();
-            data[i][1] = event.getEventTitle();
-        }
-        eventGrid.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
-    }
-
-    public void populateEditionGrid(List<ActivityFinancialStatusDTO> editions) {
-        String[] columnNames = {"Edition ID", "Edition Title", "Start Date", "End Date", "Status"};
-        Object[][] data = new Object[editions.size()][5];
-        for (int i = 0; i < editions.size(); i++) {
-            ActivityFinancialStatusDTO edition = editions.get(i);
-            data[i][0] = edition.getEditionId();
-            data[i][1] = edition.getEditionTitle();
-            data[i][2] = edition.getEditionStartDate();
-            data[i][3] = edition.getEditionEndDate();
-            data[i][4] = edition.getEditionStatus();
-        }
-        editionGrid.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
-    }
-
-    public void populateAgreementGrid(List<ActivityFinancialStatusDTO> agreements) {
-        String[] columnNames = {"Agreement ID", "Sponsor Name", "Agreement Date", "Amount", "Status"};
-        Object[][] data = new Object[agreements.size()][5];
-        for (int i = 0; i < agreements.size(); i++) {
-            ActivityFinancialStatusDTO agreement = agreements.get(i);
-            data[i][0] = agreement.getAgreementId();
-            data[i][1] = agreement.getSponsorName();
-            data[i][2] = agreement.getAgreementDate();
-            data[i][3] = agreement.getAgreementAmount();
-            data[i][4] = agreement.getAgreementStatus();
-        }
-        agreementGrid.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
-    }
-
-    public void populateOtherieGrid(List<ActivityFinancialStatusDTO> otheries) {
-        String[] columnNames = {"Otherie ID", "Description", "Amount", "Status"};
-        Object[][] data = new Object[otheries.size()][4];
-        for (int i = 0; i < otheries.size(); i++) {
-            ActivityFinancialStatusDTO otherie = otheries.get(i);
-            data[i][0] = otherie.getOtherieId();
-            data[i][1] = otherie.getOtherieDescription();
-            data[i][2] = otherie.getOtherieAmount();
-            data[i][3] = otherie.getOtherieStatus();
-        }
-        otherieGrid.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
-    }
-
-    public void populateInvoiceGrid(List<ActivityFinancialStatusDTO> invoices) {
-        String[] columnNames = {"Invoice ID", "Invoice Date", "Amount", "Status"};
-        Object[][] data = new Object[invoices.size()][4];
-        for (int i = 0; i < invoices.size(); i++) {
-            ActivityFinancialStatusDTO invoice = invoices.get(i);
-            data[i][0] = invoice.getInvoiceId();
-            data[i][1] = invoice.getInvoiceDate();
-            data[i][2] = invoice.getInvoiceAmount();
-            data[i][3] = invoice.getInvoiceStatus();
-        }
-        invoiceGrid.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
-    }
-
-    // Method to display totals
-    public void displayTotals(double totalIncome, double totalExpenses) {
-        totalIncomeLabel.setText("Total Income: " + totalIncome);
-        totalExpenseLabel.setText("Total Expenses: " + totalExpenses);
-    }
-
-    // Method to get the selected event ID
-    public int getSelectedEventId() {
-        int selectedRow = eventGrid.getSelectedRow();
-        if (selectedRow >= 0) {
-            return (int) eventGrid.getValueAt(selectedRow, 0); // Event ID is in column 0
-        }
-        return -1;
-    }
-
-    // Method to get the selected edition ID
-    public int getSelectedEditionId() {
-        int selectedRow = editionGrid.getSelectedRow();
-        if (selectedRow >= 0) {
-            return (int) editionGrid.getValueAt(selectedRow, 0); // Edition ID is in column 0
-        }
-        return -1;
-    }
+    public JTable getActivityTable() { return activityTable; }
+    public JTable getSponsorshipTable() { return sponsorshipTable; }
+    public JTable getFinancialOverviewTable() { return financialOverviewTable; }
+    public JButton getViewSummaryButton() { return viewSummaryButton; }
 }

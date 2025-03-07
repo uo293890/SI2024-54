@@ -15,13 +15,11 @@ public class ActivityFinancialStatusController {
         this.initController();
     }
 
-    private void initView() {
-        // Populate the event grid
-        List<ActivityFinancialStatusDTO> events = model.getAllEvents();
-        view.populateEventGrid(events);
-    }
-
     private void initController() {
         
+    }
+    
+    private void initView() {
+    
     }
 }
