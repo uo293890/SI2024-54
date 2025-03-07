@@ -1,7 +1,6 @@
 package giis.demo.tkrun;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class ActivityFinancialStatusView extends JFrame {
@@ -37,20 +36,14 @@ public class ActivityFinancialStatusView extends JFrame {
         // Select Activity Panel
         JPanel activityPanel = new JPanel(new BorderLayout());
         activityPanel.setBorder(BorderFactory.createTitledBorder("Select Activity"));
-        activityTable = createTable(new String[]{"Edition", "Name", "Date", "State"}, new Object[][]{
-                {"2024", "Activity A", "01/01/2024", "Active"},
-                {"2025", "Activity B", "01/01/2025", "Planned"}
-        });
+        activityTable = createTable(new String[]{"Edition", "Name", "Date", "State"}, new Object[][]{});
         activityPanel.add(new JScrollPane(activityTable), BorderLayout.CENTER);
         contentPanel.add(activityPanel);
 
         // Sponsorship List Panel
         JPanel sponsorshipPanel = new JPanel(new BorderLayout());
         sponsorshipPanel.setBorder(BorderFactory.createTitledBorder("Sponsorship List"));
-        sponsorshipTable = createTable(new String[]{"Sponsor Name", "Agreement Date", "Amount (€)", "Status"}, new Object[][]{
-                {"Company A", "01/02/2024", "500€", "Paid"},
-                {"Company B", "07/03/2024", "700€", "Estimated"}
-        });
+        sponsorshipTable = createTable(new String[]{"Sponsor Name", "Agreement Date", "Amount (€)", "Status"}, new Object[][]{});
         sponsorshipPanel.add(new JScrollPane(sponsorshipTable), BorderLayout.CENTER);
         contentPanel.add(sponsorshipPanel);
 

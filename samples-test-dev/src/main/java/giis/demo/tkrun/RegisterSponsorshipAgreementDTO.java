@@ -2,7 +2,7 @@ package giis.demo.tkrun;
 
 import java.time.LocalDate;
 
-public class SponsorshipAgreementRegistrationDTO {
+public class RegisterSponsorshipAgreementDTO {
     private Integer agreementId; // Matches agreement_id in Agreement table
     private Integer editionId; // Matches edition_id in Agreement table
     private Integer sponsorId; // Matches sponsor_id in Agreement table

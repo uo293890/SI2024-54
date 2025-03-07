@@ -86,9 +86,9 @@ public class SwingMain {
         btnSponsorshipAgreementRegistration.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SponsorshipAgreementRegistrationModel model = new SponsorshipAgreementRegistrationModel();
-                SponsorshipAgreementRegistrationView view = new SponsorshipAgreementRegistrationView();
-                new SponsorshipAgreementRegistrationController(model, view);
+                RegisterSponsorshipAgreementModel model = new RegisterSponsorshipAgreementModel();
+                RegisterSponsorshipAgreementView view = new RegisterSponsorshipAgreementView();
+                new RegisterSponsorshipAgreementController(model, view);
                 view.setVisible(true);
             }
         });

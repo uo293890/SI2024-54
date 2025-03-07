@@ -10,8 +10,8 @@ public class ActivityFinancialStatusDTO {
     // Edition details
     private int editionId;
     private String editionTitle;
-    private LocalDate editionStartDate;
-    private LocalDate editionEndDate;
+    private String editionStartDate;
+    private String editionEndDate;
     private String editionStatus;
 
     // Agreement details
@@ -46,11 +46,11 @@ public class ActivityFinancialStatusDTO {
     public String getEditionTitle() { return editionTitle; }
     public void setEditionTitle(String editionTitle) { this.editionTitle = editionTitle; }
 
-    public LocalDate getEditionStartDate() { return editionStartDate; }
-    public void setEditionStartDate(LocalDate editionStartDate) { this.editionStartDate = editionStartDate; }
+    public String getEditionStartDate() { return editionStartDate; }
+    public void setEditionStartDate(String editionStartDate) { this.editionStartDate = editionStartDate; }
 
-    public LocalDate getEditionEndDate() { return editionEndDate; }
-    public void setEditionEndDate(LocalDate editionEndDate) { this.editionEndDate = editionEndDate; }
+    public String getEditionEndDate() { return editionEndDate; }
+    public void setEditionEndDate(String editionEndDate) { this.editionEndDate = editionEndDate; }
 
     public String getEditionStatus() { return editionStatus; }
     public void setEditionStatus(String editionStatus) { this.editionStatus = editionStatus; }

@@ -3,39 +3,47 @@ package giis.demo.tkrun;
 import giis.demo.util.Database;
 import java.util.List;
 
-public class SponsorshipAgreementRegistrationModel {
+public class RegisterSponsorshipAgreementModel {
     private Database db = new Database();
     
     // SQL Queries
     private static final String SQL_GET_EDITIONS = "SELECT edition_id AS editionId, edition_title AS editionTitle FROM Edition;";
     private static final String SQL_GET_SPONSORS = "SELECT sponsor_id AS sponsorId, sponsor_name AS sponsorName FROM Sponsor;";
+    private static final String SQL_GET_GBMEMBERS = ";";
     private static final String SQL_GET_NEGOTIATORS = "SELECT DISTINCT negotiator FROM Agreement;";
 
     /**
      * Fetches all editions from the database.
      */
-    public List<SponsorshipAgreementRegistrationDTO> getAllEditions() {
-        return db.executeQueryPojo(SponsorshipAgreementRegistrationDTO.class, SQL_GET_EDITIONS);
+    public List<RegisterSponsorshipAgreementDTO> getAllEditions() {
+        return db.executeQueryPojo(RegisterSponsorshipAgreementDTO.class, SQL_GET_EDITIONS);
     }
 
     /**
      * Fetches all sponsors from the database.
      */
-    public List<SponsorshipAgreementRegistrationDTO> getAllSponsors() {
-        return db.executeQueryPojo(SponsorshipAgreementRegistrationDTO.class, SQL_GET_SPONSORS);
+    public List<RegisterSponsorshipAgreementDTO> getAllSponsors() {
+        return db.executeQueryPojo(RegisterSponsorshipAgreementDTO.class, SQL_GET_SPONSORS);
+    }
+    
+    /**
+     * Fetches all gb members from the database.
+     */
+    public List<RegisterSponsorshipAgreementDTO> getAllGBMembers() {
+        return db.executeQueryPojo(RegisterSponsorshipAgreementDTO.class, SQL_GET_GBMEMBERS);
     }
 
     /**
      * Fetches all negotiators from the database.
      */
-    public List<SponsorshipAgreementRegistrationDTO> getAllNegotiators() {
-        return db.executeQueryPojo(SponsorshipAgreementRegistrationDTO.class, SQL_GET_NEGOTIATORS);
+    public List<RegisterSponsorshipAgreementDTO> getAllNegotiators() {
+        return db.executeQueryPojo(RegisterSponsorshipAgreementDTO.class, SQL_GET_NEGOTIATORS);
     }
 
     /**
      * Registers a new sponsorship agreement in the database.
      */
-    public void registerSponsorshipAgreement(SponsorshipAgreementRegistrationDTO dto) {
+    public void registerSponsorshipAgreement(RegisterSponsorshipAgreementDTO dto) {
         String sql = "INSERT INTO Agreement (edition_id, sponsor_id, negotiator, contact_worker, contact_number, contact_email, agreement_date, agreement_amount, agreement_status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         db.executeUpdate(sql, 

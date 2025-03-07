@@ -7,18 +7,16 @@ public class ActivityFinancialStatusModel {
     private Database db = new Database();
 
     // SQL Queries
-    private static final String SQL_GET_EVENTS = "SELECT event_id AS eventId, event_title AS eventTitle FROM Event;";
-    private static final String SQL_GET_EDITIONS = "SELECT edition_id AS editioId, edition_title, edition_inidate, edition_enddate, edition_status FROM Edition WHERE event_id = ?;";
+    private static final String SQL_GET_ACTIVITIES = "SELECT edition_id AS editionId, edition_title AS editionTitle, edition_inidate AS editionStartDate, edition_status AS editionStatus FROM Edition;";
+    private static final String SQL_GET_EDITIONS = "SELECT edition_id AS editionId, edition_title AS editionTitle, edition_inidate AS editionStartDate, edition_enddate AS editionEndDate, edition_status AS editionStatus FROM Edition WHERE event_id = ?;";
     private static final String SQL_GET_AGREEMENTS = "SELECT a.agreement_id, s.sponsor_name, a.agreement_date, a.agreement_amount, a.agreement_status " +
                                                      "FROM Agreement a JOIN Sponsor s ON a.sponsor_id = s.sponsor_id WHERE a.edition_id = ?;";
     private static final String SQL_GET_OTHERIES = "SELECT otherie_id, otherie_amount, otherie_description, otherie_status FROM Otherie WHERE edition_id = ?;";
-    private static final String SQL_GET_INVOICES = "SELECT invoice_id, invoice_date, invoice_vat, agreement_status FROM Invoice WHERE agreement_id IN (SELECT agreement_id FROM Agreement WHERE edition_id = ?);";
-
     /**
      * Fetches all events from the database.
      */
-    public List<ActivityFinancialStatusDTO> getAllEvents() {
-        return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_EVENTS);
+    public List<ActivityFinancialStatusDTO> getAllActivities() {
+        return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_ACTIVITIES);
     }
 
     /**
@@ -40,13 +38,6 @@ public class ActivityFinancialStatusModel {
      */
     public List<ActivityFinancialStatusDTO> getOtheriesForEdition(int editionId) {
         return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_OTHERIES, editionId);
-    }
-
-    /**
-     * Fetches invoices (income) for a specific edition.
-     */
-    public List<ActivityFinancialStatusDTO> getInvoicesForEdition(int editionId) {
-        return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_INVOICES, editionId);
     }
 
     /**

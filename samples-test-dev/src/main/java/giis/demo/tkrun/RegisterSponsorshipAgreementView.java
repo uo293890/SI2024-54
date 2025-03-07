@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class SponsorshipAgreementRegistrationView extends JFrame {
+public class RegisterSponsorshipAgreementView extends JFrame {
     private JComboBox<String> eventComboBox;
     private JComboBox<String> sponsorComboBox;
     private JTextField negotiatorField;
@@ -15,7 +15,7 @@ public class SponsorshipAgreementRegistrationView extends JFrame {
     private JTextField agreedAmountField;
     private JButton registerButton;
 
-    public SponsorshipAgreementRegistrationView() {
+    public RegisterSponsorshipAgreementView() {
         initialize();
     }
 

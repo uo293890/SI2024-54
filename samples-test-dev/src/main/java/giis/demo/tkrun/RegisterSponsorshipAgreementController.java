@@ -4,11 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class SponsorshipAgreementRegistrationController {
-    private SponsorshipAgreementRegistrationModel model;
-    private SponsorshipAgreementRegistrationView view;
+public class RegisterSponsorshipAgreementController {
+    private RegisterSponsorshipAgreementModel model;
+    private RegisterSponsorshipAgreementView view;
 
-    public SponsorshipAgreementRegistrationController(SponsorshipAgreementRegistrationModel model, SponsorshipAgreementRegistrationView view) {
+    public RegisterSponsorshipAgreementController(RegisterSponsorshipAgreementModel model, RegisterSponsorshipAgreementView view) {
         this.model = model;
         this.view = view;
         this.initView();
@@ -19,7 +19,7 @@ public class SponsorshipAgreementRegistrationController {
         view.getRegisterButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a new DTO object
-                SponsorshipAgreementRegistrationDTO dto = new SponsorshipAgreementRegistrationDTO();
+                RegisterSponsorshipAgreementDTO dto = new RegisterSponsorshipAgreementDTO();
 
                 // Set fields from the view
                 dto.setEditionId(view.getEventComboBox().getSelectedIndex() + 1); // Assuming edition_id is based on index
@@ -44,14 +44,14 @@ public class SponsorshipAgreementRegistrationController {
 
     private void initView() {
         // Populate the event combo box with edition titles
-        List<SponsorshipAgreementRegistrationDTO> editions = model.getAllEditions();
-        for (SponsorshipAgreementRegistrationDTO edition : editions) {
+        List<RegisterSponsorshipAgreementDTO> editions = model.getAllEditions();
+        for (RegisterSponsorshipAgreementDTO edition : editions) {
             view.getEventComboBox().addItem(edition.getEditionTitle());
         }
 
         // Populate the sponsor combo box with sponsor names
-        List<SponsorshipAgreementRegistrationDTO> sponsors = model.getAllSponsors();
-        for (SponsorshipAgreementRegistrationDTO sponsor : sponsors) {
+        List<RegisterSponsorshipAgreementDTO> sponsors = model.getAllSponsors();
+        for (RegisterSponsorshipAgreementDTO sponsor : sponsors) {
             view.getSponsorComboBox().addItem(sponsor.getSponsorName());
         }
     }
