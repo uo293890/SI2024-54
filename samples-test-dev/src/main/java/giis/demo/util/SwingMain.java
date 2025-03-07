@@ -1,37 +1,23 @@
 package giis.demo.util;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import java.awt.EventQueue;
+import java.util.Date;
+import java.time.LocalDate;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
 
 import giis.demo.tkrun.*;
 import net.miginfocom.swing.MigLayout;
 
 public class SwingMain {
     private JFrame frame;
-    private JTable dataTable; // Table to display data
-    private Database db = new Database(); // Single instance of Database
     private JTextField textDate;
     public Date date;
     
