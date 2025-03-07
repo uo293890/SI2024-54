@@ -6,7 +6,7 @@ import java.awt.*;
 public class SponsorshipAgreementRegistrationView extends JFrame {
     private JComboBox<String> eventComboBox;
     private JComboBox<String> sponsorComboBox;
-    private JComboBox<String> gbMemberComboBox;
+    private JTextField negotiatorField;
     private JTextField agreementDateField;
     private JTextField agreedAmountField;
     private JTextField sponsorContactNameField;
@@ -36,9 +36,9 @@ public class SponsorshipAgreementRegistrationView extends JFrame {
         sponsorComboBox = new JComboBox<>();
         add(sponsorComboBox);
 
-        add(new JLabel("Governing Board Member:"));
-        gbMemberComboBox = new JComboBox<>();
-        add(gbMemberComboBox);
+        add(new JLabel("Negotiator:"));
+        negotiatorField = new JTextField(20); // Longer text field
+        add(negotiatorField);
 
         add(new JLabel("Agreement Date (YYYY-MM-DD):"));
         agreementDateField = new JTextField(20); // Longer text field
@@ -73,7 +73,7 @@ public class SponsorshipAgreementRegistrationView extends JFrame {
     // Getters for UI components
     public JComboBox<String> getEventComboBox() { return eventComboBox; }
     public JComboBox<String> getSponsorComboBox() { return sponsorComboBox; }
-    public JComboBox<String> getGbMemberComboBox() { return gbMemberComboBox; }
+    public JTextField getNegotiatorField() { return negotiatorField; }
     public JTextField getAgreementDateField() { return agreementDateField; }
     public JTextField getAgreedAmountField() { return agreedAmountField; }
     public JTextField getSponsorContactNameField() { return sponsorContactNameField; }

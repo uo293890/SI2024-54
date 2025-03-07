@@ -7,8 +7,7 @@ public class SponsorshipAgreementRegistrationDTO {
     private String eventTitle;
     private Integer sponsorId;
     private String sponsorName;
-    private Integer gbMemberId;
-    private String gbMemberName;
+    private String negotiator;
     private LocalDate agreementDate;
     private Double agreedAmount;
     private String sponsorshipStatus;
@@ -29,11 +28,8 @@ public class SponsorshipAgreementRegistrationDTO {
     public String getSponsorName() { return sponsorName; }
     public void setSponsorName(String sponsorName) { this.sponsorName = sponsorName; }
     
-    public Integer getGbMemberId() { return gbMemberId; }
-    public void setGbMemberId(Integer gbMemberId) { this.gbMemberId = gbMemberId; }
-    
-    public String getGbMemberName() { return gbMemberName; }
-    public void setGbMemberName(String gbMemberName) { this.gbMemberName = gbMemberName; }
+    public String getNegotiator() { return negotiator; }
+    public void setNegotiator(String negotiator) { this.negotiator = negotiator; }
     
     public LocalDate getAgreementDate() { return agreementDate; }
     public void setAgreementDate(LocalDate agreementDate) { this.agreementDate = agreementDate; }
