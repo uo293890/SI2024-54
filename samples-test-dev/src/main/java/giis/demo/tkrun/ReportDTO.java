@@ -3,16 +3,17 @@ package giis.demo.tkrun;
 import java.util.Date;
 
 public class ReportDTO {
-    private String editionTitle; // Activity name
-    private Date editionStartDate; // Start date of the edition
-    private Date editionEndDate; // End date of the edition
-    private String editionStatus; // Status of the edition
-    private double totalIncome; // Total income from agreements
-    private double totalExpenses; // Total expenses from otherie
-    private double totalPaidIncome; // Total paid income from invoices
-    private double totalPaidExpenses; // Total paid expenses from movements
+    private String editionTitle; // Nombre de la actividad (edición)
+    private Date editionStartDate; // Fecha de inicio de la edición
+    private Date editionEndDate;   // Fecha de fin de la edición
+    private String editionStatus;  // Estado de la edición
+    private double totalEstimatedAgreement;      // Ingresos estimados provenientes de acuerdos
+    private double totalEstimatedOtherIncome;      // Otros ingresos estimados
+    private double totalEstimatedOtherExpenses;    // Otros gastos estimados
+    private double totalPaidIncome;                // Ingresos pagados (desde facturas)
+    private double totalPaidExpenses;              // Gastos pagados (desde movimientos)
 
-    // Getters and Setters
+    // Getters y Setters
     public String getEditionTitle() { return editionTitle; }
     public void setEditionTitle(String editionTitle) { this.editionTitle = editionTitle; }
 
@@ -25,11 +26,14 @@ public class ReportDTO {
     public String getEditionStatus() { return editionStatus; }
     public void setEditionStatus(String editionStatus) { this.editionStatus = editionStatus; }
 
-    public double getTotalIncome() { return totalIncome; }
-    public void setTotalIncome(double totalIncome) { this.totalIncome = totalIncome; }
+    public double getTotalEstimatedAgreement() { return totalEstimatedAgreement; }
+    public void setTotalEstimatedAgreement(double totalEstimatedAgreement) { this.totalEstimatedAgreement = totalEstimatedAgreement; }
 
-    public double getTotalExpenses() { return totalExpenses; }
-    public void setTotalExpenses(double totalExpenses) { this.totalExpenses = totalExpenses; }
+    public double getTotalEstimatedOtherIncome() { return totalEstimatedOtherIncome; }
+    public void setTotalEstimatedOtherIncome(double totalEstimatedOtherIncome) { this.totalEstimatedOtherIncome = totalEstimatedOtherIncome; }
+
+    public double getTotalEstimatedOtherExpenses() { return totalEstimatedOtherExpenses; }
+    public void setTotalEstimatedOtherExpenses(double totalEstimatedOtherExpenses) { this.totalEstimatedOtherExpenses = totalEstimatedOtherExpenses; }
 
     public double getTotalPaidIncome() { return totalPaidIncome; }
     public void setTotalPaidIncome(double totalPaidIncome) { this.totalPaidIncome = totalPaidIncome; }
@@ -37,8 +41,17 @@ public class ReportDTO {
     public double getTotalPaidExpenses() { return totalPaidExpenses; }
     public void setTotalPaidExpenses(double totalPaidExpenses) { this.totalPaidExpenses = totalPaidExpenses; }
 
-    // Calculated fields
-    public double getBalance() { return totalIncome - totalExpenses; }
-    public double getEstimatedIncome() { return totalIncome - totalPaidIncome; }
-    public double getEstimatedExpenses() { return totalExpenses - totalPaidExpenses; }
+    // Campos calculados
+    public double getEstimatedIncome() { 
+        return totalEstimatedAgreement + totalEstimatedOtherIncome; 
+    }
+    public double getEstimatedExpenses() { 
+        return totalEstimatedOtherExpenses; 
+    }
+    public double getEstimatedBalance() { 
+        return getEstimatedIncome() - getEstimatedExpenses(); 
+    }
+    public double getPaidBalance() { 
+        return totalPaidIncome - totalPaidExpenses; 
+    }
 }

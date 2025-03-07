@@ -3,11 +3,10 @@ package giis.demo.tkrun;
 import java.util.Date;
 
 public class PaymentDTO {
-    private int invoiceId; // ID of the invoice
-    private Date paymentDate; // Date the payment was received
-    private double amount; // Amount received (must match the invoice amount)
+    private int invoiceId;
+    private Date paymentDate;
+    private double amount;
 
-    // Getters and Setters
     public int getInvoiceId() { return invoiceId; }
     public void setInvoiceId(int invoiceId) { this.invoiceId = invoiceId; }
 

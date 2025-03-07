@@ -13,21 +13,27 @@ public class OtherMovementModel {
      * @throws Exception If the movement is invalid (e.g., missing payment date for "Paid" status).
      */
     public void registerMovement(OtherMovementDTO movement) throws Exception {
-        // Validate the movement
+        // Validar el movimiento
         validateMovement(movement);
 
-        // Insert the movement into the Otherie table
+        // Insertar el movimiento en la tabla Otherie
         String sql = "INSERT INTO Otherie (edition_id, otherie_amount, otherie_description, otherie_status) "
                    + "VALUES (?, ?, ?, ?)";
+        System.out.println("Ejecutando SQL: " + sql);
         db.executeUpdate(sql, movement.getEditionId(), movement.getAmount(), movement.getConcept(), movement.getStatus());
 
-        // If the status is "Paid", insert the payment into the Movement table
+        // Si el estado es "Paid", insertar el pago en la tabla Movement
         if ("Paid".equals(movement.getStatus())) {
             String movementSql = "INSERT INTO Movement (otherie_id, movement_date, movement_concept, movement_amount) "
-                              + "VALUES (?, ?, ?, ?)";
-            db.executeUpdate(movementSql, getLastInsertedId(), new Date(movement.getPaymentDate().getTime()), movement.getConcept(), movement.getAmount());
+                               + "VALUES (?, ?, ?, ?)";
+            System.out.println("Ejecutando SQL: " + movementSql);
+            db.executeUpdate(movementSql, getLastInsertedId(), 
+                             new Date(movement.getPaymentDate().getTime()), 
+                             movement.getConcept(), 
+                             movement.getAmount());
         }
     }
+
 
     /**
      * Validates the movement.

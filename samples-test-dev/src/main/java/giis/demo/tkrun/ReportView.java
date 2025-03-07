@@ -3,6 +3,7 @@ package giis.demo.tkrun;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class ReportView extends JDialog {
     private JTextField txtStartDate;
@@ -12,58 +13,138 @@ public class ReportView extends JDialog {
     private JButton btnGenerate;
 
     public ReportView() {
-        setTitle("Financial Report");
+        initialize();
+    }
+
+    private void initialize() {
+        setTitle("Reporte Financiero");
         setSize(800, 500);
-        setLayout(new GridLayout(4, 2, 5, 5));
+        setLocationRelativeTo(null);
+        setModal(true);
+        setLayout(new BorderLayout(10, 10));
 
-        add(new JLabel("Start Date (dd/MM/yyyy):"));
+        // Panel superior con filtros
+        JPanel topPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5,5,5,5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        topPanel.add(new JLabel("Fecha Inicio (dd/MM/yyyy):"), gbc);
+
+        gbc.gridx = 1;
         txtStartDate = new JTextField(10);
-        add(txtStartDate);
+        topPanel.add(txtStartDate, gbc);
 
-        add(new JLabel("End Date (dd/MM/yyyy):"));
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        topPanel.add(new JLabel("Fecha Fin (dd/MM/yyyy):"), gbc);
+
+        gbc.gridx = 1;
         txtEndDate = new JTextField(10);
-        add(txtEndDate);
+        topPanel.add(txtEndDate, gbc);
 
-        add(new JLabel("Status:"));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        topPanel.add(new JLabel("Estado:"), gbc);
+
+        gbc.gridx = 1;
         statusCombo = new JComboBox<>(new String[]{"All", "Planned", "In Progress", "Completed"});
-        add(statusCombo);
+        topPanel.add(statusCombo, gbc);
 
-        btnGenerate = new JButton("Generate Report");
-        add(btnGenerate);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        btnGenerate = new JButton("Generar Reporte");
+        topPanel.add(btnGenerate, gbc);
 
+        add(topPanel, BorderLayout.NORTH);
+
+        // Tabla para mostrar los resultados
         reportTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(reportTable);
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    // Getters para la UI
     public String getStartDate() { return txtStartDate.getText(); }
     public String getEndDate() { return txtEndDate.getText(); }
     public String getStatus() { return (String) statusCombo.getSelectedItem(); }
     public JButton getGenerateButton() { return btnGenerate; }
-    
-    
 
-    public void updateTable(java.util.List<ReportDTO> data) {
+    // Actualiza la tabla y añade una fila de totales al final
+    public void updateTable(List<ReportDTO> data) {
         DefaultTableModel model = new DefaultTableModel(
-            new String[]{"Activity", "Start Date", "End Date", "Status", "Total Income", "Total Expenses", "Balance", "Estimated Income", "Estimated Expenses", "Paid Income", "Paid Expenses"}, 0);
-
+            new String[] {
+                "Actividad", "Fecha Inicio", "Fecha Fin", "Estado", 
+                "Est. Acuerdo", "Est. Otros Ingresos", "Est. Otros Gastos", 
+                "Ingresos Estimados", "Gastos Estimados", "Balance Estimado", 
+                "Ingresos Pagados", "Gastos Pagados", "Balance Pagado"
+            }, 0);
+        
+        // Variables para totales generales
+        double totEstAgreement = 0;
+        double totEstOtherIncome = 0;
+        double totEstOtherExpenses = 0;
+        double totEstimatedIncome = 0;
+        double totEstimatedExpenses = 0;
+        double totEstimatedBalance = 0;
+        double totPaidIncome = 0;
+        double totPaidExpenses = 0;
+        double totPaidBalance = 0;
+        
         for (ReportDTO item : data) {
-            model.addRow(new Object[]{
+            double estIncome = item.getEstimatedIncome();
+            double estExpenses = item.getEstimatedExpenses();
+            double estBalance = item.getEstimatedBalance();
+            double paidBalance = item.getPaidBalance();
+            
+            totEstAgreement += item.getTotalEstimatedAgreement();
+            totEstOtherIncome += item.getTotalEstimatedOtherIncome();
+            totEstOtherExpenses += item.getTotalEstimatedOtherExpenses();
+            totEstimatedIncome += estIncome;
+            totEstimatedExpenses += estExpenses;
+            totEstimatedBalance += estBalance;
+            totPaidIncome += item.getTotalPaidIncome();
+            totPaidExpenses += item.getTotalPaidExpenses();
+            totPaidBalance += paidBalance;
+            
+            model.addRow(new Object[] {
                 item.getEditionTitle(),
                 item.getEditionStartDate(),
                 item.getEditionEndDate(),
                 item.getEditionStatus(),
-                String.format("€%.2f", item.getTotalIncome()),
-                String.format("€%.2f", item.getTotalExpenses()),
-                String.format("€%.2f", item.getBalance()),
-                String.format("€%.2f", item.getEstimatedIncome()),
-                String.format("€%.2f", item.getEstimatedExpenses()),
+                String.format("€%.2f", item.getTotalEstimatedAgreement()),
+                String.format("€%.2f", item.getTotalEstimatedOtherIncome()),
+                String.format("€%.2f", item.getTotalEstimatedOtherExpenses()),
+                String.format("€%.2f", estIncome),
+                String.format("€%.2f", estExpenses),
+                String.format("€%.2f", estBalance),
                 String.format("€%.2f", item.getTotalPaidIncome()),
-                String.format("€%.2f", item.getTotalPaidExpenses())
+                String.format("€%.2f", item.getTotalPaidExpenses()),
+                String.format("€%.2f", paidBalance)
             });
         }
+        
+        // Añadimos una fila final con los totales
+        model.addRow(new Object[] {
+            "TOTALES", "", "", "",
+            String.format("€%.2f", totEstAgreement),
+            String.format("€%.2f", totEstOtherIncome),
+            String.format("€%.2f", totEstOtherExpenses),
+            String.format("€%.2f", totEstimatedIncome),
+            String.format("€%.2f", totEstimatedExpenses),
+            String.format("€%.2f", totEstimatedBalance),
+            String.format("€%.2f", totPaidIncome),
+            String.format("€%.2f", totPaidExpenses),
+            String.format("€%.2f", totPaidBalance)
+        });
+        
         reportTable.setModel(model);
     }
     
-    
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 }

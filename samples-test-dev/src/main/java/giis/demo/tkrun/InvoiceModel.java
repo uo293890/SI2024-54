@@ -7,16 +7,14 @@ public class InvoiceModel {
     private Database db = new Database();
 
     public void saveInvoice(InvoiceDTO invoice) throws Exception {
-        String sql = "INSERT INTO Invoice (invoice_number, invoice_date, recipient_name, tax_id, address) "
-                   + "VALUES (?, ?, ?, ?, ?)";
-
+        String sql = "INSERT INTO Invoice (agreement_id, invoice_date, invoice_number, invoice_vat) " +
+                     "VALUES (?, ?, ?, ?)";
         try {
             db.executeUpdate(sql,
-                invoice.getInvoiceNumber(),
+                invoice.getAgreementId(),
                 new Date(invoice.getInvoiceDate().getTime()),
-                invoice.getRecipientName(),
-                invoice.getTaxId(),
-                invoice.getAddress()
+                invoice.getInvoiceNumber(),
+                invoice.getInvoiceVat()
             );
         } catch (Exception e) {
             throw new Exception("Database error: " + e.getMessage());
@@ -24,6 +22,8 @@ public class InvoiceModel {
     }
 
     public String generateInvoiceNumber() {
-        return "INV-" + System.currentTimeMillis();
+        // Genera un número de factura de 9 dígitos, cumpliendo la restricción SQL
+        long number = System.currentTimeMillis() % 1000000000; // Se obtienen los últimos 9 dígitos
+        return String.format("%09d", number);
     }
 }

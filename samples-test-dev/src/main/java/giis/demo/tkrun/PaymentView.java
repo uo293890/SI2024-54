@@ -2,8 +2,6 @@ package giis.demo.tkrun;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class PaymentView extends JDialog {
     private JTextField txtInvoiceId;

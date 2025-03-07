@@ -23,8 +23,8 @@ import giis.demo.tkrun.*;
 
 public class SwingMain {
     private JFrame frame;
-    private JTable dataTable; // Tabla para mostrar datos
-    private Database db = new Database(); // Instancia única de Database
+    private JTable dataTable; // Table to display data
+    private Database db = new Database(); // Single instance of Database
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -38,84 +38,84 @@ public class SwingMain {
     }
 
     private void initialize() {
-        frame = new JFrame("Gestión de Sponsorships - COIIPA Events");
+        frame = new JFrame("Sponsorship Management - COIIPA Events");
         frame.setSize(1200, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // Panel superior con botones de control
+        // Top panel with control buttons
         JPanel topPanel = new JPanel();
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Botones de inicialización
-        JButton btnInitDb = new JButton("Inicializar BD");
+        // Initialization buttons
+        JButton btnInitDb = new JButton("Initialize DB");
         btnInitDb.addActionListener(e -> {
             db.createDatabase(true);
             loadAndDisplayData("SELECT * FROM Event");
         });
 
-        JButton btnLoadData = new JButton("Cargar Datos");
+        JButton btnLoadData = new JButton("Load Data");
         btnLoadData.addActionListener(e -> {
             db.loadDatabase();
             loadAndDisplayData("SELECT * FROM Event");
         });
 
-        // Botones para User Stories
-        JButton btnReporte = new JButton("Informe Económico");
-        btnReporte.addActionListener(e -> showFinancialReportDialog());
+        // Buttons for User Stories
+        JButton btnReport = new JButton("Financial Report");
+        btnReport.addActionListener(e -> showFinancialReportDialog());
 
-        JButton btnFacturacion = new JButton("Gestión de Facturas");
-        btnFacturacion.addActionListener(e -> showInvoiceDialog());
+        JButton btnInvoicing = new JButton("Invoice Management");
+        btnInvoicing.addActionListener(e -> showInvoiceDialog());
 
-        // Botón para Registrar Pagos
-        JButton btnRegistrarPago = new JButton("Registrar Pago");
-        btnRegistrarPago.addActionListener(e -> showPaymentDialog());
+        // Button for Registering Payments
+        JButton btnRegisterPayment = new JButton("Register Payment");
+        btnRegisterPayment.addActionListener(e -> showPaymentDialog());
 
-        // Botón para Registrar Otros Ingresos/Gastos
-        JButton btnOtherMovement = new JButton("Registrar Otros Movimientos");
+        // Button for Registering Other Income/Expenses
+        JButton btnOtherMovement = new JButton("Register Other Movements");
         btnOtherMovement.addActionListener(e -> showOtherMovementDialog());
 
-        // Configuración de botones
+        // Button styling
         Color btnColor = new Color(51, 102, 153);
         Font btnFont = new Font("Segoe UI", Font.BOLD, 12);
         
         styleButton(btnInitDb, btnColor, btnFont);
         styleButton(btnLoadData, btnColor, btnFont);
-        styleButton(btnReporte, new Color(76, 175, 80), btnFont);
-        styleButton(btnFacturacion, new Color(244, 67, 54), btnFont);
-        styleButton(btnRegistrarPago, new Color(255, 193, 7), btnFont); // Color amarillo para el botón de pagos
-        styleButton(btnOtherMovement, new Color(156, 39, 176), btnFont); // Color morado para el botón de otros movimientos
+        styleButton(btnReport, new Color(76, 175, 80), btnFont);
+        styleButton(btnInvoicing, new Color(244, 67, 54), btnFont);
+        styleButton(btnRegisterPayment, new Color(255, 193, 7), btnFont); // Yellow color for payment button
+        styleButton(btnOtherMovement, new Color(156, 39, 176), btnFont); // Purple color for other movements button
 
-        // Añadir componentes al panel superior
+        // Add components to the top panel
         topPanel.add(btnInitDb);
         topPanel.add(btnLoadData);
         topPanel.add(Box.createHorizontalStrut(20));
-        topPanel.add(btnReporte);
-        topPanel.add(btnFacturacion);
-        topPanel.add(btnRegistrarPago);
+        topPanel.add(btnReport);
+        topPanel.add(btnInvoicing);
+        topPanel.add(btnRegisterPayment);
         topPanel.add(btnOtherMovement);
 
-        // Configurar tabla principal
+        // Configure main table
         dataTable = new JTable();
         dataTable.setAutoCreateRowSorter(true);
         dataTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(dataTable);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Listado de Eventos"));
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Event List"));
 
-        // Panel de estado
+        // Status panel
         JPanel statusPanel = new JPanel();
-        JLabel statusLabel = new JLabel("Estado: ");
+        JLabel statusLabel = new JLabel("Status: ");
         JTextField statusField = new JTextField(20);
         statusField.setEditable(false);
         statusPanel.add(statusLabel);
         statusPanel.add(statusField);
 
-        // Organizar layout principal
+        // Organize main layout
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(scrollPane, BorderLayout.CENTER);
         frame.add(statusPanel, BorderLayout.SOUTH);
 
-        // Cargar datos iniciales
-        loadAndDisplayData("SELECT event_id AS ID, event_title AS Evento FROM Event");
+        // Load initial data
+        loadAndDisplayData("SELECT event_id AS ID, event_title AS Event FROM Event");
     }
 
     private void styleButton(JButton button, Color color, Font font) {
@@ -159,29 +159,29 @@ public class SwingMain {
     }
 
     /**
-     * Carga datos de la base de datos y actualiza la tabla
+     * Loads data from the database and updates the table
      */
     private void loadAndDisplayData(String query) {
         try {
-            // Ejecutar consulta genérica (adaptar según necesidad)
+            // Execute generic query (adapt as needed)
             List<Object[]> results = db.executeQueryArray(query);
             
-            // Crear modelo de tabla
+            // Create table model
             DefaultTableModel model = new DefaultTableModel();
             
-            // Obtener nombres de columnas (simplificado)
+            // Get column names (simplified)
             if (!results.isEmpty()) {
-                model.setColumnIdentifiers(results.get(0)); // Primera fila como headers
+                model.setColumnIdentifiers(results.get(0)); // First row as headers
                 for (int i = 1; i < results.size(); i++) {
                     model.addRow(results.get(i));
                 }
             }
             
             dataTable.setModel(model);
-            SwingUtil.autoAdjustColumns(dataTable); // Usar utilidad existente
+            SwingUtil.autoAdjustColumns(dataTable); // Use existing utility
             
         } catch (Exception e) {
-            SwingUtil.showMessage("Error al cargar datos: " + e.getMessage(), 
+            SwingUtil.showMessage("Error loading data: " + e.getMessage(), 
                                 "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
