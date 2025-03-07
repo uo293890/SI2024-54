@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -67,6 +66,14 @@ public class SwingMain {
         JButton btnFacturacion = new JButton("Gestión de Facturas");
         btnFacturacion.addActionListener(e -> showInvoiceDialog());
 
+        // Botón para Registrar Pagos
+        JButton btnRegistrarPago = new JButton("Registrar Pago");
+        btnRegistrarPago.addActionListener(e -> showPaymentDialog());
+
+        // Botón para Registrar Otros Ingresos/Gastos
+        JButton btnOtherMovement = new JButton("Registrar Otros Movimientos");
+        btnOtherMovement.addActionListener(e -> showOtherMovementDialog());
+
         // Configuración de botones
         Color btnColor = new Color(51, 102, 153);
         Font btnFont = new Font("Segoe UI", Font.BOLD, 12);
@@ -75,6 +82,8 @@ public class SwingMain {
         styleButton(btnLoadData, btnColor, btnFont);
         styleButton(btnReporte, new Color(76, 175, 80), btnFont);
         styleButton(btnFacturacion, new Color(244, 67, 54), btnFont);
+        styleButton(btnRegistrarPago, new Color(255, 193, 7), btnFont); // Color amarillo para el botón de pagos
+        styleButton(btnOtherMovement, new Color(156, 39, 176), btnFont); // Color morado para el botón de otros movimientos
 
         // Añadir componentes al panel superior
         topPanel.add(btnInitDb);
@@ -82,6 +91,8 @@ public class SwingMain {
         topPanel.add(Box.createHorizontalStrut(20));
         topPanel.add(btnReporte);
         topPanel.add(btnFacturacion);
+        topPanel.add(btnRegistrarPago);
+        topPanel.add(btnOtherMovement);
 
         // Configurar tabla principal
         dataTable = new JTable();
@@ -129,6 +140,22 @@ public class SwingMain {
         new InvoiceController(invoiceModel, invoiceView);
         invoiceView.setLocationRelativeTo(frame);
         invoiceView.setVisible(true);
+    }
+
+    private void showPaymentDialog() {
+        PaymentView paymentView = new PaymentView();
+        PaymentModel paymentModel = new PaymentModel();
+        new PaymentController(paymentModel, paymentView);
+        paymentView.setLocationRelativeTo(frame);
+        paymentView.setVisible(true);
+    }
+
+    private void showOtherMovementDialog() {
+        OtherMovementView otherMovementView = new OtherMovementView();
+        OtherMovementModel otherMovementModel = new OtherMovementModel();
+        new OtherMovementController(otherMovementModel, otherMovementView);
+        otherMovementView.setLocationRelativeTo(frame);
+        otherMovementView.setVisible(true);
     }
 
     /**

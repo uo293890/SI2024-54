@@ -40,6 +40,8 @@ public class ReportView extends JDialog {
     public String getEndDate() { return txtEndDate.getText(); }
     public String getStatus() { return (String) statusCombo.getSelectedItem(); }
     public JButton getGenerateButton() { return btnGenerate; }
+    
+    
 
     public void updateTable(java.util.List<ReportDTO> data) {
         DefaultTableModel model = new DefaultTableModel(
@@ -62,4 +64,6 @@ public class ReportView extends JDialog {
         }
         reportTable.setModel(model);
     }
+    
+    
 }
