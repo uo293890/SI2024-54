@@ -51,18 +51,71 @@ public class InvoiceController {
 
     private void registerInvoice() {
         try {
+            // Basic validations for input fields
+            if (view.getInvoiceNumber().trim().isEmpty()) {
+                view.showError("Invoice number cannot be empty.");
+                return;
+            }
+            if (view.getInvoiceDate().trim().isEmpty()) {
+                view.showError("Invoice date cannot be empty.");
+                return;
+            }
+            if (view.getAgreementId().trim().isEmpty()) {
+                view.showError("Agreement ID cannot be empty.");
+                return;
+            }
+            if (view.getInvoiceVat().trim().isEmpty()) {
+                view.showError("Invoice VAT cannot be empty.");
+                return;
+            }
+            
+            // Validate the date format
+            Date invoiceDate;
+            try {
+                invoiceDate = dateFormat.parse(view.getInvoiceDate());
+            } catch (Exception e) {
+                view.showError("The date format is incorrect. It should be dd/MM/yyyy.");
+                return;
+            }
+            
+            // Validate that the Agreement ID is an integer
+            int agreementId;
+            try {
+                agreementId = Integer.parseInt(view.getAgreementId());
+            } catch (NumberFormatException e) {
+                view.showError("Agreement ID must be an integer.");
+                return;
+            }
+            
+            // Validate that the VAT is a valid number
+            double invoiceVat;
+            try {
+                invoiceVat = Double.parseDouble(view.getInvoiceVat());
+            } catch (NumberFormatException e) {
+                view.showError("Invoice VAT must be a valid number.");
+                return;
+            }
+            
+            // Optional: Additional check that VAT is non-negative
+            if (invoiceVat < 0) {
+                view.showError("Invoice VAT cannot be negative.");
+                return;
+            }
+            
+            // If all validations pass, create the DTO and save the invoice
             InvoiceDTO invoice = new InvoiceDTO();
             invoice.setInvoiceNumber(view.getInvoiceNumber());
-            invoice.setInvoiceDate(dateFormat.parse(view.getInvoiceDate()));
-            invoice.setAgreementId(Integer.parseInt(view.getAgreementId()));
-            invoice.setInvoiceVat(Double.parseDouble(view.getInvoiceVat()));
-
-            // Aquí se podría agregar validación adicional de datos si fuese necesario
+            invoice.setInvoiceDate(invoiceDate);
+            invoice.setAgreementId(agreementId);
+            invoice.setInvoiceVat(invoiceVat);
+            
             model.saveInvoice(invoice);
-            view.showMessage("Factura registrada correctamente");
+            view.showMessage("Invoice registered successfully");
             view.clearForm();
         } catch (Exception ex) {
-            view.showError("Error al registrar la factura: " + ex.getMessage());
+            view.showError("Error registering invoice: " + ex.getMessage());
         }
     }
-}
+
+    }
+
