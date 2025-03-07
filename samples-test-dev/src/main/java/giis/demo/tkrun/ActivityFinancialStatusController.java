@@ -20,6 +20,10 @@ public class ActivityFinancialStatusController {
     }
     
     private void initView() {
+    	List<ActivityFinancialStatusDTO> events = model.getAllEvents();
+    	for (ActivityFinancialStatusDTO event : events) {
+    		// view.getActivityTable().add
+    	}
     
     }
 }
