@@ -7,14 +7,19 @@ public class InvoiceModel {
     private Database db = new Database();
 
     public void saveInvoice(InvoiceDTO invoice) throws Exception {
-        String sql = "INSERT INTO Invoice (agreement_id, invoice_date, invoice_number, invoice_vat) " +
-                     "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Invoice (agreement_id, invoice_date, invoice_number, invoice_vat, recipient_name, recipient_tax_id, recipient_address, contact_email, sent_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             db.executeUpdate(sql,
-                invoice.getAgreementId(),
-                new Date(invoice.getInvoiceDate().getTime()),
-                invoice.getInvoiceNumber(),
-                invoice.getInvoiceVat()
+                    invoice.getAgreementId(),
+                    new Date(invoice.getInvoiceDate().getTime()),
+                    invoice.getInvoiceNumber(),
+                    invoice.getInvoiceVat(),
+                    invoice.getRecipientName(),
+                    invoice.getRecipientTaxId(),
+                    invoice.getRecipientAddress(),
+                    invoice.getContactEmail(),
+                    invoice.getInvoiceDate() != null ? new Date(invoice.getInvoiceDate().getTime()) : null
             );
         } catch (Exception e) {
             throw new Exception("Database error: " + e.getMessage());
@@ -22,7 +27,6 @@ public class InvoiceModel {
     }
 
     public String generateInvoiceNumber() {
-        // Genera un número de factura de 9 dígitos usando los últimos 9 dígitos del tiempo actual en milisegundos.
         long number = System.currentTimeMillis() % 1000000000;
         return String.format("%09d", number);
     }

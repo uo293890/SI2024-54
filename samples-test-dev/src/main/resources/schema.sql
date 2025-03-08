@@ -48,9 +48,13 @@ CREATE TABLE IF NOT EXISTS Invoice (
     invoice_date       DATE NOT NULL,
     invoice_number     TEXT NOT NULL CHECK (invoice_number GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
     invoice_vat        DOUBLE NOT NULL,
+    recipient_name     TEXT NOT NULL,
+    recipient_tax_id   TEXT NOT NULL,
+    recipient_address  TEXT NOT NULL,
+    contact_email      TEXT NOT NULL,
+    sent_date          DATE,
     FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
 );
-
 CREATE TABLE IF NOT EXISTS Otherie (
     otherie_id          INTEGER PRIMARY KEY AUTOINCREMENT,
     edition_id          INTEGER NOT NULL,

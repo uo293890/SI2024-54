@@ -19,8 +19,8 @@ VALUES
 (1, 1, 'John Doe', 'Maria Perez', '+34987654321', 'maria.perez@cajarural.com', '2024-10-01', 3000, 'Paid'),
 (3, 1, 'John Doe', 'Maria Perez', '+34987654321', 'maria.perez@cajarural.com', '2025-03-01', 750, 'Agreed');
 
-INSERT INTO Invoice (agreement_id, invoice_date, invoice_number, invoice_vat) 
-VALUES (1, '2024-11-16', '000000001', 21.0);
+INSERT INTO Invoice (agreement_id, invoice_date, invoice_number, invoice_vat, recipient_name, recipient_tax_id, recipient_address, contact_email, sent_date) 
+VALUES (1, '2024-11-16', '000000001', 21.0, 'Maria Perez', 'B12345678', '123 Recipient Street, City', 'maria.perez@cajarural.com', '2024-11-17');
 
 INSERT INTO Otherie (edition_id, otherie_amount, otherie_description, otherie_status) 
 VALUES 

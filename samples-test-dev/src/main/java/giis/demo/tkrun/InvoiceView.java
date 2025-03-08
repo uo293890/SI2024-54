@@ -1,123 +1,237 @@
 package giis.demo.tkrun;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class InvoiceView extends JFrame {
-    private JTextField txtInvoiceDate;
+
     private JTextField txtInvoiceNumber;
+    private JTextField txtRecipientName;
+    private JTextField txtRecipientTaxId;
+    private JTextField txtRecipientAddress;
+    private JTextField txtContactEmail;
+    private JTextField txtInvoiceDate;
+    private JTextField txtEventDate;
     private JTextField txtAgreementId;
     private JTextField txtInvoiceVat;
-    
-    // Campos adicionales para los datos fiscales del receptor (no se almacenan en DB)
-    private JTextField txtRecipientName;
-    private JTextField txtRecipientFiscalNumber;
-    private JTextField txtRecipientAddress;
-    private JTextField txtRecipientEmail;
-    
-    // Campo para la fecha del evento (para validar la regla de 4 semanas)
-    private JTextField txtEventDate;
-    
+
     private JButton btnGenerate;
-    private JButton btnRegister;
-    private JButton btnSend; // Botón para enviar la factura por email
+    private JButton btnSend;
+
+    private JTable invoicesTable;
+    private DefaultTableModel invoicesTableModel;
+
+    private JTable availableIdsTable;
+    private DefaultTableModel availableIdsTableModel;
 
     public InvoiceView() {
-        initialize();
-    }
-
-    private void initialize() {
-        setTitle("Generación y Envío de Facturas");
-        setBounds(100, 100, 500, 450);
+        setTitle("Generar y Enviar Facturas");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        // Se usa GridLayout para disponer todos los campos y botones
-        setLayout(new GridLayout(11, 2, 5, 5));
-
-        add(new JLabel("Invoice Date (dd/MM/yyyy):"));
-        txtInvoiceDate = new JTextField(10);
-        add(txtInvoiceDate);
-
-        add(new JLabel("Invoice Number:"));
-        txtInvoiceNumber = new JTextField(15);
-        txtInvoiceNumber.setEditable(false);
-        add(txtInvoiceNumber);
-
-        add(new JLabel("Agreement ID:"));
-        txtAgreementId = new JTextField(10);
-        add(txtAgreementId);
-
-        add(new JLabel("Invoice VAT:"));
-        txtInvoiceVat = new JTextField(10);
-        add(txtInvoiceVat);
-        
-        add(new JLabel("Recipient Name:"));
-        txtRecipientName = new JTextField(20);
-        add(txtRecipientName);
-        
-        add(new JLabel("Recipient Fiscal Number:"));
-        txtRecipientFiscalNumber = new JTextField(15);
-        add(txtRecipientFiscalNumber);
-        
-        add(new JLabel("Recipient Address:"));
-        txtRecipientAddress = new JTextField(30);
-        add(txtRecipientAddress);
-        
-        add(new JLabel("Recipient Email:"));
-        txtRecipientEmail = new JTextField(20);
-        add(txtRecipientEmail);
-        
-        add(new JLabel("Event Date (dd/MM/yyyy):"));
-        txtEventDate = new JTextField(10);
-        add(txtEventDate);
-
-        // Panel para los botones de acción
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        btnGenerate = new JButton("Generate");
-        btnRegister = new JButton("Register");
-        btnSend = new JButton("Send Invoice");
-        buttonPanel.add(btnGenerate);
-        buttonPanel.add(btnRegister);
-        buttonPanel.add(btnSend);
-        add(buttonPanel);
-        add(new JLabel("")); // Relleno para completar el grid
+        setSize(900, 700);
+        setLocationRelativeTo(null);
+        initComponents();
     }
 
-    // Getters para los componentes de la UI
-    public JButton getGenerateButton() { return btnGenerate; }
-    public JButton getRegisterButton() { return btnRegister; }
-    public JButton getSendButton() { return btnSend; }
-    
-    public String getInvoiceDate() { return txtInvoiceDate.getText(); }
-    public String getInvoiceNumber() { return txtInvoiceNumber.getText(); }
-    public String getAgreementId() { return txtAgreementId.getText(); }
-    public String getInvoiceVat() { return txtInvoiceVat.getText(); }
-    
-    public String getRecipientName() { return txtRecipientName.getText(); }
-    public String getRecipientFiscalNumber() { return txtRecipientFiscalNumber.getText(); }
-    public String getRecipientAddress() { return txtRecipientAddress.getText(); }
-    public String getRecipientEmail() { return txtRecipientEmail.getText(); }
-    public String getEventDate() { return txtEventDate.getText(); }
-    
-    // Setters para actualizar la UI
-    public void setInvoiceNumber(String number) { txtInvoiceNumber.setText(number); }
-    public void setInvoiceDate(String date) { txtInvoiceDate.setText(date); }
-    
-    // Métodos para mostrar mensajes
+    private void initComponents() {
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Generar y Enviar Facturas a Patrocinadores"));
+
+        txtInvoiceNumber = new JTextField();
+        txtInvoiceNumber.setPreferredSize(new Dimension(200, 30));
+        txtInvoiceNumber.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtInvoiceNumber.setToolTipText("ID de la Factura (puede ingresarse manualmente o seleccionarse de la tabla)");
+
+        txtRecipientName = new JTextField();
+        txtRecipientName.setPreferredSize(new Dimension(200, 30));
+        txtRecipientName.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtRecipientName.setToolTipText("Nombre del Destinatario");
+
+        txtRecipientTaxId = new JTextField();
+        txtRecipientTaxId.setPreferredSize(new Dimension(200, 30));
+        txtRecipientTaxId.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtRecipientTaxId.setToolTipText("NIF/CIF del destinatario");
+
+        txtRecipientAddress = new JTextField();
+        txtRecipientAddress.setPreferredSize(new Dimension(200, 30));
+        txtRecipientAddress.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtRecipientAddress.setToolTipText("Dirección Fiscal del destinatario");
+
+        txtContactEmail = new JTextField();
+        txtContactEmail.setPreferredSize(new Dimension(200, 30));
+        txtContactEmail.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtContactEmail.setToolTipText("Correo Electrónico de Contacto");
+
+        txtInvoiceDate = new JTextField();
+        txtInvoiceDate.setPreferredSize(new Dimension(200, 30));
+        txtInvoiceDate.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtInvoiceDate.setToolTipText("Fecha de la Factura (dd/MM/yyyy)");
+
+        txtEventDate = new JTextField();
+        txtEventDate.setPreferredSize(new Dimension(200, 30));
+        txtEventDate.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtEventDate.setToolTipText("Fecha del Evento (dd/MM/yyyy) - Opcional");
+
+        txtAgreementId = new JTextField();
+        txtAgreementId.setPreferredSize(new Dimension(200, 30));
+        txtAgreementId.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtAgreementId.setToolTipText("ID del Acuerdo");
+
+        txtInvoiceVat = new JTextField();
+        txtInvoiceVat.setPreferredSize(new Dimension(200, 30));
+        txtInvoiceVat.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        txtInvoiceVat.setToolTipText("IVA de la Factura");
+
+        btnGenerate = new JButton("Generar/Registrar Factura");
+        btnSend = new JButton("Mandar Factura");
+
+        formPanel.add(createFieldPanel("ID de la Factura:", txtInvoiceNumber));
+        formPanel.add(createFieldPanel("Nombre del Destinatario:", txtRecipientName));
+        formPanel.add(createFieldPanel("NIF/CIF:", txtRecipientTaxId));
+        formPanel.add(createFieldPanel("Dirección Fiscal:", txtRecipientAddress));
+        formPanel.add(createFieldPanel("Correo Electrónico:", txtContactEmail));
+        formPanel.add(createFieldPanel("Fecha de Factura:", txtInvoiceDate));
+        formPanel.add(createFieldPanel("Fecha del Evento (Opcional):", txtEventDate));
+        formPanel.add(createFieldPanel("ID del Acuerdo:", txtAgreementId));
+        formPanel.add(createFieldPanel("IVA de la Factura:", txtInvoiceVat));
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonsPanel.add(btnGenerate);
+        buttonsPanel.add(btnSend);
+        formPanel.add(buttonsPanel);
+
+        JPanel invoicesPanel = new JPanel(new BorderLayout());
+        invoicesPanel.setBorder(BorderFactory.createTitledBorder("Facturas Generadas"));
+        invoicesTableModel = new DefaultTableModel(new Object[]{
+                "ID Factura", "Nombre", "NIF/CIF", "Dirección", "Correo Electrónico", "Fecha Factura", "Fecha Envío", "Acciones"
+        }, 0);
+        invoicesTable = new JTable(invoicesTableModel);
+        JScrollPane invoicesScroll = new JScrollPane(invoicesTable);
+        invoicesPanel.add(invoicesScroll, BorderLayout.CENTER);
+
+        JPanel idsPanel = new JPanel(new BorderLayout());
+        idsPanel.setBorder(BorderFactory.createTitledBorder("ID Disponibles (Vista tipo Excel)"));
+        availableIdsTableModel = new DefaultTableModel(new Object[]{"ID", "Descripción"}, 0);
+        availableIdsTable = new JTable(availableIdsTableModel);
+        availableIdsTableModel.addRow(new Object[]{"ID001", "Patrocinador 1"});
+        availableIdsTableModel.addRow(new Object[]{"ID002", "Patrocinador 2"});
+        availableIdsTableModel.addRow(new Object[]{"ID003", "Patrocinador 3"});
+        JScrollPane idsScroll = new JScrollPane(availableIdsTable);
+        idsPanel.add(idsScroll, BorderLayout.CENTER);
+
+        availableIdsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int selectedRow = availableIdsTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    Object id = availableIdsTableModel.getValueAt(selectedRow, 0);
+                    txtInvoiceNumber.setText(id.toString());
+                }
+            }
+        });
+
+        mainPanel.add(formPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(invoicesPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(idsPanel);
+
+        add(mainPanel);
+    }
+
+    private JPanel createFieldPanel(String labelText, JTextField field) {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        JLabel label = new JLabel(labelText);
+        label.setPreferredSize(new Dimension(180, 30));
+        panel.add(label, BorderLayout.WEST);
+        panel.add(field, BorderLayout.CENTER);
+        return panel;
+    }
+
+    // Getter para acceder a invoicesTable
+    public JTable getInvoicesTable() {
+        return invoicesTable;
+    }
+
+    public JButton getGenerateButton() {
+        return btnGenerate;
+    }
+
+    public JButton getSendButton() {
+        return btnSend;
+    }
+
+    public String getInvoiceNumber() {
+        return txtInvoiceNumber.getText();
+    }
+    public void setInvoiceNumber(String number) {
+        txtInvoiceNumber.setText(number);
+    }
+
+    public String getInvoiceDate() {
+        return txtInvoiceDate.getText();
+    }
+    public void setInvoiceDate(String date) {
+        txtInvoiceDate.setText(date);
+    }
+
+    public String getRecipientName() {
+        return txtRecipientName.getText();
+    }
+
+    public String getRecipientTaxId() {
+        return txtRecipientTaxId.getText();
+    }
+
+    public String getRecipientAddress() {
+        return txtRecipientAddress.getText();
+    }
+
+    public String getContactEmail() {
+        return txtContactEmail.getText();
+    }
+
+    public String getEventDate() {
+        return txtEventDate.getText();
+    }
+
+    public String getAgreementId() {
+        return txtAgreementId.getText();
+    }
+
+    public String getInvoiceVat() {
+        return txtInvoiceVat.getText();
+    }
+
+    public void addInvoiceToTable(String id, String name, String taxId, String address, String email, String invoiceDate, String sentDate) {
+        invoicesTableModel.addRow(new Object[]{id, name, taxId, address, email, invoiceDate, sentDate, "Enviar"});
+    }
+
     public void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Información", JOptionPane.INFORMATION_MESSAGE);
     }
+
     public void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
+
     public void clearForm() {
-        txtInvoiceDate.setText("");
         txtInvoiceNumber.setText("");
+        txtRecipientName.setText("");
+        txtRecipientTaxId.setText("");
+        txtRecipientAddress.setText("");
+        txtContactEmail.setText("");
+        txtInvoiceDate.setText("");
+        txtEventDate.setText("");
         txtAgreementId.setText("");
         txtInvoiceVat.setText("");
-        txtRecipientName.setText("");
-        txtRecipientFiscalNumber.setText("");
-        txtRecipientAddress.setText("");
-        txtRecipientEmail.setText("");
-        txtEventDate.setText("");
     }
 }
