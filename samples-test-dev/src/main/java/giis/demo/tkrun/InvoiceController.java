@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
@@ -23,6 +24,7 @@ public class InvoiceController {
         this.view = view;
         initView();
         initController();
+        loadAvailableIds();
     }
 
     private void initView() {
@@ -45,6 +47,23 @@ public class InvoiceController {
         });
     }
 
+    
+    private void loadAvailableIds() {
+        try {
+            List<InvoiceDTO> invoices = model.getAllInvoices();
+            Object[][] data = new Object[invoices.size()][2];
+            for (int i = 0; i < invoices.size(); i++) {
+                InvoiceDTO inv = invoices.get(i);
+                data[i][0] = inv.getInvoiceNumber();
+                data[i][1] = inv.getRecipientName();
+            }
+            view.updateAvailableIdsTable(data);
+        } catch (Exception ex) {
+            view.showError("Error cargando IDs disponibles: " + ex.getMessage());
+        }
+    }
+    
+    
     private boolean generateInvoice() {
         try {
             String manualId = view.getInvoiceNumber().trim();
@@ -171,9 +190,28 @@ public class InvoiceController {
                     invoice.getContactEmail(),
                     view.getInvoiceDate(),
                     "");
+            
+            addInvoiceToTables(invoice);
+            loadAvailableIds();
+            
         } catch (Exception ex) {
             view.showError("Error registrando la factura: " + ex.getMessage());
         }
+    }
+    
+    private void addInvoiceToTables(InvoiceDTO invoice) {
+        // Tabla de facturas generadas
+        view.addInvoiceToTable(
+            invoice.getInvoiceNumber(),
+            invoice.getRecipientName(),
+            invoice.getRecipientTaxId(),
+            invoice.getRecipientAddress(),
+            invoice.getContactEmail(),
+            dateFormat.format(invoice.getInvoiceDate()),
+            ""
+        );
+        
+        // Tabla de IDs disponibles (se actualiza automáticamente con loadAvailableIds)
     }
 
     private void sendInvoice() {

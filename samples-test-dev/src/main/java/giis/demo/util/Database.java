@@ -1,7 +1,13 @@
 package giis.demo.util;
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -57,5 +63,41 @@ public class Database extends DbUtil {
 	public void loadDatabase() {
 		executeScript(SQL_LOAD);
 	}
+	
+	
+	/**
+     * Ejecuta una consulta SQL y devuelve los resultados como una lista de filas,
+     * donde cada fila es una lista de objetos correspondientes a cada columna.
+     * 
+     * @param sql La consulta SQL a ejecutar.
+     * @return Lista de filas con los datos de la consulta.
+     */
+    public List<List<Object>> executeQuery(String sql) {
+        List<List<Object>> rows = new ArrayList<>();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(url);
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            while (rs.next()) {
+                List<Object> row = new ArrayList<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.add(rs.getObject(i));
+                }
+                rows.add(row);
+            }
+        } catch (Exception e) {
+            throw new ApplicationException(e);
+        } finally {
+            DbUtils.closeQuietly(rs);
+            DbUtils.closeQuietly(stmt);
+            DbUtils.closeQuietly(conn);
+        }
+        return rows;
+    }
 	
 }

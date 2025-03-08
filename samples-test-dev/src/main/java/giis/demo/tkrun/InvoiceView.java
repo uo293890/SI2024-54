@@ -121,12 +121,11 @@ public class InvoiceView extends JFrame {
         idsPanel.setBorder(BorderFactory.createTitledBorder("ID Disponibles (Vista tipo Excel)"));
         availableIdsTableModel = new DefaultTableModel(new Object[]{"ID", "Descripción"}, 0);
         availableIdsTable = new JTable(availableIdsTableModel);
-        availableIdsTableModel.addRow(new Object[]{"ID001", "Patrocinador 1"});
-        availableIdsTableModel.addRow(new Object[]{"ID002", "Patrocinador 2"});
-        availableIdsTableModel.addRow(new Object[]{"ID003", "Patrocinador 3"});
+        // Se elimina la carga estática de datos para que se actualice de forma dinámica.
         JScrollPane idsScroll = new JScrollPane(availableIdsTable);
         idsPanel.add(idsScroll, BorderLayout.CENTER);
 
+        // Al seleccionar una fila, se establece el ID en el campo de la factura.
         availableIdsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -156,7 +155,7 @@ public class InvoiceView extends JFrame {
         return panel;
     }
 
-    // Getter para acceder a invoicesTable
+    // Getter para acceder a la tabla de facturas
     public JTable getInvoicesTable() {
         return invoicesTable;
     }
@@ -213,6 +212,27 @@ public class InvoiceView extends JFrame {
 
     public void addInvoiceToTable(String id, String name, String taxId, String address, String email, String invoiceDate, String sentDate) {
         invoicesTableModel.addRow(new Object[]{id, name, taxId, address, email, invoiceDate, sentDate, "Enviar"});
+    }
+
+    /**
+     * Actualiza la tabla de ID Disponibles con nuevos datos.
+     * @param data Matriz de datos, donde cada fila es un array con el ID y su descripción.
+     */
+    public void updateAvailableIdsTable(Object[][] data) {
+        availableIdsTableModel.setRowCount(0);  // Limpia la tabla
+        for (Object[] row : data) {
+            availableIdsTableModel.addRow(row);
+        }
+    }
+    
+    
+    
+
+    /**
+     * Método getter para acceder a la tabla de IDs disponibles.
+     */
+    public JTable getAvailableIdsTable() {
+        return availableIdsTable;
     }
 
     public void showMessage(String message) {
