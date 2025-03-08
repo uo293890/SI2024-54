@@ -7,10 +7,10 @@ import java.awt.*;
 public class RegisterSponsorshipAgreementView extends JFrame {
     private JComboBox<String> eventComboBox;
     private JComboBox<String> sponsorComboBox;
-    private JTextField negotiatorField;
-    private JTextField contactWorkerField;
-    private JTextField contactNumberField;
-    private JTextField contactEmailField;
+    private JComboBox<String> gbMemberComboBox;
+    private JTextField nameField;
+    private JTextField numberField;
+    private JTextField emailField;
     private JTextField agreementDateField;
     private JTextField agreedAmountField;
     private JButton registerButton;
@@ -49,14 +49,14 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         sponsorComboBox = new JComboBox<>();
         add(sponsorComboBox, gbc);
 
-        // Add Negotiator Field
+        // Add GB Member ComboBox
         gbc.gridx = 0;
         gbc.gridy = 2;
-        add(new JLabel("Negotiator:"), gbc);
+        add(new JLabel("GB Member:"), gbc);
 
         gbc.gridx = 1;
-        negotiatorField = new JTextField(20);
-        add(negotiatorField, gbc);
+        gbMemberComboBox = new JComboBox<>();
+        add(gbMemberComboBox, gbc);
 
         // Create a panel for Sponsor Contact Information
         JPanel contactPanel = new JPanel();
@@ -75,29 +75,29 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         // Add Contact Worker Field
         gbcContact.gridx = 0;
         gbcContact.gridy = 0;
-        contactPanel.add(new JLabel("Contact Worker:"), gbcContact);
+        contactPanel.add(new JLabel("Name:"), gbcContact);
 
         gbcContact.gridx = 1;
-        contactWorkerField = new JTextField(20);
-        contactPanel.add(contactWorkerField, gbcContact);
+        nameField = new JTextField(20);
+        contactPanel.add(nameField, gbcContact);
 
         // Add Contact Number Field
         gbcContact.gridx = 0;
         gbcContact.gridy = 1;
-        contactPanel.add(new JLabel("Contact Number:"), gbcContact);
+        contactPanel.add(new JLabel("Number:"), gbcContact);
 
         gbcContact.gridx = 1;
-        contactNumberField = new JTextField(20);
-        contactPanel.add(contactNumberField, gbcContact);
+        numberField = new JTextField(20);
+        contactPanel.add(numberField, gbcContact);
 
         // Add Contact Email Field
         gbcContact.gridx = 0;
         gbcContact.gridy = 2;
-        contactPanel.add(new JLabel("Contact Email:"), gbcContact);
+        contactPanel.add(new JLabel("Email:"), gbcContact);
 
         gbcContact.gridx = 1;
-        contactEmailField = new JTextField(20);
-        contactPanel.add(contactEmailField, gbcContact);
+        emailField = new JTextField(20);
+        contactPanel.add(emailField, gbcContact);
 
         // Add the Contact Panel to the main layout
         gbc.gridx = 0;
@@ -139,10 +139,10 @@ public class RegisterSponsorshipAgreementView extends JFrame {
     // Getters for UI components
     public JComboBox<String> getEventComboBox() { return eventComboBox; }
     public JComboBox<String> getSponsorComboBox() { return sponsorComboBox; }
-    public JTextField getNegotiatorField() { return negotiatorField; }
-    public JTextField getContactWorkerField() { return contactWorkerField; }
-    public JTextField getContactNumberField() { return contactNumberField; }
-    public JTextField getContactEmailField() { return contactEmailField; }
+    public JComboBox<String> getGBMemberComboBox() { return gbMemberComboBox; }
+    public JTextField getContactWorkerField() { return nameField; }
+    public JTextField getContactNumberField() { return numberField; }
+    public JTextField getContactEmailField() { return emailField; }
     public JTextField getAgreementDateField() { return agreementDateField; }
     public JTextField getAgreedAmountField() { return agreedAmountField; }
     public JButton getRegisterButton() { return registerButton; }
@@ -161,10 +161,10 @@ public class RegisterSponsorshipAgreementView extends JFrame {
     public void clearForm() {
         eventComboBox.setSelectedIndex(0);
         sponsorComboBox.setSelectedIndex(0);
-        negotiatorField.setText("");
-        contactWorkerField.setText("");
-        contactNumberField.setText("");
-        contactEmailField.setText("");
+        gbMemberComboBox.setSelectedIndex(0);
+        nameField.setText("");
+        numberField.setText("");
+        emailField.setText("");
         agreementDateField.setText("");
         agreedAmountField.setText("");
     }

@@ -6,14 +6,13 @@ public class RegisterSponsorshipAgreementDTO {
     private Integer agreementId; // Matches agreement_id in Agreement table
     private Integer editionId; // Matches edition_id in Agreement table
     private Integer sponsorId; // Matches sponsor_id in Agreement table
-    private String negotiator; // Matches negotiator in Agreement table
+	private Integer gbMemberId;
     private String contactWorker; // Matches contact_worker in Agreement table
     private String contactNumber; // Matches contact_number in Agreement table
     private String contactEmail; // Matches contact_email in Agreement table
     private LocalDate agreementDate; // Matches agreement_date in Agreement table
     private Double agreementAmount; // Matches agreement_amount in Agreement table
     private String agreementStatus; // Matches agreement_status in Agreement table
-    
     private String editionTitle;
     private String sponsorName;
 	
@@ -31,9 +30,9 @@ public class RegisterSponsorshipAgreementDTO {
 
     public Integer getSponsorId() { return sponsorId; }
     public void setSponsorId(Integer sponsorId) { this.sponsorId = sponsorId; }
-
-    public String getNegotiator() { return negotiator; }
-    public void setNegotiator(String negotiator) { this.negotiator = negotiator; }
+    
+    public Integer getGbMemberId() { return gbMemberId; }
+	public void setGbMemberId(Integer gbMemberId) { this.gbMemberId = gbMemberId; }
 
     public String getContactWorker() { return contactWorker; }
     public void setContactWorker(String contactWorker) { this.contactWorker = contactWorker; }

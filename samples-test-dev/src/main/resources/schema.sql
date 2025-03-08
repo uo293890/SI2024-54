@@ -5,6 +5,7 @@ DROP TABLE Agreement;
 DROP TABLE Sponsor;
 DROP TABLE Edition;
 DROP TABLE Event;
+DROP TABLE GBMember
 
 CREATE TABLE IF NOT EXISTS Event (
     event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,4 +70,8 @@ CREATE TABLE IF NOT EXISTS Movement (
     movement_amount     DOUBLE NOT NULL,
     FOREIGN KEY (otherie_id) REFERENCES Otherie(otherie_id),
     FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
+);
+
+CREATE TABLE IF NOT EXISTS GBMember (
+	gbmember_id 		INTEGER PRIMARY KEY AUTOINCREMENT
 );

@@ -24,13 +24,16 @@ public class RegisterSponsorshipAgreementController {
                 // Set fields from the view
                 dto.setEditionId(view.getEventComboBox().getSelectedIndex() + 1); // Assuming edition_id is based on index
                 dto.setSponsorId(view.getSponsorComboBox().getSelectedIndex() + 1); // Assuming sponsor_id is based on index
-                dto.setNegotiator(view.getNegotiatorField().getText());
+                dto.setGbMemberId(view.getGBMemberComboBox().getSelectedIndex() + 1);
                 dto.setContactWorker(view.getContactWorkerField().getText());
                 dto.setContactNumber(view.getContactNumberField().getText());
                 dto.setContactEmail(view.getContactEmailField().getText());
                 dto.setAgreementDate(java.time.LocalDate.parse(view.getAgreementDateField().getText()));
                 dto.setAgreementAmount(Double.parseDouble(view.getAgreedAmountField().getText()));
                 dto.setAgreementStatus("Estimated"); // Default status
+                
+                if (dto.getAgreementDate().equals(null))
+                	view.showError("date is blank");
 
                 // Register the agreement
                 model.registerSponsorshipAgreement(dto);

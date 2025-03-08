@@ -34,13 +34,6 @@ public class RegisterSponsorshipAgreementModel {
     }
 
     /**
-     * Fetches all negotiators from the database.
-     */
-    public List<RegisterSponsorshipAgreementDTO> getAllNegotiators() {
-        return db.executeQueryPojo(RegisterSponsorshipAgreementDTO.class, SQL_GET_NEGOTIATORS);
-    }
-
-    /**
      * Registers a new sponsorship agreement in the database.
      */
     public void registerSponsorshipAgreement(RegisterSponsorshipAgreementDTO dto) {
@@ -49,7 +42,7 @@ public class RegisterSponsorshipAgreementModel {
         db.executeUpdate(sql, 
             dto.getEditionId(), 
             dto.getSponsorId(), 
-            dto.getNegotiator(), 
+            dto.getGbMemberId(), 
             dto.getContactWorker(), 
             dto.getContactNumber(), 
             dto.getContactEmail(), 
