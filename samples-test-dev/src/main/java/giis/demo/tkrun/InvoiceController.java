@@ -191,7 +191,7 @@ public class InvoiceController {
                     view.getInvoiceDate(),
                     "");
             
-            addInvoiceToTables(invoice);
+            //addInvoiceToTables(invoice);
             loadAvailableIds();
             
         } catch (Exception ex) {
@@ -199,7 +199,7 @@ public class InvoiceController {
         }
     }
     
-    private void addInvoiceToTables(InvoiceDTO invoice) {
+    /*private void addInvoiceToTables(InvoiceDTO invoice) {
         // Tabla de facturas generadas
         view.addInvoiceToTable(
             invoice.getInvoiceNumber(),
@@ -212,7 +212,7 @@ public class InvoiceController {
         );
         
         // Tabla de IDs disponibles (se actualiza automáticamente con loadAvailableIds)
-    }
+    }*/
 
     private void sendInvoice() {
         try {
