@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class ReportController {
     private ReportModel model;
@@ -15,16 +16,13 @@ public class ReportController {
         this.model = model;
         this.view = view;
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        initView();
         initController();
-    }
-
-    private void initView() {
         view.setVisible(true);
     }
 
     private void initController() {
-        view.getGenerateButton().addActionListener(new ActionListener() {
+        view.getConsultarButton().addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 generateReport();
             }
@@ -35,17 +33,17 @@ public class ReportController {
         try {
             Date startUtil = dateFormat.parse(view.getStartDate());
             Date endUtil = dateFormat.parse(view.getEndDate());
-            System.out.println("Fechas parseadas: " + startUtil + " - " + endUtil);
-            
+
+            // Convertimos a java.sql.Date para la consulta en la base de datos
             java.sql.Date start = new java.sql.Date(startUtil.getTime());
             java.sql.Date end = new java.sql.Date(endUtil.getTime());
-            
-            java.util.List<ReportDTO> report = model.getFinancialReport(start, end, view.getStatus());
-            System.out.println("Tamaño del reporte: " + report.size());
+
+            // Se obtiene el filtro de estado; si se selecciona "Todos", se ignora el filtro.
+            String status = view.getStatus();
+            List<ReportDTO> report = model.getFinancialReport(start, end, status);
             view.updateTable(report);
         } catch (ParseException ex) {
             view.showError("Formato de fecha inválido (Utiliza dd/MM/yyyy)");
-            ex.printStackTrace();
         }
     }
 }

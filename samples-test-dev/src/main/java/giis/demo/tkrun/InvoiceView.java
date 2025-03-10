@@ -29,7 +29,7 @@ public class InvoiceView extends JFrame {
     private DefaultTableModel availableIdsTableModel;
 
     public InvoiceView() {
-        setTitle("Generar y Enviar Facturas");
+        setTitle("Generate and Send Invoices");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(900, 700);
         setLocationRelativeTo(null);
@@ -43,65 +43,65 @@ public class InvoiceView extends JFrame {
 
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Generar y Enviar Facturas a Patrocinadores"));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Generate and Send Invoices to Sponsors"));
 
         txtInvoiceNumber = new JTextField();
         txtInvoiceNumber.setPreferredSize(new Dimension(200, 30));
         txtInvoiceNumber.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtInvoiceNumber.setToolTipText("ID de la Factura (puede ingresarse manualmente o seleccionarse de la tabla)");
+        txtInvoiceNumber.setToolTipText("Invoice ID (can be entered manually or selected from the table)");
 
         txtRecipientName = new JTextField();
         txtRecipientName.setPreferredSize(new Dimension(200, 30));
         txtRecipientName.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtRecipientName.setToolTipText("Nombre del Destinatario");
+        txtRecipientName.setToolTipText("Recipient Name");
 
         txtRecipientTaxId = new JTextField();
         txtRecipientTaxId.setPreferredSize(new Dimension(200, 30));
         txtRecipientTaxId.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtRecipientTaxId.setToolTipText("NIF/CIF del destinatario");
+        txtRecipientTaxId.setToolTipText("Recipient NIF/CIF");
 
         txtRecipientAddress = new JTextField();
         txtRecipientAddress.setPreferredSize(new Dimension(200, 30));
         txtRecipientAddress.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtRecipientAddress.setToolTipText("Dirección Fiscal del destinatario");
+        txtRecipientAddress.setToolTipText("Recipient Fiscal Address");
 
         txtContactEmail = new JTextField();
         txtContactEmail.setPreferredSize(new Dimension(200, 30));
         txtContactEmail.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtContactEmail.setToolTipText("Correo Electrónico de Contacto");
+        txtContactEmail.setToolTipText("Contact Email");
 
         txtInvoiceDate = new JTextField();
         txtInvoiceDate.setPreferredSize(new Dimension(200, 30));
         txtInvoiceDate.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtInvoiceDate.setToolTipText("Fecha de la Factura (dd/MM/yyyy)");
+        txtInvoiceDate.setToolTipText("Invoice Date (dd/MM/yyyy)");
 
         txtEventDate = new JTextField();
         txtEventDate.setPreferredSize(new Dimension(200, 30));
         txtEventDate.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtEventDate.setToolTipText("Fecha del Evento (dd/MM/yyyy) - Opcional");
+        txtEventDate.setToolTipText("Event Date (dd/MM/yyyy) - Optional");
 
         txtAgreementId = new JTextField();
         txtAgreementId.setPreferredSize(new Dimension(200, 30));
         txtAgreementId.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtAgreementId.setToolTipText("ID del Acuerdo");
+        txtAgreementId.setToolTipText("Agreement ID");
 
         txtInvoiceVat = new JTextField();
         txtInvoiceVat.setPreferredSize(new Dimension(200, 30));
         txtInvoiceVat.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        txtInvoiceVat.setToolTipText("IVA de la Factura");
+        txtInvoiceVat.setToolTipText("Invoice VAT");
 
-        btnGenerate = new JButton("Generar/Registrar Factura");
-        btnSend = new JButton("Mandar Factura");
+        btnGenerate = new JButton("Generate/Register Invoice");
+        btnSend = new JButton("Send Invoice");
 
-        formPanel.add(createFieldPanel("ID de la Factura:", txtInvoiceNumber));
-        formPanel.add(createFieldPanel("Nombre del Destinatario:", txtRecipientName));
+        formPanel.add(createFieldPanel("Invoice ID:", txtInvoiceNumber));
+        formPanel.add(createFieldPanel("Recipient Name:", txtRecipientName));
         formPanel.add(createFieldPanel("NIF/CIF:", txtRecipientTaxId));
-        formPanel.add(createFieldPanel("Dirección Fiscal:", txtRecipientAddress));
-        formPanel.add(createFieldPanel("Correo Electrónico:", txtContactEmail));
-        formPanel.add(createFieldPanel("Fecha de Factura:", txtInvoiceDate));
-        formPanel.add(createFieldPanel("Fecha del Evento (Opcional):", txtEventDate));
-        formPanel.add(createFieldPanel("ID del Acuerdo:", txtAgreementId));
-        formPanel.add(createFieldPanel("IVA de la Factura:", txtInvoiceVat));
+        formPanel.add(createFieldPanel("Fiscal Address:", txtRecipientAddress));
+        formPanel.add(createFieldPanel("Contact Email:", txtContactEmail));
+        formPanel.add(createFieldPanel("Invoice Date:", txtInvoiceDate));
+        formPanel.add(createFieldPanel("Event Date (Optional):", txtEventDate));
+        formPanel.add(createFieldPanel("Agreement ID:", txtAgreementId));
+        formPanel.add(createFieldPanel("Invoice VAT:", txtInvoiceVat));
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonsPanel.add(btnGenerate);
@@ -109,23 +109,21 @@ public class InvoiceView extends JFrame {
         formPanel.add(buttonsPanel);
 
         JPanel invoicesPanel = new JPanel(new BorderLayout());
-        invoicesPanel.setBorder(BorderFactory.createTitledBorder("Facturas Generadas"));
+        invoicesPanel.setBorder(BorderFactory.createTitledBorder("Generated Invoices"));
         invoicesTableModel = new DefaultTableModel(new Object[]{
-                "ID Factura", "Nombre", "NIF/CIF", "Dirección", "Correo Electrónico", "Fecha Factura", "Fecha Envío", "Acciones"
+                "Invoice ID", "Name", "NIF/CIF", "Address", "Contact Email", "Invoice Date", "Sent Date", "Actions"
         }, 0);
         invoicesTable = new JTable(invoicesTableModel);
         JScrollPane invoicesScroll = new JScrollPane(invoicesTable);
         invoicesPanel.add(invoicesScroll, BorderLayout.CENTER);
 
         JPanel idsPanel = new JPanel(new BorderLayout());
-        idsPanel.setBorder(BorderFactory.createTitledBorder("ID Disponibles (Vista tipo Excel)"));
-        availableIdsTableModel = new DefaultTableModel(new Object[]{"ID", "Descripción"}, 0);
+        idsPanel.setBorder(BorderFactory.createTitledBorder("Available IDs (Excel-like View)"));
+        availableIdsTableModel = new DefaultTableModel(new Object[]{"ID", "Description"}, 0);
         availableIdsTable = new JTable(availableIdsTableModel);
-        // Se elimina la carga estática de datos para que se actualice de forma dinámica.
         JScrollPane idsScroll = new JScrollPane(availableIdsTable);
         idsPanel.add(idsScroll, BorderLayout.CENTER);
 
-        // Al seleccionar una fila, se establece el ID en el campo de la factura.
         availableIdsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -236,7 +234,7 @@ public class InvoiceView extends JFrame {
     }
 
     public void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "Información", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void showError(String message) {
