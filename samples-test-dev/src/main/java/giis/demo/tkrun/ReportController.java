@@ -1,49 +1,48 @@
 package giis.demo.tkrun;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReportController {
     private ReportModel model;
     private ReportView view;
-    private SimpleDateFormat dateFormat;
 
     public ReportController(ReportModel model, ReportView view) {
         this.model = model;
         this.view = view;
-        this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        initController();
-        view.setVisible(true);
+        initializeController();
     }
 
-    private void initController() {
-        view.getConsultarButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                generateReport();
-            }
-        });
+    private void initializeController() {
+        updateView();
+        view.getGoBackButton().addActionListener(e -> view.dispose());
+        view.getConsultButton().addActionListener(e -> updateView());
     }
 
-    private void generateReport() {
-        try {
-            Date startUtil = dateFormat.parse(view.getStartDate());
-            Date endUtil = dateFormat.parse(view.getEndDate());
+    private void updateView() {
+        String startDate = view.getStartDate();
+        String endDate = view.getEndDate();
+        String status = view.getStatus();
+        
+        List<ReportDTO> reports = model.getFinancialReport(startDate, endDate, status);
+        List<Object[]> dataActivities = new ArrayList<>();
 
-            // Convertimos a java.sql.Date para la consulta en la base de datos
-            java.sql.Date start = new java.sql.Date(startUtil.getTime());
-            java.sql.Date end = new java.sql.Date(endUtil.getTime());
-
-            // Se obtiene el filtro de estado; si se selecciona "Todos", se ignora el filtro.
-            String status = view.getStatus();
-            List<ReportDTO> report = model.getFinancialReport(start, end, status);
-            view.updateTable(report);
-        } catch (ParseException ex) {
-            view.showError("Formato de fecha inválido (Utiliza dd/MM/yyyy)");
+        for (ReportDTO dto : reports) {
+            dataActivities.add(new Object[]{
+                dto.getId(),
+                dto.getActivityName(),
+                dto.getStatus(),
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getEstimatedIncome(),
+                dto.getEstimatedExpenses(),
+                dto.getActualIncome(),
+                dto.getActualExpenses(),
+                dto.getEstimatedBalance(),
+                dto.getActualBalance()
+            });
         }
+
+        view.updateActivitiesTable(dataActivities);
     }
 }
