@@ -9,9 +9,8 @@ public class RegisterSponsorshipAgreementModel {
     // SQL Queries
     private static final String SQL_GET_EDITIONS = "SELECT edition_id AS editionId, edition_title AS editionTitle FROM Edition;";
     private static final String SQL_GET_SPONSORS = "SELECT sponsor_id AS sponsorId, sponsor_name AS sponsorName FROM Sponsor;";
-    private static final String SQL_GET_GBMEMBERS = ";";
-    private static final String SQL_GET_NEGOTIATORS = "SELECT DISTINCT negotiator FROM Agreement;";
-
+    private static final String SQL_GET_GBMEMBERS = "SELECT gbmember_id AS gbMemberId, gbmember_name AS gbMemberName FROM GBMember;";
+    
     /**
      * Fetches all editions from the database.
      */
@@ -27,7 +26,7 @@ public class RegisterSponsorshipAgreementModel {
     }
     
     /**
-     * Fetches all gb members from the database.
+     * Fetches all gbmembers from the database.
      */
     public List<RegisterSponsorshipAgreementDTO> getAllGBMembers() {
         return db.executeQueryPojo(RegisterSponsorshipAgreementDTO.class, SQL_GET_GBMEMBERS);
@@ -37,7 +36,7 @@ public class RegisterSponsorshipAgreementModel {
      * Registers a new sponsorship agreement in the database.
      */
     public void registerSponsorshipAgreement(RegisterSponsorshipAgreementDTO dto) {
-        String sql = "INSERT INTO Agreement (edition_id, sponsor_id, negotiator, contact_worker, contact_number, contact_email, agreement_date, agreement_amount, agreement_status) " +
+        String sql = "INSERT INTO Agreement (edition_id, sponsor_id, gbmember_id, contact_worker, contact_number, contact_email, agreement_date, agreement_amount, agreement_status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         db.executeUpdate(sql, 
             dto.getEditionId(), 

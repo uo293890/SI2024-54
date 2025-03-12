@@ -5,7 +5,7 @@ DROP TABLE Agreement;
 DROP TABLE Sponsor;
 DROP TABLE Edition;
 DROP TABLE Event;
-DROP TABLE GBMember
+DROP TABLE GBMember;
 
 CREATE TABLE IF NOT EXISTS Event (
     event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,15 +27,16 @@ CREATE TABLE IF NOT EXISTS Agreement (
     agreement_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     edition_id         INTEGER NOT NULL,
     sponsor_id         INTEGER NOT NULL,
-    negotiator         TEXT NOT NULL,
-    contact_worker     TEXT NOT NULL,
+    gbmember_id        TEXT NOT NULL,
+    contact_name     TEXT NOT NULL,
     contact_number     TEXT NOT NULL CHECK(contact_number LIKE '+%'),
     contact_email      TEXT NOT NULL CHECK(contact_email LIKE '%@%'),
     agreement_date     DATE NOT NULL,
     agreement_amount   DOUBLE NOT NULL,
     agreement_status   TEXT DEFAULT 'Estimated',
     FOREIGN KEY (edition_id) REFERENCES Edition(edition_id),
-    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id)
+    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id),
+    FOREIGN KEY (gbmember_id) REFERENCES GBMember(gbmember_id)
 );
 
 CREATE TABLE IF NOT EXISTS Sponsor (
@@ -73,5 +74,6 @@ CREATE TABLE IF NOT EXISTS Movement (
 );
 
 CREATE TABLE IF NOT EXISTS GBMember (
-	gbmember_id 		INTEGER PRIMARY KEY AUTOINCREMENT
+	gbmember_id 		INTEGER PRIMARY KEY AUTOINCREMENT,
+	gbmember_name		TEXT NOT NULL
 );

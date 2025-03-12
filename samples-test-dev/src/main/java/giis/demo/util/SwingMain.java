@@ -81,9 +81,9 @@ public class SwingMain {
         });
         panel.add(btnCargarDatosIniciales, "grow, wrap");
         
-     // Botón para Sponsorship Agreement Registration
-        JButton btnSponsorshipAgreementRegistration = new JButton("Sponsorship Agreement Registration");
-        btnSponsorshipAgreementRegistration.addActionListener(new ActionListener() {
+     // Botón para Register Sponsorship Agreement
+        JButton btnRegisterSponsorshipAgreement = new JButton("Register Sponsorship Agreement");
+        btnRegisterSponsorshipAgreement.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RegisterSponsorshipAgreementModel model = new RegisterSponsorshipAgreementModel();
@@ -92,7 +92,7 @@ public class SwingMain {
                 view.setVisible(true);
             }
         });
-        panel.add(btnSponsorshipAgreementRegistration, "grow, wrap");
+        panel.add(btnRegisterSponsorshipAgreement, "grow, wrap");
         
      // Botón para Activity Financial Status
         JButton btnActivityFinancialStatus = new JButton("Activity Financial Status");

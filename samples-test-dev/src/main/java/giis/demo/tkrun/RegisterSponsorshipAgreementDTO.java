@@ -7,6 +7,7 @@ public class RegisterSponsorshipAgreementDTO {
     private Integer editionId; // Matches edition_id in Agreement table
     private Integer sponsorId; // Matches sponsor_id in Agreement table
 	private Integer gbMemberId;
+	private String gbMemberName;
     private String contactWorker; // Matches contact_worker in Agreement table
     private String contactNumber; // Matches contact_number in Agreement table
     private String contactEmail; // Matches contact_email in Agreement table
@@ -33,6 +34,9 @@ public class RegisterSponsorshipAgreementDTO {
     
     public Integer getGbMemberId() { return gbMemberId; }
 	public void setGbMemberId(Integer gbMemberId) { this.gbMemberId = gbMemberId; }
+	
+	public String getGbMemberName() { return gbMemberName; }
+	public void setGbMemberName(String gbMemberName) { this.gbMemberName = gbMemberName; }
 
     public String getContactWorker() { return contactWorker; }
     public void setContactWorker(String contactWorker) { this.contactWorker = contactWorker; }

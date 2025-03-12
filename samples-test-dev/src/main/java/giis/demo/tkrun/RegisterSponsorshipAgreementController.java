@@ -57,5 +57,11 @@ public class RegisterSponsorshipAgreementController {
         for (RegisterSponsorshipAgreementDTO sponsor : sponsors) {
             view.getSponsorComboBox().addItem(sponsor.getSponsorName());
         }
+        
+     // Populate the gbmember combo box with gbmember names
+        List<RegisterSponsorshipAgreementDTO> gbmembers = model.getAllGBMembers();
+        for (RegisterSponsorshipAgreementDTO gbmember : gbmembers) {
+            view.getGBMemberComboBox().addItem(gbmember.getGbMemberName());
+        }
     }
 }

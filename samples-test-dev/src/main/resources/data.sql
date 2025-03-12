@@ -14,7 +14,7 @@ VALUES
 ('Caja Rural de Asturias'), 
 ('CCII');
 
-INSERT INTO Agreement (edition_id, sponsor_id, negotiator, contact_worker, contact_number, contact_email, agreement_date, agreement_amount, agreement_status) 
+INSERT INTO Agreement (edition_id, sponsor_id, gbmember_id, contact_name, contact_number, contact_email, agreement_date, agreement_amount, agreement_status) 
 VALUES 
 (1, 1, 'John Doe', 'Maria Perez', '+34987654321', 'maria.perez@cajarural.com', '2024-10-01', 3000, 'Paid'),
 (3, 1, 'John Doe', 'Maria Perez', '+34987654321', 'maria.perez@cajarural.com', '2025-03-01', 750, 'Agreed');
@@ -31,3 +31,8 @@ INSERT INTO Movement (otherie_id, invoice_id, movement_date, movement_concept, m
 VALUES
 (1, NULL, '2024-11-16', 'Payment for communication services', 6000),
 (2, NULL, '2024-11-16', 'Grant received from CCII', 1000);
+
+INSERT INTO GBMember (gbmember_id, gbmember_name)
+VALUES
+(1, 'Dean')
+(2, 'Alexander')
