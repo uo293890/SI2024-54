@@ -1,11 +1,13 @@
 package giis.demo.tkrun;
 
-import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
+import java.awt.event.*;
 
 public class ReportController {
     private ReportModel model;
     private ReportView view;
+    private List<ReportDTO> currentData;
 
     public ReportController(ReportModel model, ReportView view) {
         this.model = model;
@@ -14,35 +16,46 @@ public class ReportController {
     }
 
     private void initializeController() {
-        updateView();
+        refreshReportData();
         view.getGoBackButton().addActionListener(e -> view.dispose());
-        view.getConsultButton().addActionListener(e -> updateView());
+        view.getConsultButton().addActionListener(e -> refreshReportData());
+        view.getExportExcelButton().addActionListener(e -> exportToExcel());
+        view.getExportPDFButton().addActionListener(e -> exportToPDF());
+        view.getPreviewButton().addActionListener(e -> previewReport());
     }
 
-    private void updateView() {
+    private void refreshReportData() {
         String startDate = view.getStartDate();
         String endDate = view.getEndDate();
         String status = view.getStatus();
         
-        List<ReportDTO> reports = model.getFinancialReport(startDate, endDate, status);
-        List<Object[]> dataActivities = new ArrayList<>();
+        currentData = model.getFinancialReport(startDate, endDate, status);
+        view.updateActivitiesTable(currentData);
+        updateTotals();
+    }
 
-        for (ReportDTO dto : reports) {
-            dataActivities.add(new Object[]{
-                dto.getId(),
-                dto.getActivityName(),
-                dto.getStatus(),
-                dto.getStartDate(),
-                dto.getEndDate(),
-                dto.getEstimatedIncome(),
-                dto.getEstimatedExpenses(),
-                dto.getActualIncome(),
-                dto.getActualExpenses(),
-                dto.getEstimatedBalance(),
-                dto.getActualBalance()
-            });
+    private void updateTotals() {
+        double totalEstimatedIncome = 0, totalEstimatedExpenses = 0, totalActualIncome = 0, totalActualExpenses = 0;
+        for (ReportDTO dto : currentData) {
+            totalEstimatedIncome += dto.getEstimatedIncome();
+            totalEstimatedExpenses += dto.getEstimatedExpenses();
+            totalActualIncome += dto.getActualIncome();
+            totalActualExpenses += dto.getActualExpenses();
         }
+        double totalEstimatedBalance = totalEstimatedIncome - totalEstimatedExpenses;
+        double totalActualBalance = totalActualIncome - totalActualExpenses;
+        view.updateTotals(totalEstimatedIncome, totalEstimatedExpenses, totalEstimatedBalance, totalActualIncome, totalActualExpenses, totalActualBalance);
+    }
 
-        view.updateActivitiesTable(dataActivities);
+    private void exportToExcel() {
+        JOptionPane.showMessageDialog(view, "Funcionalidad de exportación a Excel aún no implementada.", "Exportar Excel", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void exportToPDF() {
+        JOptionPane.showMessageDialog(view, "Funcionalidad de exportación a PDF aún no implementada.", "Exportar PDF", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void previewReport() {
+        JOptionPane.showMessageDialog(view, "Vista previa del reporte aún no implementada.", "Vista Previa", JOptionPane.INFORMATION_MESSAGE);
     }
 }

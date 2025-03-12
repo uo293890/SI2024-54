@@ -3,34 +3,30 @@ package giis.demo.tkrun;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.util.List;
 
 public class ReportView extends JFrame {
-
-    private JTable tableActivities, tableSponsorships, tableIncome, tableExpenses;
-    private DefaultTableModel modelActivities, modelSponsorships, modelIncome, modelExpenses;
+    private JTable tableActivities;
+    private DefaultTableModel modelActivities;
     private JLabel lblEstIncome, lblEstExpenses, lblEstBalance;
     private JLabel lblPaidIncome, lblPaidExpenses, lblPaidBalance;
-    private JLabel lblSponsorEst, lblSponsorAct, lblIncomeEst, lblIncomeAct, lblExpensesEst, lblExpensesAct;
-    private JButton btnGoBack, btnConsult;
+    private JButton btnGoBack, btnConsult, btnExportExcel, btnExportPDF, btnPreview;
     private JTextField txtStartDate, txtEndDate;
     private JComboBox<String> cmbStatus;
+    private JPanel totalsPanel;
 
     public ReportView() {
-        setTitle("Consult Status Activity");
+        setTitle("Financial Report - Activities Overview");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(1100, 750);
+        setSize(1300, 800);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
         initComponents();
     }
 
     private void initComponents() {
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setContentPane(mainPanel);
-
-        // Filters Panel
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         filterPanel.setBorder(new TitledBorder("Filters"));
 
@@ -49,108 +45,114 @@ public class ReportView extends JFrame {
         btnConsult = new JButton("Consult");
         filterPanel.add(btnConsult);
         
-        mainPanel.add(filterPanel, BorderLayout.NORTH);
+        add(filterPanel, BorderLayout.NORTH);
 
-        // Activity Table Panel
-        JPanel activityPanel = new JPanel(new BorderLayout());
-        activityPanel.setBorder(new TitledBorder("Select an Activity"));
-        modelActivities = new DefaultTableModel(new Object[]{"ID", "Name", "Status", "Start Date", "End Date"}, 0);
-        tableActivities = new JTable(modelActivities);
-        activityPanel.add(new JScrollPane(tableActivities), BorderLayout.CENTER);
-        mainPanel.add(activityPanel, BorderLayout.CENTER);
-
-        // Financial Details Panel
-        JPanel financePanel = new JPanel(new GridLayout(1, 3, 10, 10));
-        financePanel.setBorder(new TitledBorder("Financial Details"));
-
-        modelSponsorships = new DefaultTableModel(new Object[]{"Amount", "Sponsor", "Status", "Date"}, 0);
-        tableSponsorships = new JTable(modelSponsorships);
-        JPanel sponsorshipPanel = new JPanel(new BorderLayout());
-        sponsorshipPanel.setBorder(new TitledBorder("Sponsorships"));
-        sponsorshipPanel.add(new JScrollPane(tableSponsorships), BorderLayout.CENTER);
-        financePanel.add(sponsorshipPanel);
-
-        modelIncome = new DefaultTableModel(new Object[]{"Amount", "Concept", "Status", "Date"}, 0);
-        tableIncome = new JTable(modelIncome);
-        JPanel incomePanel = new JPanel(new BorderLayout());
-        incomePanel.setBorder(new TitledBorder("Income"));
-        incomePanel.add(new JScrollPane(tableIncome), BorderLayout.CENTER);
-        financePanel.add(incomePanel);
-
-        modelExpenses = new DefaultTableModel(new Object[]{"Amount", "Concept", "Status", "Date"}, 0);
-        tableExpenses = new JTable(modelExpenses);
-        JPanel expensesPanel = new JPanel(new BorderLayout());
-        expensesPanel.setBorder(new TitledBorder("Expenses"));
-        expensesPanel.add(new JScrollPane(tableExpenses), BorderLayout.CENTER);
-        financePanel.add(expensesPanel);
-
-        mainPanel.add(financePanel, BorderLayout.SOUTH);
-
-        // Totals Panel
-        JPanel totalsPanel = new JPanel(new GridLayout(3, 4, 10, 10));
-        totalsPanel.setBorder(new TitledBorder("Totals"));
+        JPanel centerPanel = new JPanel(new GridLayout(1, 2, 10, 10));
         
-        lblEstIncome = new JLabel("0.0");
-        lblEstExpenses = new JLabel("0.0");
-        lblEstBalance = new JLabel("0.0");
-        lblPaidIncome = new JLabel("0.0");
-        lblPaidExpenses = new JLabel("0.0");
-        lblPaidBalance = new JLabel("0.0");
-        lblSponsorEst = new JLabel("0.0");
-        lblSponsorAct = new JLabel("0.0");
-        lblIncomeEst = new JLabel("0.0");
-        lblIncomeAct = new JLabel("0.0");
-        lblExpensesEst = new JLabel("0.0");
-        lblExpensesAct = new JLabel("0.0");
+        JPanel activityPanel = new JPanel(new BorderLayout());
+        activityPanel.setBorder(new TitledBorder("Activities"));
+        modelActivities = new DefaultTableModel(new Object[]{"ID", "Name", "Status", "Start Date", "End Date", "Est. Income", "Est. Expenses", "Act. Income", "Act. Expenses", "Est. Balance", "Act. Balance"}, 0);
+        tableActivities = new JTable(modelActivities);
+        JScrollPane scrollPane = new JScrollPane(tableActivities);
+        activityPanel.add(scrollPane, BorderLayout.CENTER);
+        ReportModel.applyColorToTable(tableActivities);
 
+        centerPanel.add(activityPanel);
+        
+        totalsPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        totalsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2), "Financial Overview"));
+        
         totalsPanel.add(new JLabel("Estimated Income:"));
+        lblEstIncome = createStyledLabel();
         totalsPanel.add(lblEstIncome);
-        totalsPanel.add(new JLabel("Actual Income:"));
-        totalsPanel.add(lblPaidIncome);
         
         totalsPanel.add(new JLabel("Estimated Expenses:"));
+        lblEstExpenses = createStyledLabel();
         totalsPanel.add(lblEstExpenses);
-        totalsPanel.add(new JLabel("Actual Expenses:"));
-        totalsPanel.add(lblPaidExpenses);
         
         totalsPanel.add(new JLabel("Estimated Balance:"));
+        lblEstBalance = createStyledLabel();
         totalsPanel.add(lblEstBalance);
+        
+        totalsPanel.add(new JLabel("Actual Income:"));
+        lblPaidIncome = createStyledLabel();
+        totalsPanel.add(lblPaidIncome);
+        
+        totalsPanel.add(new JLabel("Actual Expenses:"));
+        lblPaidExpenses = createStyledLabel();
+        totalsPanel.add(lblPaidExpenses);
+        
         totalsPanel.add(new JLabel("Actual Balance:"));
+        lblPaidBalance = createStyledLabel();
         totalsPanel.add(lblPaidBalance);
         
-        mainPanel.add(totalsPanel, BorderLayout.EAST);
+        centerPanel.add(totalsPanel);
+        add(centerPanel, BorderLayout.CENTER);
 
-        // Back Button
-        btnGoBack = new JButton("Go back");
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(btnGoBack);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        btnGoBack = new JButton("Go Back");
+        btnExportExcel = new JButton("Export to Excel");
+        btnExportPDF = new JButton("Export to PDF");
+        btnPreview = new JButton("Preview");
+        
+       
+        actionPanel.add(btnGoBack);
+        add(actionPanel, BorderLayout.SOUTH);
     }
 
-    public JButton getGoBackButton() {
-        return btnGoBack;
+    private JLabel createStyledLabel() {
+        JLabel label = new JLabel("0.0", SwingConstants.RIGHT);
+        label.setFont(new Font("Arial", Font.BOLD, 14));
+        return label;
     }
 
-    public JButton getConsultButton() {
-        return btnConsult;
-    }
-
-    public String getStartDate() {
-        return txtStartDate.getText();
-    }
-
-    public String getEndDate() {
-        return txtEndDate.getText();
-    }
-
+    public JButton getGoBackButton() { return btnGoBack; }
+    public JButton getConsultButton() { return btnConsult; }
+    public JButton getExportExcelButton() { return btnExportExcel; }
+    public JButton getExportPDFButton() { return btnExportPDF; }
+    public JButton getPreviewButton() { return btnPreview; }
+    public String getStartDate() { return txtStartDate.getText(); }
+    public String getEndDate() { return txtEndDate.getText(); }
     public String getStatus() {
         return (String) cmbStatus.getSelectedItem();
     }
 
-    public void updateActivitiesTable(List<Object[]> data) {
-        modelActivities.setRowCount(0);
-        for (Object[] row : data) {
-            modelActivities.addRow(row);
+    public void updateActivitiesTable(List<ReportDTO> data) {
+        System.out.println("Updating table with " + data.size() + " records.");
+        modelActivities.setRowCount(0);  // Limpiar tabla antes de agregar nuevas filas
+        for (ReportDTO dto : data) {
+            System.out.println("Adding to table: " + dto.getId() + " - " + dto.getActivityName() + " - " + dto.getStatus());
+            modelActivities.addRow(new Object[]{
+                dto.getId(),
+                dto.getActivityName(),
+                dto.getStatus(),
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getEstimatedIncome(),
+                dto.getEstimatedExpenses(),
+                dto.getActualIncome(),
+                dto.getActualExpenses(),
+                dto.getEstimatedBalance(),
+                dto.getActualBalance()
+            });
         }
+    }
+
+
+    public void updateTotals(double estIncome, double estExpenses, double estBalance, 
+            double actIncome, double actExpenses, double actBalance) {
+    		lblEstIncome.setText(String.format("%.2f", estIncome));
+    		lblEstExpenses.setText(String.format("%.2f", estExpenses));
+    		lblEstBalance.setText(String.format("%.2f", estBalance));
+    		lblPaidIncome.setText(String.format("%.2f", actIncome));
+    		lblPaidExpenses.setText(String.format("%.2f", actExpenses));
+    		lblPaidBalance.setText(String.format("%.2f", actBalance));
+
+    		ReportModel.applyColorToFinancialOverview(lblEstIncome, lblEstExpenses, lblEstBalance, lblPaidIncome, lblPaidExpenses, lblPaidBalance);
+    }
+
+
+    public TableModel getReportTableModel() {
+        return tableActivities.getModel();
     }
 }

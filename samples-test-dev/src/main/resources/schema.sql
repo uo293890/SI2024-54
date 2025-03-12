@@ -1,10 +1,11 @@
-DROP TABLE Movement;
-DROP TABLE Otherie;
-DROP TABLE Invoice;
-DROP TABLE Agreement;
-DROP TABLE Sponsor;
-DROP TABLE Edition;
-DROP TABLE Event;
+DROP TABLE IF EXISTS Movement;
+DROP TABLE IF EXISTS Otherie;
+DROP TABLE IF EXISTS Invoice;
+DROP TABLE IF EXISTS Agreement;
+DROP TABLE IF EXISTS Sponsor;
+DROP TABLE IF EXISTS Edition;
+DROP TABLE IF EXISTS Event;
+DROP TABLE IF EXISTS GBMember;
 
 CREATE TABLE IF NOT EXISTS Event (
     event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,24 +23,31 @@ CREATE TABLE IF NOT EXISTS Edition (
     FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
 
+CREATE TABLE IF NOT EXISTS Sponsor (
+    sponsor_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    sponsor_name       TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS GBMember (
+    gbmember_id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    gbmember_name      TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Agreement (
     agreement_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     edition_id         INTEGER NOT NULL,
     sponsor_id         INTEGER NOT NULL,
-    negotiator         TEXT NOT NULL,
-    contact_worker     TEXT NOT NULL,
+    gbmember_id        INTEGER NOT NULL,
+    contact_name       TEXT NOT NULL,
     contact_number     TEXT NOT NULL CHECK(contact_number LIKE '+%'),
     contact_email      TEXT NOT NULL CHECK(contact_email LIKE '%@%'),
     agreement_date     DATE NOT NULL,
     agreement_amount   DOUBLE NOT NULL,
     agreement_status   TEXT DEFAULT 'Estimated',
+    early_invoice_request DATE,
     FOREIGN KEY (edition_id) REFERENCES Edition(edition_id),
-    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id)
-);
-
-CREATE TABLE IF NOT EXISTS Sponsor (
-    sponsor_id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    sponsor_name       TEXT NOT NULL
+    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id),
+    FOREIGN KEY (gbmember_id) REFERENCES GBMember(gbmember_id)
 );
 
 CREATE TABLE IF NOT EXISTS Invoice (
@@ -51,10 +59,10 @@ CREATE TABLE IF NOT EXISTS Invoice (
     recipient_name     TEXT NOT NULL,
     recipient_tax_id   TEXT NOT NULL,
     recipient_address  TEXT NOT NULL,
-    contact_email      TEXT NOT NULL,
     sent_date          DATE,
     FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
 );
+
 CREATE TABLE IF NOT EXISTS Otherie (
     otherie_id          INTEGER PRIMARY KEY AUTOINCREMENT,
     edition_id          INTEGER NOT NULL,
