@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS Movement;
 DROP TABLE IF EXISTS Otherie;
+DROP TABLE IF EXISTS Payment;
 DROP TABLE IF EXISTS Invoice;
 DROP TABLE IF EXISTS Agreement;
 DROP TABLE IF EXISTS Sponsor;
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS Edition (
     edition_enddate    DATE,
     edition_location   TEXT,
     edition_status     TEXT DEFAULT 'Planned',
+    sponsorship_fee    DOUBLE NOT NULL CHECK (sponsorship_fee >= 0), 
     FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
 
@@ -42,7 +44,7 @@ CREATE TABLE IF NOT EXISTS Agreement (
     contact_number     TEXT NOT NULL CHECK(contact_number LIKE '+%'),
     contact_email      TEXT NOT NULL CHECK(contact_email LIKE '%@%'),
     agreement_date     DATE NOT NULL,
-    agreement_amount   DOUBLE NOT NULL,
+    agreement_amount   DOUBLE NOT NULL CHECK (agreement_amount >= 0), 
     agreement_status   TEXT DEFAULT 'Estimated',
     early_invoice_request DATE,
     FOREIGN KEY (edition_id) REFERENCES Edition(edition_id),
@@ -63,6 +65,15 @@ CREATE TABLE IF NOT EXISTS Invoice (
     FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
 );
 
+CREATE TABLE IF NOT EXISTS Payment (
+    payment_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    invoice_id         INTEGER,
+    payment_date       DATE NOT NULL,
+    payment_amount     DOUBLE NOT NULL CHECK (payment_amount >= 0),
+    payment_type       TEXT CHECK(payment_type IN ('Standard', 'Refund', 'Second Payment')) DEFAULT 'Standard', 
+    FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
+); 
+
 CREATE TABLE IF NOT EXISTS Otherie (
     otherie_id          INTEGER PRIMARY KEY AUTOINCREMENT,
     edition_id          INTEGER NOT NULL,
@@ -78,7 +89,9 @@ CREATE TABLE IF NOT EXISTS Movement (
     invoice_id          INTEGER,
     movement_date       DATE NOT NULL,
     movement_concept    TEXT NOT NULL,
-    movement_amount     DOUBLE NOT NULL,
+    movement_amount     DOUBLE NOT NULL CHECK (movement_amount >= 0),
+    payment_status      TEXT CHECK(payment_status IN ('Estimated', 'Paid', 'Compensation')) DEFAULT 'Estimated', 
+    movement_notes      TEXT, 
     FOREIGN KEY (otherie_id) REFERENCES Otherie(otherie_id),
     FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
 );

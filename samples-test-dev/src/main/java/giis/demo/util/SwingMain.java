@@ -112,9 +112,9 @@ public class SwingMain {
         btnReport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	ReportView reportView = new ReportView();
-                ReportModel reportModel = new ReportModel();
-                new ReportController(reportModel, reportView);
+            	FinancialReportView reportView = new FinancialReportView();
+                FinancialReportModel reportModel = new FinancialReportModel();
+                new FinancialReportController(reportModel, reportView);
                 reportView.setVisible(true);
             }
         });
