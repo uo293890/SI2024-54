@@ -2,84 +2,84 @@ package giis.demo.tkrun;
 
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 public class InvoiceController {
     private InvoiceModel model;
     private InvoiceView view;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public InvoiceController(InvoiceModel model, InvoiceView view) {
         this.model = model;
         this.view = view;
-        initView();
         initController();
-        scheduleAutomaticInvoices();
-    }
-
-    private void initView() {
-        view.setVisible(true);
+        loadActivities();
     }
 
     private void initController() {
-        view.getGenerateButton().addActionListener(e -> {
-            if (generateInvoice()) {
-                registerInvoice();
-            }
-        });
-        
+        view.getGenerateButton().addActionListener(e -> generateInvoice());
         view.getSendButton().addActionListener(e -> sendInvoice());
+        view.getActivityDropdown().addActionListener(e -> loadAgreementsForSelectedActivity());
     }
 
-    private boolean generateInvoice() {
+    private void loadActivities() {
         try {
-            String invoiceId = UUID.randomUUID().toString().substring(0, 9).toUpperCase();
-            view.setInvoiceNumber(invoiceId);
-            view.setInvoiceDate(dateFormat.format(new Date()));
-            return true;
-        } catch (Exception ex) {
-            view.showError("Error generating invoice: " + ex.getMessage());
-            return false;
+            List<List<Object>> activities = model.getAllEditions();
+            view.populateActivityDropdown(activities);
+        } catch (Exception e) {
+            view.showError("Error loading activities: " + e.getMessage());
         }
     }
 
-    private void registerInvoice() {
+    private void loadAgreementsForSelectedActivity() {
         try {
+            String selectedActivity = view.getSelectedActivity();
+            if (selectedActivity == null || selectedActivity.isEmpty()) {
+                return;
+            }
+            List<List<Object>> agreements = model.getAgreementsForActivity(selectedActivity);
+            view.populateAgreementTable(agreements);
+        } catch (Exception e) {
+            view.showError("Error loading agreements: " + e.getMessage());
+        }
+    }
+
+    private void generateInvoice() {
+        try {
+            String invoiceNumber = generateInvoiceNumber();
+            String issueDate = dateFormat.format(new Date());
+            String invoiceDate = view.getInvoiceDate();
+            double invoiceVat = Double.parseDouble(view.getInvoiceVat().trim());
+            String recipientName = view.getRecipientName();
+            String recipientTaxId = view.getRecipientTaxId();
+            String recipientAddress = view.getRecipientAddress();
             int agreementId = Integer.parseInt(view.getSelectedAgreement());
-            model.saveInvoice(
-                view.getInvoiceNumber().trim(),
-                agreementId,
-                new Date(),
-                Double.parseDouble(view.getInvoiceVat().trim()),
-                view.getRecipientName(),
-                view.getRecipientTaxId(),
-                view.getRecipientAddress()
-            );
-            
-            view.showMessage("Invoice registered successfully.");
-            view.loadInvoicesIntoTable(); // Refresh table
+
+            model.saveInvoice(invoiceNumber, agreementId, issueDate, invoiceDate, invoiceVat, recipientName, recipientTaxId, recipientAddress);
+
+            view.showMessage("Invoice generated successfully.");
+            view.removeSelectedAgreement(); // Remove from table after generating invoice
         } catch (Exception ex) {
-            view.showError("Error registering the invoice: " + ex.getMessage());
+            view.showError("Error generating invoice: " + ex.getMessage());
         }
     }
 
     private void sendInvoice() {
         try {
-            model.updateInvoiceSentDate(view.getInvoiceNumber().trim(), new Date());
-            view.showMessage("Invoice sent successfully on " + dateFormat.format(new Date()));
+            String invoiceNumber = view.getInvoiceNumber().trim();
+            String sentDate = dateFormat.format(new Date());
+
+            model.updateInvoiceSentDate(invoiceNumber, sentDate);
+            view.showMessage("Invoice sent successfully on " + sentDate);
+            view.removeSelectedAgreement(); // Remove from table after sending invoice
         } catch (Exception ex) {
-            view.showError("Error sending the invoice: " + ex.getMessage());
+            view.showError("Error sending invoice: " + ex.getMessage());
         }
     }
 
-    private void scheduleAutomaticInvoices() {
-        try {
-            model.generateAutomaticInvoices();
-        } catch (Exception ex) {
-            view.showError("Error scheduling automatic invoices: " + ex.getMessage());
-        }
+    private String generateInvoiceNumber() {
+        return String.valueOf(System.currentTimeMillis()).substring(4);
     }
 }
