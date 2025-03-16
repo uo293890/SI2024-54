@@ -95,7 +95,7 @@ public class SwingMain {
         panel.add(btnRegisterSponsorshipAgreement, "grow, wrap");
         
      // Botón para Activity Financial Status
-        JButton btnActivityFinancialStatus = new JButton("Activity Financial Status");
+        JButton btnActivityFinancialStatus = new JButton("Show Activity Financial Status");
         btnActivityFinancialStatus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

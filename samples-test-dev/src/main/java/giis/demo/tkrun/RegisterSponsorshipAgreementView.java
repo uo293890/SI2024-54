@@ -7,12 +7,13 @@ import java.awt.*;
 public class RegisterSponsorshipAgreementView extends JFrame {
     private JComboBox<String> eventComboBox;
     private JComboBox<String> sponsorComboBox;
-    private JComboBox<String> gbMemberComboBox;
     private JTextField nameField;
     private JTextField numberField;
     private JTextField emailField;
+    private JComboBox<String> gbMemberComboBox;
     private JTextField agreementDateField;
     private JTextField agreedAmountField;
+    private JCheckBox sendEmailCheckBox;
     private JButton registerButton;
 
     public RegisterSponsorshipAgreementView() {
@@ -49,15 +50,6 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         sponsorComboBox = new JComboBox<>();
         add(sponsorComboBox, gbc);
 
-        // Add GB Member ComboBox
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(new JLabel("GB Member:"), gbc);
-
-        gbc.gridx = 1;
-        gbMemberComboBox = new JComboBox<>();
-        add(gbMemberComboBox, gbc);
-
         // Create a panel for Sponsor Contact Information
         JPanel contactPanel = new JPanel();
         contactPanel.setLayout(new GridBagLayout());
@@ -72,7 +64,7 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         gbcContact.insets = new Insets(5, 5, 5, 5); // Add padding
         gbcContact.fill = GridBagConstraints.HORIZONTAL;
 
-        // Add Contact Worker Field
+        // Add Contact Name Field
         gbcContact.gridx = 0;
         gbcContact.gridy = 0;
         contactPanel.add(new JLabel("Name:"), gbcContact);
@@ -101,9 +93,18 @@ public class RegisterSponsorshipAgreementView extends JFrame {
 
         // Add the Contact Panel to the main layout
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.gridwidth = 2; // Span across two columns
         add(contactPanel, gbc);
+        
+        // Add GB Member ComboBox
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        add(new JLabel("Governing Board Member:"), gbc);
+
+        gbc.gridx = 1;
+        gbMemberComboBox = new JComboBox<>();
+        add(gbMemberComboBox, gbc);
 
         // Add Agreement Date Field
         gbc.gridx = 0;
@@ -123,10 +124,20 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         gbc.gridx = 1;
         agreedAmountField = new JTextField(20);
         add(agreedAmountField, gbc);
+        
+        /* FUTURE SPRINT ADDITION
+        // Add the "Send Email" Checkbox
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2; // Span across two columns
+        sendEmailCheckBox = new JCheckBox("Send Email to GB Member");
+        sendEmailCheckBox.setSelected(true); // Default to checked
+        add(sendEmailCheckBox, gbc);
+        */
 
         // Add Register Button
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         gbc.gridwidth = 2; // Span across two columns
         registerButton = new JButton("Register Agreement");
         registerButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -134,18 +145,51 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         registerButton.setForeground(Color.WHITE);
         registerButton.setFocusPainted(false);
         add(registerButton, gbc);
+        
+        numberField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                char c = evt.getKeyChar();
+                if (!Character.isDigit(c) && c != '+') {
+                	showError("Phone number must be +00123456789");
+                    evt.consume(); // Ignore the event if it's not a digit
+                }
+            }
+        });
+
+        agreementDateField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                char c = evt.getKeyChar();
+                if (!Character.isDigit(c) && c != '-') {
+                	showError("Date must be YYYY-MM-DD");
+                    evt.consume(); // Allow only digits and hyphen (-) for date
+                }
+            }
+        });
+
+        agreedAmountField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                char c = evt.getKeyChar();
+                if (!Character.isDigit(c) && c != '.') {
+                	showError("You can only type numbers in format 0 or 0.0");
+                    evt.consume(); // Allow only numbers and decimal point
+                }
+            }
+        });
+
     }
 
     // Getters for UI components
     public JComboBox<String> getEventComboBox() { return eventComboBox; }
     public JComboBox<String> getSponsorComboBox() { return sponsorComboBox; }
-    public JComboBox<String> getGBMemberComboBox() { return gbMemberComboBox; }
     public JTextField getContactWorkerField() { return nameField; }
     public JTextField getContactNumberField() { return numberField; }
     public JTextField getContactEmailField() { return emailField; }
+    public JComboBox<String> getGBMemberComboBox() { return gbMemberComboBox; }
     public JTextField getAgreementDateField() { return agreementDateField; }
     public JTextField getAgreedAmountField() { return agreedAmountField; }
+    public JCheckBox getSendEmailCheckBox() { return sendEmailCheckBox; }
     public JButton getRegisterButton() { return registerButton; }
+
 
     // Method to display a success message
     public void showMessage(String message) {
@@ -161,10 +205,10 @@ public class RegisterSponsorshipAgreementView extends JFrame {
     public void clearForm() {
         eventComboBox.setSelectedIndex(0);
         sponsorComboBox.setSelectedIndex(0);
-        gbMemberComboBox.setSelectedIndex(0);
         nameField.setText("");
         numberField.setText("");
         emailField.setText("");
+        gbMemberComboBox.setSelectedIndex(0);
         agreementDateField.setText("");
         agreedAmountField.setText("");
     }

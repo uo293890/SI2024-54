@@ -36,13 +36,13 @@ public class RegisterSponsorshipAgreementModel {
      * Registers a new sponsorship agreement in the database.
      */
     public void registerSponsorshipAgreement(RegisterSponsorshipAgreementDTO dto) {
-        String sql = "INSERT INTO Agreement (edition_id, sponsor_id, gbmember_id, contact_worker, contact_number, contact_email, agreement_date, agreement_amount, agreement_status) " +
+        String sql = "INSERT INTO Agreement (edition_id, sponsor_id, gbmember_id, contact_name, contact_number, contact_email, agreement_date, agreement_amount, agreement_status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         db.executeUpdate(sql, 
             dto.getEditionId(), 
             dto.getSponsorId(), 
             dto.getGbMemberId(), 
-            dto.getContactWorker(), 
+            dto.getContactName(), 
             dto.getContactNumber(), 
             dto.getContactEmail(), 
             dto.getAgreementDate(), 
