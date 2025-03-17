@@ -16,7 +16,7 @@ public class FinancialReportView extends JFrame {
     private JComboBox<String> cmbStatus;
 
     public FinancialReportView() {
-        setTitle("Financial Report - Activities Overview");
+        setTitle("Generate Income and Expense Report");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout(20, 20));

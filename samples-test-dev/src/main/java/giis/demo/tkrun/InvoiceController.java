@@ -19,7 +19,7 @@ public class InvoiceController {
     }
 
     private void initController() {
-        view.getGenerateButton().addActionListener(e -> generateInvoice());
+        //view.getGenerateButton().addActionListener(e -> generateInvoice());
         view.getSendButton().addActionListener(e -> sendInvoice());
         view.getActivityDropdown().addActionListener(e -> loadAgreementsForSelectedActivity());
     }
@@ -46,7 +46,7 @@ public class InvoiceController {
         }
     }
 
-    private void generateInvoice() {
+    /*private void generateInvoice() {
         try {
             String invoiceNumber = generateInvoiceNumber();
             String issueDate = dateFormat.format(new Date());
@@ -64,7 +64,7 @@ public class InvoiceController {
         } catch (Exception ex) {
             view.showError("Error generating invoice: " + ex.getMessage());
         }
-    }
+    }*/
 
     private void sendInvoice() {
         try {

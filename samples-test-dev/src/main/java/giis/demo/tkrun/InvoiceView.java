@@ -16,7 +16,7 @@ public class InvoiceView extends JFrame {
     private JButton btnGenerate, btnSend;
 
     public InvoiceView() {
-        setTitle("Invoice Management");
+        setTitle("Send Invoice");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 800);
         setLocationRelativeTo(null);
@@ -91,13 +91,13 @@ public class InvoiceView extends JFrame {
         add(centerPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        btnGenerate = new JButton("Generate Invoice");
-        btnGenerate.setFont(new Font("Arial", Font.BOLD, 16));
+       // btnGenerate = new JButton("Generate Invoice");
+        //btnGenerate.setFont(new Font("Arial", Font.BOLD, 16));
         btnSend = new JButton("Send Invoice");
         btnSend.setFont(new Font("Arial", Font.BOLD, 16));
         btnSend.setEnabled(false);
         
-        buttonPanel.add(btnGenerate);
+        //buttonPanel.add(btnGenerate);
         buttonPanel.add(btnSend);
         add(buttonPanel, BorderLayout.SOUTH);
     }

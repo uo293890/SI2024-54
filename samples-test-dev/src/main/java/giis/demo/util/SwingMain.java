@@ -108,7 +108,7 @@ public class SwingMain {
         panel.add(btnActivityFinancialStatus, "grow, wrap");
         
      // Botón para Report
-        JButton btnReport = new JButton("Report");
+        JButton btnReport = new JButton("Generate Income and Expense Report");
         btnReport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -121,7 +121,7 @@ public class SwingMain {
         panel.add(btnReport, "grow, wrap");
         
      // Botón para Invoice
-        JButton btnInvoice = new JButton("Invoice");
+        JButton btnInvoice = new JButton("Send Invoice");
         btnInvoice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
