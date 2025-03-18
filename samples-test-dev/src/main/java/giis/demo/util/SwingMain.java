@@ -95,7 +95,7 @@ public class SwingMain {
         panel.add(btnRegisterSponsorshipAgreement, "grow, wrap");
         
      // Botón para Activity Financial Status
-        JButton btnActivityFinancialStatus = new JButton("Show Activity Financial Status");
+        JButton btnActivityFinancialStatus = new JButton("Consult Activity Financial Status");
         btnActivityFinancialStatus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,33 +106,7 @@ public class SwingMain {
             }
         });
         panel.add(btnActivityFinancialStatus, "grow, wrap");
-        
-     // Botón para Report
-        JButton btnReport = new JButton("Report");
-        btnReport.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	ReportView reportView = new ReportView();
-                ReportModel reportModel = new ReportModel();
-                new ReportController(reportModel, reportView);
-                reportView.setVisible(true);
-            }
-        });
-        panel.add(btnReport, "grow, wrap");
-        
-     // Botón para Invoice
-        JButton btnInvoice = new JButton("Invoice");
-        btnInvoice.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	InvoiceView invoiceView = new InvoiceView();
-                InvoiceModel invoiceModel = new InvoiceModel();
-                new InvoiceController(invoiceModel, invoiceView);
-                invoiceView.setVisible(true);
-            }
-        });
-        panel.add(btnInvoice, "grow, wrap");
-        
+              
      // Botón para Payment
         JButton btnPayment = new JButton("Payment");
         btnPayment.addActionListener(new ActionListener() {
