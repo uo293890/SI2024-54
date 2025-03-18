@@ -6,23 +6,53 @@ DROP TABLE IF EXISTS Agreement;
 DROP TABLE IF EXISTS Sponsor;
 DROP TABLE IF EXISTS Edition;
 DROP TABLE IF EXISTS Event;
-DROP TABLE IF EXISTS GBMember;
+DROP TABLE IF EXISTS GbMember;
 
-CREATE TABLE IF NOT EXISTS Event (
-    event_id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_title    TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS Type (
+    type_id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_name    TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Edition (
-    edition_id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_id           INTEGER NOT NULL,
-    edition_title      TEXT NOT NULL,
-    edition_inidate    DATE,
-    edition_enddate    DATE,
-    edition_location   TEXT,
-    edition_status     TEXT DEFAULT 'Planned',
-    sponsorship_fee    DOUBLE NOT NULL CHECK (sponsorship_fee >= 0),
-    FOREIGN KEY (event_id) REFERENCES Event(event_id)
+CREATE TABLE IF NOT EXISTS Event (
+    event_id         	INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_id           	INTEGER NOT NULL,
+    event_name     		TEXT NOT NULL,
+    event_inidate   	DATE,
+    event_enddate    	DATE,
+    event_location		TEXT,
+    event_status     	TEXT NOT NULL CHECK(agreement_status IN ('Planned', 'Closed')) DEFAULT 'Planned',
+    FOREIGN KEY (type_id) REFERENCES Type(type_id)
+);
+
+CREATE TABLE IF NOT EXISTS LevelOfSponsorship (
+	level_id		INTEGER PRIMARY KEY AUTOINCREMENT,
+	event_id		INTEGER NOT NULL,
+	level_name		TEXT NOT NULL,
+	level_minamount INTEGER NOT NULL,
+	advantages		TEXT NOT NULL,
+	FOREIGN KEY (event_id) REFERENCES Event(event_id)
+);
+
+CREATE TABLE IF NOT EXISTS Agreement (
+    agreement_id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    level_id           INTEGER NOT NULL,
+    sponsor_id         INTEGER NOT NULL,
+    gbmember_id        INTEGER NOT NULL,
+    spcontact_id		   INTEGER NOT NULL,
+    agreement_date     DATE NOT NULL,
+    agreement_amount   DOUBLE NOT NULL CHECK (agreement_amount >= 0),
+    agreement_status   TEXT NOT NULL CHECK(agreement_status IN ('Agreed', 'Paid', 'Closed')) DEFAULT 'Agreed',
+    FOREIGN KEY (level_id) REFERENCES Level(level_id),
+    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id),
+    FOREIGN KEY (gbmember_id) REFERENCES GbMember(gbmember_id),
+    FOREIGN KEY (spcontact_id) REFERENCES SpContact(spcontact_id)
+);
+
+CREATE IF NOT EXISTS SpContact (
+	spcontact_id	   INTEGER PRIMARY KEY AUTOINCREMENT,
+	spcontact_name       TEXT NOT NULL,
+    spcontact_number     TEXT NOT NULL CHECK(contact_number LIKE '+%'),
+    spcontact_email      TEXT NOT NULL CHECK(contact_email LIKE '%@%'),
 );
 
 CREATE TABLE IF NOT EXISTS Sponsor (
@@ -30,26 +60,11 @@ CREATE TABLE IF NOT EXISTS Sponsor (
     sponsor_name       TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS GBMember (
+CREATE TABLE IF NOT EXISTS GbMember (
     gbmember_id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    gbmember_name      TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS Agreement (
-    agreement_id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    edition_id         INTEGER NOT NULL,
-    sponsor_id         INTEGER NOT NULL,
-    gbmember_id        INTEGER NOT NULL,
-    contact_name       TEXT NOT NULL,
-    contact_number     TEXT NOT NULL CHECK(contact_number LIKE '+%'),
-    contact_email      TEXT NOT NULL CHECK(contact_email LIKE '%@%'),
-    agreement_date     DATE NOT NULL,
-    agreement_amount   DOUBLE NOT NULL CHECK (agreement_amount >= 0),
-    agreement_status   TEXT NOT NULL CHECK(agreement_status IN ('Agreed', 'Paid', 'Closed')) DEFAULT 'Agreed',
-    early_invoice_request DATE,
-    FOREIGN KEY (edition_id) REFERENCES Edition(edition_id),
-    FOREIGN KEY (sponsor_id) REFERENCES Sponsor(sponsor_id),
-    FOREIGN KEY (gbmember_id) REFERENCES GBMember(gbmember_id)
+    gbmember_name      TEXT NOT NULL,
+    gbmember_email	   TEXT NOT NULL,
+    gbmember_position  TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Invoice (
@@ -58,40 +73,25 @@ CREATE TABLE IF NOT EXISTS Invoice (
     invoice_date       DATE NOT NULL,
     invoice_number     TEXT NOT NULL CHECK (invoice_number GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
     invoice_vat        DOUBLE NOT NULL,
-    recipient_name     TEXT NOT NULL,
-    recipient_tax_id   TEXT NOT NULL,
-    recipient_address  TEXT NOT NULL,
-    sent_date          DATE,
     FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
 );
 
-CREATE TABLE IF NOT EXISTS Payment (
-    payment_id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    invoice_id         INTEGER,
-    payment_date       DATE NOT NULL,
-    payment_amount     DOUBLE NOT NULL CHECK (payment_amount >= 0),
-    payment_type       TEXT CHECK(payment_type IN ('Standard', 'Refund', 'Second Payment')) DEFAULT 'Standard',
-    FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
-); 
-
-CREATE TABLE IF NOT EXISTS Otherie (
-    otherie_id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    edition_id          INTEGER NOT NULL,
-    otherie_amount      DOUBLE NOT NULL,
-    otherie_description TEXT NOT NULL,
-    otherie_status      TEXT DEFAULT 'Estimated',
-    FOREIGN KEY (edition_id) REFERENCES Edition(edition_id)
+CREATE TABLE IF NOT EXITS IncomesExpenses (
+	incexp_id		INTEGER PRIMARY KEY AUTOINCREMENT,
+	event_id		INTEGER NOT NULL,
+	incexp_concept	TEXT NOT NULL,
+	incexp_amount	INTEGET NOT NULL,
+	incexp_status	TEXT NOT NULL CHECK(agreement_status IN ('Estimated', 'Paid')) DEFAULT 'Estimated',
+	FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
 
 CREATE TABLE IF NOT EXISTS Movement (
     movement_id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    otherie_id          INTEGER,
+    incexp_id           INTEGER,
     invoice_id          INTEGER,
     movement_date       DATE NOT NULL,
     movement_concept    TEXT NOT NULL,
     movement_amount     DOUBLE NOT NULL CHECK (movement_amount >= 0),
-    payment_status      TEXT CHECK(payment_status IN ('Estimated', 'Paid', 'Compensation')) DEFAULT 'Estimated', 
-    movement_notes      TEXT, 
-    FOREIGN KEY (otherie_id) REFERENCES Otherie(otherie_id),
+    FOREIGN KEY (incexp_id) REFERENCES IncomesExpenses(incexp_id),
     FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
 );
