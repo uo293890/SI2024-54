@@ -2,7 +2,7 @@ package giis.demo.tkrun;
 
 import java.time.LocalDate;
 
-public class ActivityFinancialStatusDTO {
+public class ConsultActivityFinancialStatusDTO {
     // Event details
     private int eventId;
     private String eventTitle;

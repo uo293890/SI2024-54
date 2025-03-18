@@ -3,86 +3,168 @@ package giis.demo.tkrun;
 import javax.swing.*;
 import java.awt.*;
 
-public class ActivityFinancialStatusView extends JFrame {
-    private JTable activityTable;
-    private JTable sponsorshipTable;
-    private JTable financialOverviewTable;
-    private JButton viewSummaryButton;
+/**
+ * This class represents the view for consulting the financial status of an activity.
+ * It includes tables for editions, sponsors, incomes, and expenses, as well as summary labels.
+ */
+public class ConsultActivityFinancialStatusView extends JFrame {
+	private JTable editionsTable;
+    private JTable sponsorsTable;
+    private JTable incomesTable;
+    private JTable expensesTable;
+    private JLabel overallEstimatedLabel;
+    private JLabel overallPaidLabel;
+    private JLabel sponsorEstimatedLabel;
+    private JLabel sponsorPaidLabel;
+    private JLabel incomesEstimatedLabel;
+    private JLabel incomesPaidLabel;
+    private JLabel expensesEstimatedLabel;
+    private JLabel expensesPaidLabel;
 
-    public ActivityFinancialStatusView() {
+    /**
+     * Constructor that initializes the UI components.
+     */
+    public ConsultActivityFinancialStatusView() {
         initialize();
     }
 
+    /**
+     * Initializes the UI components and layout.
+     */
     private void initialize() {
-        setTitle("Activity Financial Status");
-        setSize(800, 600); // Adjusted window size
+        setTitle("Consult Activity Financial Status");
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
-
-        // Use BorderLayout for the main layout
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // Header Panel
+        // Header Panel with Title
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JLabel titleLabel = new JLabel("Activity Financial Status");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerPanel.add(titleLabel);
         add(headerPanel, BorderLayout.NORTH);
 
-        // Main Content Panel
-        JPanel contentPanel = new JPanel(new GridLayout(3, 1, 10, 10));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Main Content Panel with two sections (Editions and Financial Details)
+        JPanel contentPanel = new JPanel(new GridLayout(1, 2, 20, 20));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Select Activity Panel
-        JPanel activityPanel = new JPanel(new BorderLayout());
-        activityPanel.setBorder(BorderFactory.createTitledBorder("Select Activity"));
-        activityTable = createTable(new String[]{"Edition", "Name", "Date", "State"}, new Object[][]{});
-        activityPanel.add(new JScrollPane(activityTable), BorderLayout.CENTER);
-        contentPanel.add(activityPanel);
+        // Left Panel: Editions Table
+        JPanel leftPanel = new JPanel(new BorderLayout(10, 10));
+        leftPanel.setBorder(BorderFactory.createTitledBorder("Events"));
+        editionsTable = createTable(new String[]{"Type", "Event", "Start Date", "End Date", "State"}, new Object[][]{});
+        leftPanel.add(new JScrollPane(editionsTable), BorderLayout.CENTER);
+        contentPanel.add(leftPanel);
 
-        // Sponsorship List Panel
-        JPanel sponsorshipPanel = new JPanel(new BorderLayout());
-        sponsorshipPanel.setBorder(BorderFactory.createTitledBorder("Sponsorship List"));
-        sponsorshipTable = createTable(new String[]{"Sponsor Name", "Agreement Date", "Amount (€)", "Status"}, new Object[][]{});
-        sponsorshipPanel.add(new JScrollPane(sponsorshipTable), BorderLayout.CENTER);
-        contentPanel.add(sponsorshipPanel);
+        // Right Panel: Totals and Detailed Financial Information
+        JPanel rightPanel = new JPanel(new BorderLayout(10, 10));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Financial Overview Panel
-        JPanel financialPanel = new JPanel(new BorderLayout());
-        financialPanel.setBorder(BorderFactory.createTitledBorder("Financial Overview"));
-        financialOverviewTable = createTable(new String[]{"Category", "Estimated (€)", "Paid (€)"}, new Object[][]{
-                {"Income", "", ""},
-                {"Expenses", "", ""}
-        });
-        financialPanel.add(new JScrollPane(financialOverviewTable), BorderLayout.CENTER);
-        contentPanel.add(financialPanel);
+        // Totals Panel
+        JPanel totalsPanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        totalsPanel.setBorder(BorderFactory.createTitledBorder("Totals"));
 
+        // Overall Totals Section
+        JPanel overallTotalsPanel = new JPanel(new BorderLayout());
+        overallTotalsPanel.setBorder(BorderFactory.createTitledBorder("Overalls"));
+        overallEstimatedLabel = new JLabel("Overall Estimated: ");
+        overallPaidLabel = new JLabel("Overall Paid: ");
+        JPanel overallLabelsPanel = new JPanel(new GridLayout(2, 1));
+        overallLabelsPanel.add(overallEstimatedLabel);
+        overallLabelsPanel.add(overallPaidLabel);
+        overallTotalsPanel.add(overallLabelsPanel, BorderLayout.CENTER);
+        totalsPanel.add(overallTotalsPanel);
+
+        // Sponsors Totals Section
+        JPanel sponsorsTotalsPanel = new JPanel(new BorderLayout());
+        sponsorsTotalsPanel.setBorder(BorderFactory.createTitledBorder("Sponsors"));
+        sponsorEstimatedLabel = new JLabel("Estimated: ");
+        sponsorPaidLabel = new JLabel("Paid: ");
+        JPanel sponsorsLabelsPanel = new JPanel(new GridLayout(2, 1));
+        sponsorsLabelsPanel.add(sponsorEstimatedLabel);
+        sponsorsLabelsPanel.add(sponsorPaidLabel);
+        sponsorsTotalsPanel.add(sponsorsLabelsPanel, BorderLayout.CENTER);
+        totalsPanel.add(sponsorsTotalsPanel);
+
+        // Incomes Totals Section
+        JPanel incomesTotalsPanel = new JPanel(new BorderLayout());
+        incomesTotalsPanel.setBorder(BorderFactory.createTitledBorder("Incomes"));
+        incomesEstimatedLabel = new JLabel("Estimated: ");
+        incomesPaidLabel = new JLabel("Paid: ");
+        JPanel incomesLabelsPanel = new JPanel(new GridLayout(2, 1));
+        incomesLabelsPanel.add(incomesEstimatedLabel);
+        incomesLabelsPanel.add(incomesPaidLabel);
+        incomesTotalsPanel.add(incomesLabelsPanel, BorderLayout.CENTER);
+        totalsPanel.add(incomesTotalsPanel);
+
+        // Expenses Totals Section
+        JPanel expensesTotalsPanel = new JPanel(new BorderLayout());
+        expensesTotalsPanel.setBorder(BorderFactory.createTitledBorder("Expenses"));
+        expensesEstimatedLabel = new JLabel("Estimated: ");
+        expensesPaidLabel = new JLabel("Paid: ");
+        JPanel expensesLabelsPanel = new JPanel(new GridLayout(2, 1));
+        expensesLabelsPanel.add(expensesEstimatedLabel);
+        expensesLabelsPanel.add(expensesPaidLabel);
+        expensesTotalsPanel.add(expensesLabelsPanel, BorderLayout.CENTER);
+        totalsPanel.add(expensesTotalsPanel);
+
+        rightPanel.add(totalsPanel, BorderLayout.NORTH);
+
+        // Financial Details Panel
+        JPanel detailsPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        detailsPanel.setBorder(BorderFactory.createTitledBorder("Details"));
+
+        // Sponsors Table
+        JPanel sponsorsPanel = new JPanel(new BorderLayout());
+        sponsorsPanel.setBorder(BorderFactory.createTitledBorder("Sponsors"));
+        sponsorsTable = createTable(new String[]{"Sponsor", "Amount", "Status", "Date"}, new Object[][]{});
+        sponsorsPanel.add(new JScrollPane(sponsorsTable), BorderLayout.CENTER);
+        detailsPanel.add(sponsorsPanel);
+
+        // Incomes Table
+        JPanel incomesPanel = new JPanel(new BorderLayout());
+        incomesPanel.setBorder(BorderFactory.createTitledBorder("Incomes"));
+        incomesTable = createTable(new String[]{"Concept", "Amount", "Status", "Date"}, new Object[][]{});
+        incomesPanel.add(new JScrollPane(incomesTable), BorderLayout.CENTER);
+        detailsPanel.add(incomesPanel);
+
+        // Expenses Table
+        JPanel expensesPanel = new JPanel(new BorderLayout());
+        expensesPanel.setBorder(BorderFactory.createTitledBorder("Expenses"));
+        expensesTable = createTable(new String[]{"Concept", "Amount", "Status", "Date"}, new Object[][]{});
+        expensesPanel.add(new JScrollPane(expensesTable), BorderLayout.CENTER);
+        detailsPanel.add(expensesPanel);
+
+        rightPanel.add(detailsPanel, BorderLayout.CENTER);
+        contentPanel.add(rightPanel);
         add(contentPanel, BorderLayout.CENTER);
-
-        // Button Panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        viewSummaryButton = new JButton("View Financial Summary");
-        viewSummaryButton.setFont(new Font("Arial", Font.BOLD, 14));
-        viewSummaryButton.setBackground(new Color(50, 150, 250)); // Blue background
-        viewSummaryButton.setForeground(Color.WHITE); // White text
-        viewSummaryButton.setFocusPainted(false);
-        buttonPanel.add(viewSummaryButton);
-        add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Helper method to create a table with consistent styling
+    /**
+     * Creates and returns a JTable with specified columns and data.
+     */
     private JTable createTable(String[] columnNames, Object[][] data) {
         JTable table = new JTable(data, columnNames);
         table.setFont(new Font("Arial", Font.PLAIN, 12));
-        table.setRowHeight(25); // Increase row height for better readability
+        table.setRowHeight(25);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         return table;
     }
 
     // Getters for UI components
-    public JTable getActivityTable() { return activityTable; }
-    public JTable getSponsorshipTable() { return sponsorshipTable; }
-    public JTable getFinancialOverviewTable() { return financialOverviewTable; }
-    public JButton getViewSummaryButton() { return viewSummaryButton; }
+    public JTable getEditionsTable() { return editionsTable; }
+    public JTable getSponsorsTable() { return sponsorsTable; }
+    public JTable getIncomesTable() { return incomesTable; }
+    public JTable getExpensesTable() { return expensesTable; }
+    public JLabel getOverallEstimatedLabel() { return overallEstimatedLabel; }
+	public JLabel getOverallPaidLabel() { return overallPaidLabel; }
+	public JLabel getSponsorEstimatedLabel() { return sponsorEstimatedLabel; }
+	public JLabel getSponsorPaidLabel() { return sponsorPaidLabel; }
+	public JLabel getIncomesEstimatedLabel() { return incomesEstimatedLabel; }
+	public JLabel getIncomesPaidLabel() { return incomesPaidLabel; }
+	public JLabel getExpensesEstimatedLabel() { return expensesEstimatedLabel; }
+	public JLabel getExpensesPaidLabel() { return expensesPaidLabel; }
+	
+
 }

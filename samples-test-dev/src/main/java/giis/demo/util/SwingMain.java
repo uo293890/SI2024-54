@@ -99,9 +99,9 @@ public class SwingMain {
         btnActivityFinancialStatus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	ActivityFinancialStatusModel model = new ActivityFinancialStatusModel();
-            	ActivityFinancialStatusView view = new ActivityFinancialStatusView();
-                new ActivityFinancialStatusController(model, view);
+            	ConsultActivityFinancialStatusModel model = new ConsultActivityFinancialStatusModel();
+            	ConsultActivityFinancialStatusView view = new ConsultActivityFinancialStatusView();
+                new ConsultActivityFinancialStatusController(model, view);
                 view.setVisible(true);
             }
         });

@@ -3,7 +3,7 @@ package giis.demo.tkrun;
 import giis.demo.util.Database;
 import java.util.List;
 
-public class ActivityFinancialStatusModel {
+public class ConsultActivityFinancialStatusModel {
     private Database db = new Database();
 
     // SQL Queries
@@ -15,37 +15,37 @@ public class ActivityFinancialStatusModel {
     /**
      * Fetches all events from the database.
      */
-    public List<ActivityFinancialStatusDTO> getAllActivities() {
-        return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_ACTIVITIES);
+    public List<ConsultActivityFinancialStatusDTO> getAllActivities() {
+        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_ACTIVITIES);
     }
 
     /**
      * Fetches editions for a specific event.
      */
-    public List<ActivityFinancialStatusDTO> getEditionsForEvent(int eventId) {
-        return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_EDITIONS, eventId);
+    public List<ConsultActivityFinancialStatusDTO> getEditionsForEvent(int eventId) {
+        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_EDITIONS, eventId);
     }
 
     /**
      * Fetches agreements for a specific edition.
      */
-    public List<ActivityFinancialStatusDTO> getAgreementsForEdition(int editionId) {
-        return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_AGREEMENTS, editionId);
+    public List<ConsultActivityFinancialStatusDTO> getAgreementsForEdition(int editionId) {
+        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_AGREEMENTS, editionId);
     }
 
     /**
      * Fetches otheries (expenses) for a specific edition.
      */
-    public List<ActivityFinancialStatusDTO> getOtheriesForEdition(int editionId) {
-        return db.executeQueryPojo(ActivityFinancialStatusDTO.class, SQL_GET_OTHERIES, editionId);
+    public List<ConsultActivityFinancialStatusDTO> getOtheriesForEdition(int editionId) {
+        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_OTHERIES, editionId);
     }
 
     /**
      * Calculates totals for income and expenses.
      */
-    public double[] calculateTotals(List<ActivityFinancialStatusDTO> incomeList, List<ActivityFinancialStatusDTO> expenseList) {
-        double totalIncome = incomeList.stream().mapToDouble(ActivityFinancialStatusDTO::getInvoiceAmount).sum();
-        double totalExpenses = expenseList.stream().mapToDouble(ActivityFinancialStatusDTO::getOtherieAmount).sum();
+    public double[] calculateTotals(List<ConsultActivityFinancialStatusDTO> incomeList, List<ConsultActivityFinancialStatusDTO> expenseList) {
+        double totalIncome = incomeList.stream().mapToDouble(ConsultActivityFinancialStatusDTO::getInvoiceAmount).sum();
+        double totalExpenses = expenseList.stream().mapToDouble(ConsultActivityFinancialStatusDTO::getOtherieAmount).sum();
         return new double[]{totalIncome, totalExpenses};
     }
 }
