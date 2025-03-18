@@ -56,61 +56,61 @@ public class ConsultActivityFinancialStatusView extends JFrame {
         leftPanel.add(new JScrollPane(editionsTable), BorderLayout.CENTER);
         contentPanel.add(leftPanel);
 
-        // Right Panel: Totals and Detailed Financial Information
+        // Right Panel: Detailed Financial Information
         JPanel rightPanel = new JPanel(new BorderLayout(10, 10));
         rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Totals Panel
-        JPanel totalsPanel = new JPanel(new GridLayout(4, 1, 10, 10));
-        totalsPanel.setBorder(BorderFactory.createTitledBorder("Totals"));
+        // Finance Panel
+        JPanel financePanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        financePanel.setBorder(BorderFactory.createTitledBorder("Financial Info"));
 
         // Overall Totals Section
-        JPanel overallTotalsPanel = new JPanel(new BorderLayout());
-        overallTotalsPanel.setBorder(BorderFactory.createTitledBorder("Overalls"));
+        JPanel overallFinancePanel = new JPanel(new BorderLayout());
+        overallFinancePanel.setBorder(BorderFactory.createTitledBorder("Overalls"));
         overallEstimatedLabel = new JLabel("Overall Estimated: ");
         overallPaidLabel = new JLabel("Overall Paid: ");
         JPanel overallLabelsPanel = new JPanel(new GridLayout(2, 1));
         overallLabelsPanel.add(overallEstimatedLabel);
         overallLabelsPanel.add(overallPaidLabel);
-        overallTotalsPanel.add(overallLabelsPanel, BorderLayout.CENTER);
-        totalsPanel.add(overallTotalsPanel);
+        overallFinancePanel.add(overallLabelsPanel, BorderLayout.CENTER);
+        financePanel.add(overallFinancePanel);
 
-        // Sponsors Totals Section
-        JPanel sponsorsTotalsPanel = new JPanel(new BorderLayout());
-        sponsorsTotalsPanel.setBorder(BorderFactory.createTitledBorder("Sponsors"));
+        // Sponsors Finance Section
+        JPanel sponsorsFinancePanel = new JPanel(new BorderLayout());
+        sponsorsFinancePanel.setBorder(BorderFactory.createTitledBorder("Sponsors"));
         sponsorEstimatedLabel = new JLabel("Estimated: ");
         sponsorPaidLabel = new JLabel("Paid: ");
         JPanel sponsorsLabelsPanel = new JPanel(new GridLayout(2, 1));
         sponsorsLabelsPanel.add(sponsorEstimatedLabel);
         sponsorsLabelsPanel.add(sponsorPaidLabel);
-        sponsorsTotalsPanel.add(sponsorsLabelsPanel, BorderLayout.CENTER);
-        totalsPanel.add(sponsorsTotalsPanel);
+        sponsorsFinancePanel.add(sponsorsLabelsPanel, BorderLayout.CENTER);
+        financePanel.add(sponsorsFinancePanel);
 
-        // Incomes Totals Section
-        JPanel incomesTotalsPanel = new JPanel(new BorderLayout());
-        incomesTotalsPanel.setBorder(BorderFactory.createTitledBorder("Incomes"));
+        // Incomes Finance Section
+        JPanel incomesFinancePanel = new JPanel(new BorderLayout());
+        incomesFinancePanel.setBorder(BorderFactory.createTitledBorder("Incomes"));
         incomesEstimatedLabel = new JLabel("Estimated: ");
         incomesPaidLabel = new JLabel("Paid: ");
         JPanel incomesLabelsPanel = new JPanel(new GridLayout(2, 1));
         incomesLabelsPanel.add(incomesEstimatedLabel);
         incomesLabelsPanel.add(incomesPaidLabel);
-        incomesTotalsPanel.add(incomesLabelsPanel, BorderLayout.CENTER);
-        totalsPanel.add(incomesTotalsPanel);
+        incomesFinancePanel.add(incomesLabelsPanel, BorderLayout.CENTER);
+        financePanel.add(incomesFinancePanel);
 
-        // Expenses Totals Section
-        JPanel expensesTotalsPanel = new JPanel(new BorderLayout());
-        expensesTotalsPanel.setBorder(BorderFactory.createTitledBorder("Expenses"));
+        // Expenses Finance Section
+        JPanel expensesFinancePanel = new JPanel(new BorderLayout());
+        expensesFinancePanel.setBorder(BorderFactory.createTitledBorder("Expenses"));
         expensesEstimatedLabel = new JLabel("Estimated: ");
         expensesPaidLabel = new JLabel("Paid: ");
         JPanel expensesLabelsPanel = new JPanel(new GridLayout(2, 1));
         expensesLabelsPanel.add(expensesEstimatedLabel);
         expensesLabelsPanel.add(expensesPaidLabel);
-        expensesTotalsPanel.add(expensesLabelsPanel, BorderLayout.CENTER);
-        totalsPanel.add(expensesTotalsPanel);
+        expensesFinancePanel.add(expensesLabelsPanel, BorderLayout.CENTER);
+        financePanel.add(expensesFinancePanel);
 
-        rightPanel.add(totalsPanel, BorderLayout.NORTH);
+        rightPanel.add(financePanel, BorderLayout.NORTH);
 
-        // Financial Details Panel
+        // Details Panel
         JPanel detailsPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         detailsPanel.setBorder(BorderFactory.createTitledBorder("Details"));
 
