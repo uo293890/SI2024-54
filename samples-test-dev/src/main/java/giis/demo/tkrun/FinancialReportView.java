@@ -10,7 +10,8 @@ import java.util.List;
 public class FinancialReportView extends JFrame {
     private JTable tableActivities;
     private DefaultTableModel modelActivities;
-    private JLabel lblTotalEstIncome, lblTotalEstExpenses, lblTotalIncome, lblTotalExpenses, lblBalance;
+    private JLabel lblTotalEstIncome, lblTotalEstExpenses, lblEstBalance;
+    private JLabel lblTotalIncome, lblTotalExpenses, lblActualBalance;
     private JButton btnConsult;
     private JTextField txtStartDate, txtEndDate;
     private JComboBox<String> cmbStatus;
@@ -25,7 +26,8 @@ public class FinancialReportView extends JFrame {
 
     private void initComponents() {
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        filterPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.GRAY, 3), "Filters", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 24)));
+        filterPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.GRAY, 3),
+                "Filters", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 24)));
 
         filterPanel.add(createLargeLabel("Start Date:"));
         txtStartDate = new JTextField(15);
@@ -38,17 +40,19 @@ public class FinancialReportView extends JFrame {
         filterPanel.add(txtEndDate);
 
         filterPanel.add(createLargeLabel("Status:"));
-        cmbStatus = new JComboBox<>(new String[]{"All", "Planned", "Ongoing", "Completed"});
+        cmbStatus = new JComboBox<>(new String[]{"All", "Planned", "Closed"});
         cmbStatus.setFont(new Font("Arial", Font.PLAIN, 20));
         filterPanel.add(cmbStatus);
 
         btnConsult = new JButton("Consult");
         btnConsult.setFont(new Font("Arial", Font.BOLD, 20));
         filterPanel.add(btnConsult);
-        
+
         add(filterPanel, BorderLayout.NORTH);
 
-        modelActivities = new DefaultTableModel(new Object[]{"Activity Name", "Status", "Start Date", "End Date", "Estimated Income", "Estimated Expenses", "Actual Income", "Actual Expenses", "Balance"}, 0);
+        modelActivities = new DefaultTableModel(
+            new Object[]{"Activity Name", "Status", "Start Date", "End Date", "Estimated Income", "Estimated Expenses", "Estimated Balance", "Actual Income", "Actual Expenses", "Actual Balance"}, 0
+        );
         tableActivities = new JTable(modelActivities);
         tableActivities.setFont(new Font("Arial", Font.PLAIN, 18));
         tableActivities.setRowHeight(30);
@@ -57,34 +61,43 @@ public class FinancialReportView extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
 
         JPanel totalsContainer = new JPanel(new GridLayout(1, 2, 40, 40));
-        totalsContainer.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.BLUE, 4), "Financial Summary", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 30), Color.BLUE));
+        totalsContainer.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.BLUE, 4),
+                "Financial Summary", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 30), Color.BLUE));
         totalsContainer.setBackground(new Color(220, 230, 255));
 
-        JPanel estimatedPanel = new JPanel(new GridLayout(2, 2, 20, 20));
-        estimatedPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3), "Estimated", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 26), Color.DARK_GRAY));
+        // Estimated
+        JPanel estimatedPanel = new JPanel(new GridLayout(3, 2, 20, 20));
+        estimatedPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3),
+                "Estimated", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 26), Color.DARK_GRAY));
         estimatedPanel.setBackground(new Color(200, 220, 250));
 
         lblTotalEstIncome = createStyledLabel();
         lblTotalEstExpenses = createStyledLabel();
+        lblEstBalance = createStyledLabel();
+
         estimatedPanel.add(createSummaryLabel("Estimated Income:"));
         estimatedPanel.add(lblTotalEstIncome);
         estimatedPanel.add(createSummaryLabel("Estimated Expenses:"));
         estimatedPanel.add(lblTotalEstExpenses);
+        estimatedPanel.add(createSummaryLabel("Estimated Balance:"));
+        estimatedPanel.add(lblEstBalance);
 
+        // Actual
         JPanel actualPanel = new JPanel(new GridLayout(3, 2, 20, 20));
-        actualPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3), "Actual", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 26), Color.DARK_GRAY));
+        actualPanel.setBorder(new TitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3),
+                "Actual", TitledBorder.CENTER, TitledBorder.TOP, new Font("Arial", Font.BOLD, 26), Color.DARK_GRAY));
         actualPanel.setBackground(new Color(200, 220, 250));
 
         lblTotalIncome = createStyledLabel();
         lblTotalExpenses = createStyledLabel();
-        lblBalance = createStyledLabel();
+        lblActualBalance = createStyledLabel();
 
         actualPanel.add(createSummaryLabel("Actual Income:"));
         actualPanel.add(lblTotalIncome);
         actualPanel.add(createSummaryLabel("Actual Expenses:"));
         actualPanel.add(lblTotalExpenses);
-        actualPanel.add(createSummaryLabel("Balance:"));
-        actualPanel.add(lblBalance);
+        actualPanel.add(createSummaryLabel("Actual Balance:"));
+        actualPanel.add(lblActualBalance);
 
         totalsContainer.add(estimatedPanel);
         totalsContainer.add(actualPanel);
@@ -95,7 +108,8 @@ public class FinancialReportView extends JFrame {
     private void formatTable() {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-        for (int i = 4; i <= 8; i++) {
+
+        for (int i = 4; i <= 9; i++) {
             tableActivities.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
         }
 
@@ -112,11 +126,14 @@ public class FinancialReportView extends JFrame {
                 super.setValue(value);
             }
         };
-        tableActivities.getColumnModel().getColumn(8).setCellRenderer(balanceRenderer);
+
+        // Estimated Balance
+        tableActivities.getColumnModel().getColumn(6).setCellRenderer(balanceRenderer);
+        // Actual Balance
+        tableActivities.getColumnModel().getColumn(9).setCellRenderer(balanceRenderer);
     }
 
-
-	private JLabel createStyledLabel() {
+    private JLabel createStyledLabel() {
         JLabel label = new JLabel("0.0", SwingConstants.RIGHT);
         label.setFont(new Font("Arial", Font.BOLD, 26));
         return label;
@@ -134,12 +151,29 @@ public class FinancialReportView extends JFrame {
         return label;
     }
 
-    public JButton getConsultButton() { return btnConsult; }
-    public String getStartDate() { return txtStartDate.getText(); }
-    public String getEndDate() { return txtEndDate.getText(); }
-    public String getStatus() { return (String) cmbStatus.getSelectedItem(); }
-    public void setStartDate(String date) { txtStartDate.setText(date); }
-    public void setEndDate(String date) { txtEndDate.setText(date); }
+    public JButton getConsultButton() {
+        return btnConsult;
+    }
+
+    public String getStartDate() {
+        return txtStartDate.getText();
+    }
+
+    public String getEndDate() {
+        return txtEndDate.getText();
+    }
+
+    public String getStatus() {
+        return (String) cmbStatus.getSelectedItem();
+    }
+
+    public void setStartDate(String date) {
+        txtStartDate.setText(date);
+    }
+
+    public void setEndDate(String date) {
+        txtEndDate.setText(date);
+    }
 
     public void updateActivitiesTable(List<FinancialReportDTO> data) {
         modelActivities.setRowCount(0);
@@ -151,6 +185,7 @@ public class FinancialReportView extends JFrame {
                 dto.getEndDate(),
                 dto.getEstimatedIncome(),
                 dto.getEstimatedExpenses(),
+                dto.getEstimatedBalance(),
                 dto.getActualIncome(),
                 dto.getActualExpenses(),
                 dto.getActualBalance()
@@ -158,11 +193,12 @@ public class FinancialReportView extends JFrame {
         }
     }
 
-    public void updateTotals(double estIncome, double estExpenses, double totalIncome, double totalExpenses, double balance) {
+    public void updateTotals(double estIncome, double estExpenses, double actualIncome, double actualExpenses, double actualBalance) {
         lblTotalEstIncome.setText(String.format("%.2f", estIncome));
         lblTotalEstExpenses.setText(String.format("%.2f", estExpenses));
-        lblTotalIncome.setText(String.format("%.2f", totalIncome));
-        lblTotalExpenses.setText(String.format("%.2f", totalExpenses));
-        lblBalance.setText(String.format("%.2f", balance));
+        lblEstBalance.setText(String.format("%.2f", estIncome - estExpenses));
+        lblTotalIncome.setText(String.format("%.2f", actualIncome));
+        lblTotalExpenses.setText(String.format("%.2f", actualExpenses));
+        lblActualBalance.setText(String.format("%.2f", actualBalance));
     }
 }

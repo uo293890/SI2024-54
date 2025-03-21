@@ -2,7 +2,6 @@ package giis.demo.tkrun;
 
 import java.util.List;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.Calendar;
 
@@ -33,7 +32,7 @@ public class FinancialReportController {
         String startDate = view.getStartDate();
         String endDate = view.getEndDate();
         String status = view.getStatus();
-        
+
         currentData = model.getFinancialReport(startDate, endDate, status);
         view.updateActivitiesTable(currentData);
         updateTotals();
@@ -42,16 +41,23 @@ public class FinancialReportController {
     private void updateTotals() {
         double totalEstimatedIncome = 0, totalEstimatedExpenses = 0;
         double totalActualIncome = 0, totalActualExpenses = 0;
-        
+
         for (FinancialReportDTO dto : currentData) {
             totalEstimatedIncome += dto.getEstimatedIncome();
             totalEstimatedExpenses += dto.getEstimatedExpenses();
             totalActualIncome += dto.getActualIncome();
             totalActualExpenses += dto.getActualExpenses();
         }
+
         double totalEstimatedBalance = totalEstimatedIncome - totalEstimatedExpenses;
         double totalActualBalance = totalActualIncome - totalActualExpenses;
-        
-        view.updateTotals(totalEstimatedIncome, totalEstimatedExpenses, totalActualIncome, totalActualExpenses, totalActualBalance);
+
+        view.updateTotals(
+            totalEstimatedIncome, 
+            totalEstimatedExpenses, 
+            totalActualIncome, 
+            totalActualExpenses, 
+            totalActualBalance
+        );
     }
 }

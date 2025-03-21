@@ -1,3 +1,4 @@
+// InvoiceView.java
 package giis.demo.tkrun;
 
 import javax.swing.*;
@@ -12,13 +13,14 @@ public class InvoiceView extends JFrame {
     private JComboBox<String> activityDropdown;
     private JTable agreementTable;
     private DefaultTableModel agreementTableModel;
-    private JTextField txtInvoiceNumber, txtInvoiceDate, txtInvoiceVat, txtRecipientName, txtRecipientTaxId, txtRecipientAddress, txtIssueDate;
+    private JTextField txtInvoiceNumber, txtInvoiceDate, txtInvoiceVat;
+    private JTextField txtRecipientName, txtRecipientTaxId, txtRecipientAddress;
     private JButton btnGenerate, btnSend;
 
     public InvoiceView() {
         setTitle("Send Invoice");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(1200, 800);
+        setSize(1000, 700);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(15, 15));
         initComponents();
@@ -27,11 +29,10 @@ public class InvoiceView extends JFrame {
     private void initComponents() {
         JPanel selectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
         selectionPanel.setBorder(new TitledBorder("Select Activity"));
-        
+
         activityDropdown = new JComboBox<>();
         activityDropdown.setFont(new Font("Arial", Font.PLAIN, 16));
         selectionPanel.add(activityDropdown);
-        
         add(selectionPanel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 10, 10));
@@ -48,7 +49,6 @@ public class InvoiceView extends JFrame {
                 if (selectedRow != -1) {
                     txtInvoiceNumber.setText(generateInvoiceNumber());
                     txtInvoiceDate.setText(getCurrentDate());
-                    txtIssueDate.setText(getCurrentDate());
                     txtRecipientName.setText(agreementTableModel.getValueAt(selectedRow, 1).toString());
                     txtRecipientTaxId.setText(agreementTableModel.getValueAt(selectedRow, 2).toString());
                     txtRecipientAddress.setText(agreementTableModel.getValueAt(selectedRow, 3).toString());
@@ -59,30 +59,28 @@ public class InvoiceView extends JFrame {
         JScrollPane tableScrollPane = new JScrollPane(agreementTable);
         tableScrollPane.setPreferredSize(new Dimension(400, 300));
         tableScrollPane.setBorder(new TitledBorder("Select Agreement"));
-
         centerPanel.add(tableScrollPane);
 
-        JPanel detailsPanel = new JPanel(new GridLayout(6, 2, 10, 10));
-        detailsPanel.setBorder(new TitledBorder("Agreement Details"));
+        JPanel detailsPanel = new JPanel(new GridLayout(7, 2, 10, 10));
+        detailsPanel.setBorder(new TitledBorder("Invoice Details"));
 
         txtInvoiceNumber = new JTextField();
         txtInvoiceDate = new JTextField();
-        txtIssueDate = new JTextField();
-        txtInvoiceVat = new JTextField();
+        txtInvoiceVat = new JTextField("21");
+txtInvoiceVat.setEditable(false);
         txtRecipientName = new JTextField();
         txtRecipientTaxId = new JTextField();
         txtRecipientAddress = new JTextField();
-        
+
         txtInvoiceNumber.setEditable(false);
         txtInvoiceDate.setEditable(false);
-        txtIssueDate.setEditable(false);
         txtRecipientName.setEditable(false);
         txtRecipientTaxId.setEditable(false);
         txtRecipientAddress.setEditable(false);
 
         detailsPanel.add(new JLabel("Invoice ID:")); detailsPanel.add(txtInvoiceNumber);
         detailsPanel.add(new JLabel("Invoice Date:")); detailsPanel.add(txtInvoiceDate);
-        detailsPanel.add(new JLabel("Issue Date:")); detailsPanel.add(txtIssueDate);
+        detailsPanel.add(new JLabel("VAT (%):")); detailsPanel.add(txtInvoiceVat);
         detailsPanel.add(new JLabel("Recipient Name:")); detailsPanel.add(txtRecipientName);
         detailsPanel.add(new JLabel("Recipient Tax ID:")); detailsPanel.add(txtRecipientTaxId);
         detailsPanel.add(new JLabel("Recipient Address:")); detailsPanel.add(txtRecipientAddress);
@@ -96,8 +94,10 @@ public class InvoiceView extends JFrame {
         btnSend = new JButton("Send Invoice");
         btnSend.setFont(new Font("Arial", Font.BOLD, 16));
         btnSend.setEnabled(false);
-        
-        //buttonPanel.add(btnGenerate);
+
+
+
+
         buttonPanel.add(btnSend);
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -114,12 +114,11 @@ public class InvoiceView extends JFrame {
     public JButton getSendButton() { return btnSend; }
     public String getInvoiceNumber() { return txtInvoiceNumber.getText(); }
     public String getInvoiceVat() { return txtInvoiceVat.getText(); }
-    public String getIssueDate() { return txtIssueDate.getText(); }
     public String getInvoiceDate() { return txtInvoiceDate.getText(); }
     public String getRecipientName() { return txtRecipientName.getText(); }
     public String getRecipientTaxId() { return txtRecipientTaxId.getText(); }
     public String getRecipientAddress() { return txtRecipientAddress.getText(); }
-    
+
     public String getSelectedAgreement() {
         int selectedRow = agreementTable.getSelectedRow();
         if (selectedRow != -1) {
@@ -127,7 +126,7 @@ public class InvoiceView extends JFrame {
         }
         return null;
     }
-    
+
     public void removeSelectedAgreement() {
         int selectedRow = agreementTable.getSelectedRow();
         if (selectedRow != -1) {
@@ -140,22 +139,17 @@ public class InvoiceView extends JFrame {
         return activityDropdown;
     }
 
-    public void populateActivityDropdown(List<List<Object>> activities) {
+    public void populateActivityDropdown(List<Object[]> activities) {
         activityDropdown.removeAllItems();
-        for (List<Object> activity : activities) {
-            activityDropdown.addItem(activity.get(0).toString());
+        for (Object[] activity : activities) {
+            activityDropdown.addItem(activity[0].toString());
         }
     }
 
-    public void populateAgreementTable(List<List<Object>> agreements) {
-        agreementTableModel.setRowCount(0); // Limpiamos la tabla antes de cargar nuevos datos
-        
-        if (agreements.isEmpty()) {
-            System.out.println("No agreements found for the selected activity.");
-        } else {
-            for (List<Object> agreement : agreements) {
-                agreementTableModel.addRow(agreement.toArray());
-            }
+    public void populateAgreementTable(List<Object[]> agreements) {
+        agreementTableModel.setRowCount(0);
+        for (Object[] agreement : agreements) {
+            agreementTableModel.addRow(agreement);
         }
     }
 
@@ -163,11 +157,20 @@ public class InvoiceView extends JFrame {
         JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     public String getSelectedActivity() {
         return (String) activityDropdown.getSelectedItem();
     }
 
-    public void showError(String message) {
-        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    public void clearInvoiceFields() {
+        txtInvoiceNumber.setText("");
+        txtInvoiceDate.setText("");
+        txtInvoiceVat.setText("");
+        txtRecipientName.setText("");
+        txtRecipientTaxId.setText("");
+        txtRecipientAddress.setText("");
     }
 }
