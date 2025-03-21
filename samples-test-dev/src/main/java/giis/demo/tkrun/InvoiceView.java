@@ -1,139 +1,174 @@
+// InvoiceView.java
 package giis.demo.tkrun;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import giis.demo.util.Database;
 import java.util.List;
 
 public class InvoiceView extends JFrame {
-    private JTextField txtInvoiceNumber, txtInvoiceDate, txtInvoiceVat, txtRecipientName, txtRecipientTaxId, txtRecipientAddress;
-    private JComboBox<String> agreementDropdown;
+    private JComboBox<String> activityDropdown;
+    private JTable agreementTable;
+    private DefaultTableModel agreementTableModel;
+    private JTextField txtInvoiceNumber, txtInvoiceDate, txtInvoiceVat;
+    private JTextField txtRecipientName, txtRecipientTaxId, txtRecipientAddress;
     private JButton btnGenerate, btnSend;
-    private JTable invoiceTable;
-    private DefaultTableModel tableModel;
-    private Database db = new Database();
 
     public InvoiceView() {
         setTitle("Invoice Management");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(900, 600);
+        setSize(1000, 700);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout(15, 15));
         initComponents();
-        loadAgreementsFromDatabase();
-        loadInvoicesIntoTable();
     }
 
     private void initComponents() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel selectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        selectionPanel.setBorder(new TitledBorder("Select Activity"));
 
-        JPanel formPanel = new JPanel(new GridLayout(0, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Generate Invoice"));
+        activityDropdown = new JComboBox<>();
+        activityDropdown.setFont(new Font("Arial", Font.PLAIN, 16));
+        selectionPanel.add(activityDropdown);
+        add(selectionPanel, BorderLayout.NORTH);
 
-        txtInvoiceNumber = new JTextField();
-        txtInvoiceDate = new JTextField();
-        txtInvoiceVat = new JTextField();
-        txtRecipientName = new JTextField();
-        txtRecipientTaxId = new JTextField();
-        txtRecipientAddress = new JTextField();
-        agreementDropdown = new JComboBox<>();
-        btnGenerate = new JButton("Generate Invoice");
-        btnSend = new JButton("Send Invoice");
+        JPanel centerPanel = new JPanel(new GridLayout(1, 2, 10, 10));
 
-        formPanel.add(new JLabel("Invoice ID:")); formPanel.add(txtInvoiceNumber);
-        formPanel.add(new JLabel("Invoice Date:")); formPanel.add(txtInvoiceDate);
-        formPanel.add(new JLabel("Invoice VAT:")); formPanel.add(txtInvoiceVat);
-        formPanel.add(new JLabel("Recipient Name:")); formPanel.add(txtRecipientName);
-        formPanel.add(new JLabel("Recipient Tax ID:")); formPanel.add(txtRecipientTaxId);
-        formPanel.add(new JLabel("Recipient Address:")); formPanel.add(txtRecipientAddress);
-        formPanel.add(new JLabel("Select Agreement:")); formPanel.add(agreementDropdown);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(btnGenerate);
-        buttonPanel.add(btnSend);
-        
-        formPanel.add(buttonPanel);
-        mainPanel.add(formPanel);
-
-        // Table for displaying invoices with recipient details
-        tableModel = new DefaultTableModel(new Object[]{"Invoice ID", "Agreement ID", "Activity Name", "Date", "VAT", "Recipient Name", "Tax ID", "Address"}, 0);
-        invoiceTable = new JTable(tableModel);
-        invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        invoiceTable.addMouseListener(new MouseAdapter() {
+        agreementTableModel = new DefaultTableModel(new Object[]{"Agreement ID", "Sponsor Name", "Contact Name", "Email", "Amount", "Status"}, 0);
+        agreementTable = new JTable(agreementTableModel);
+        agreementTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        agreementTable.setRowHeight(25);
+        agreementTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        agreementTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int selectedRow = invoiceTable.getSelectedRow();
+                int selectedRow = agreementTable.getSelectedRow();
                 if (selectedRow != -1) {
-                    txtInvoiceNumber.setText(tableModel.getValueAt(selectedRow, 0).toString());
-                    agreementDropdown.setSelectedItem(tableModel.getValueAt(selectedRow, 1).toString());
-                    txtInvoiceDate.setText(tableModel.getValueAt(selectedRow, 3).toString());
-                    txtInvoiceVat.setText(tableModel.getValueAt(selectedRow, 4).toString());
-                    txtRecipientName.setText(tableModel.getValueAt(selectedRow, 5).toString());
-                    txtRecipientTaxId.setText(tableModel.getValueAt(selectedRow, 6).toString());
-                    txtRecipientAddress.setText(tableModel.getValueAt(selectedRow, 7).toString());
+                    txtInvoiceNumber.setText(generateInvoiceNumber());
+                    txtInvoiceDate.setText(getCurrentDate());
+                    txtRecipientName.setText(agreementTableModel.getValueAt(selectedRow, 1).toString());
+                    txtRecipientTaxId.setText(agreementTableModel.getValueAt(selectedRow, 2).toString());
+                    txtRecipientAddress.setText(agreementTableModel.getValueAt(selectedRow, 3).toString());
+                    btnSend.setEnabled(true);
                 }
             }
         });
+        JScrollPane tableScrollPane = new JScrollPane(agreementTable);
+        tableScrollPane.setPreferredSize(new Dimension(400, 300));
+        tableScrollPane.setBorder(new TitledBorder("Select Agreement"));
+        centerPanel.add(tableScrollPane);
 
-        JScrollPane tableScrollPane = new JScrollPane(invoiceTable);
-        tableScrollPane.setBorder(BorderFactory.createTitledBorder("Select Invoice"));
-        mainPanel.add(tableScrollPane);
+        JPanel detailsPanel = new JPanel(new GridLayout(7, 2, 10, 10));
+        detailsPanel.setBorder(new TitledBorder("Invoice Details"));
 
-        add(mainPanel);
+        txtInvoiceNumber = new JTextField();
+        txtInvoiceDate = new JTextField();
+        txtInvoiceVat = new JTextField("21");
+txtInvoiceVat.setEditable(false);
+        txtRecipientName = new JTextField();
+        txtRecipientTaxId = new JTextField();
+        txtRecipientAddress = new JTextField();
+
+        txtInvoiceNumber.setEditable(false);
+        txtInvoiceDate.setEditable(false);
+        txtRecipientName.setEditable(false);
+        txtRecipientTaxId.setEditable(false);
+        txtRecipientAddress.setEditable(false);
+
+        detailsPanel.add(new JLabel("Invoice ID:")); detailsPanel.add(txtInvoiceNumber);
+        detailsPanel.add(new JLabel("Invoice Date:")); detailsPanel.add(txtInvoiceDate);
+        detailsPanel.add(new JLabel("VAT (%):")); detailsPanel.add(txtInvoiceVat);
+        detailsPanel.add(new JLabel("Recipient Name:")); detailsPanel.add(txtRecipientName);
+        detailsPanel.add(new JLabel("Recipient Tax ID:")); detailsPanel.add(txtRecipientTaxId);
+        detailsPanel.add(new JLabel("Recipient Address:")); detailsPanel.add(txtRecipientAddress);
+
+        centerPanel.add(detailsPanel);
+        add(centerPanel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        btnGenerate = new JButton("Generate Invoice");
+        btnGenerate.setFont(new Font("Arial", Font.BOLD, 16));
+        btnSend = new JButton("Send Invoice");
+        btnSend.setFont(new Font("Arial", Font.BOLD, 16));
+        btnSend.setEnabled(false);
+
+        buttonPanel.add(btnGenerate);
+        buttonPanel.add(btnSend);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void loadAgreementsFromDatabase() {
-        try {
-            List<List<Object>> results = db.executeQuery("SELECT agreement_id FROM Agreement");
-            agreementDropdown.removeAllItems();
-            for (List<Object> row : results) {
-                agreementDropdown.addItem(row.get(0).toString());
-            }
-        } catch (Exception e) {
-            showError("Error loading agreements: " + e.getMessage());
-        }
+    private String generateInvoiceNumber() {
+        return String.valueOf(System.currentTimeMillis()).substring(4);
     }
 
-    public void loadInvoicesIntoTable() {
-        try {
-            List<List<Object>> results = db.executeQuery(
-                "SELECT i.invoice_number, i.agreement_id, e.edition_title, i.invoice_date, i.invoice_vat, i.recipient_name, i.recipient_tax_id, i.recipient_address " +
-                "FROM Invoice i " +
-                "JOIN Agreement a ON i.agreement_id = a.agreement_id " +
-                "JOIN Edition e ON a.edition_id = e.edition_id"
-            );
-            tableModel.setRowCount(0);
-            for (List<Object> row : results) {
-                tableModel.addRow(new Object[]{row.get(0), row.get(1), row.get(2), row.get(3), row.get(4), row.get(5), row.get(6), row.get(7)});
-            }
-        } catch (Exception e) {
-            showError("Error loading invoices: " + e.getMessage());
-        }
-    }
-
-    public void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public void showError(String message) {
-        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    private String getCurrentDate() {
+        return java.time.LocalDate.now().toString();
     }
 
     public JButton getGenerateButton() { return btnGenerate; }
     public JButton getSendButton() { return btnSend; }
     public String getInvoiceNumber() { return txtInvoiceNumber.getText(); }
-    public void setInvoiceNumber(String number) { txtInvoiceNumber.setText(number); }
-    public String getInvoiceDate() { return txtInvoiceDate.getText(); }
-    public void setInvoiceDate(String date) { txtInvoiceDate.setText(date); }
     public String getInvoiceVat() { return txtInvoiceVat.getText(); }
-    public void setInvoiceVat(String vat) { txtInvoiceVat.setText(vat); }
-    public String getSelectedAgreement() { return (String) agreementDropdown.getSelectedItem(); }
+    public String getInvoiceDate() { return txtInvoiceDate.getText(); }
     public String getRecipientName() { return txtRecipientName.getText(); }
     public String getRecipientTaxId() { return txtRecipientTaxId.getText(); }
     public String getRecipientAddress() { return txtRecipientAddress.getText(); }
+
+    public String getSelectedAgreement() {
+        int selectedRow = agreementTable.getSelectedRow();
+        if (selectedRow != -1) {
+            return agreementTableModel.getValueAt(selectedRow, 0).toString();
+        }
+        return null;
+    }
+
+    public void removeSelectedAgreement() {
+        int selectedRow = agreementTable.getSelectedRow();
+        if (selectedRow != -1) {
+            agreementTableModel.removeRow(selectedRow);
+            btnSend.setEnabled(false);
+        }
+    }
+
+    public JComboBox<String> getActivityDropdown() {
+        return activityDropdown;
+    }
+
+    public void populateActivityDropdown(List<Object[]> activities) {
+        activityDropdown.removeAllItems();
+        for (Object[] activity : activities) {
+            activityDropdown.addItem(activity[0].toString());
+        }
+    }
+
+    public void populateAgreementTable(List<Object[]> agreements) {
+        agreementTableModel.setRowCount(0);
+        for (Object[] agreement : agreements) {
+            agreementTableModel.addRow(agreement);
+        }
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public String getSelectedActivity() {
+        return (String) activityDropdown.getSelectedItem();
+    }
+
+    public void clearInvoiceFields() {
+        txtInvoiceNumber.setText("");
+        txtInvoiceDate.setText("");
+        txtInvoiceVat.setText("");
+        txtRecipientName.setText("");
+        txtRecipientTaxId.setText("");
+        txtRecipientAddress.setText("");
+    }
 }
