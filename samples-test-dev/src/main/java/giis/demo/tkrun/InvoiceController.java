@@ -1,10 +1,9 @@
+// InvoiceController.java
 package giis.demo.tkrun;
 
-import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 public class InvoiceController {
     private InvoiceModel model;
@@ -26,7 +25,7 @@ public class InvoiceController {
 
     private void loadActivities() {
         try {
-            List<List<Object>> activities = model.getAllEditions();
+            List<Object[]> activities = model.getAllEvents();
             view.populateActivityDropdown(activities);
         } catch (Exception e) {
             view.showError("Error loading activities: " + e.getMessage());
@@ -39,7 +38,7 @@ public class InvoiceController {
             if (selectedActivity == null || selectedActivity.isEmpty()) {
                 return;
             }
-            List<List<Object>> agreements = model.getAgreementsForActivity(selectedActivity);
+            List<Object[]> agreements = model.getAgreementsForActivity(selectedActivity);
             view.populateAgreementTable(agreements);
         } catch (Exception e) {
             view.showError("Error loading agreements: " + e.getMessage());
@@ -48,38 +47,44 @@ public class InvoiceController {
 
     private void generateInvoice() {
         try {
-            String invoiceNumber = generateInvoiceNumber();
-            String issueDate = dateFormat.format(new Date());
+            String invoiceNumber = view.getInvoiceNumber().trim();
             String invoiceDate = view.getInvoiceDate();
             double invoiceVat = Double.parseDouble(view.getInvoiceVat().trim());
-            String recipientName = view.getRecipientName();
-            String recipientTaxId = view.getRecipientTaxId();
-            String recipientAddress = view.getRecipientAddress();
             int agreementId = Integer.parseInt(view.getSelectedAgreement());
 
-            model.saveInvoice(invoiceNumber, agreementId, issueDate, invoiceDate, invoiceVat, recipientName, recipientTaxId, recipientAddress);
+            String activityName = view.getSelectedActivity();
+            Date eventDate = model.getEventStartDate(activityName);
+            Date today = new Date();
+
+            long diffInMillis = eventDate.getTime() - today.getTime();
+            long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
+
+            if (diffInDays < 28) {
+                view.showError("The invoice must be generated at least 4 weeks before the event.");
+                return;
+            }
+
+            model.saveInvoice(invoiceNumber, agreementId, invoiceDate, invoiceVat);
 
             view.showMessage("Invoice generated successfully.");
-            view.removeSelectedAgreement(); // Remove from table after generating invoice
+            view.removeSelectedAgreement();
         } catch (Exception ex) {
             view.showError("Error generating invoice: " + ex.getMessage());
         }
     }
+
+
 
     private void sendInvoice() {
         try {
             String invoiceNumber = view.getInvoiceNumber().trim();
             String sentDate = dateFormat.format(new Date());
 
-            model.updateInvoiceSentDate(invoiceNumber, sentDate);
+            model.recordMovementForInvoice(invoiceNumber, sentDate);
             view.showMessage("Invoice sent successfully on " + sentDate);
-            view.removeSelectedAgreement(); // Remove from table after sending invoice
+            view.removeSelectedAgreement();
         } catch (Exception ex) {
             view.showError("Error sending invoice: " + ex.getMessage());
         }
-    }
-
-    private String generateInvoiceNumber() {
-        return String.valueOf(System.currentTimeMillis()).substring(4);
     }
 }
