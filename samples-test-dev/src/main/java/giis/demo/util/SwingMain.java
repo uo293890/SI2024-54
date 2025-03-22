@@ -148,6 +148,19 @@ public class SwingMain {
         panel.add(btnRegisterPayment, "grow, wrap");
 
         
+     // Botón para abrir la ventana de cierre de eventos
+        JButton btnEventClosure = new JButton("Close Event");
+        btnEventClosure.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ClosureEventView view = new ClosureEventView();
+                CloseEventModel model = new CloseEventModel();
+                ClosureEventController controller = new ClosureEventController(model, view);
+                view.setVisible(true);
+            }
+        });
+        panel.add(btnEventClosure, "grow, wrap"); 
+        
+        
         
      // Botón para Payment
         JButton btnPayment = new JButton("Payment");
