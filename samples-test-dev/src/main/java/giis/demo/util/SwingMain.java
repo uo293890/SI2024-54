@@ -132,6 +132,22 @@ public class SwingMain {
             }
         });
         panel.add(btnInvoice, "grow, wrap");
+     
+        
+     // Botón para Register Payment
+        JButton btnRegisterPayment = new JButton("Register Payment");
+        btnRegisterPayment.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RegisterPaymentModel model = new RegisterPaymentModel();
+                RegisterPaymentView view = new RegisterPaymentView();
+                new RegisterPaymentController(model, view);
+                view.setVisible(true);
+            }
+        });
+        panel.add(btnRegisterPayment, "grow, wrap");
+
+        
         
      // Botón para Payment
         JButton btnPayment = new JButton("Payment");
