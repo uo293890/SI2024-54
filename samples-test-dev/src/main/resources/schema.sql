@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS Agreement (
 CREATE TABLE IF NOT EXISTS Invoice (
     invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
     agreement_id INTEGER NOT NULL,
-    invoice_date DATE NOT NULL,
+    invoice_date DATE ,
     invoice_number TEXT NOT NULL CHECK (invoice_number GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
     invoice_vat DOUBLE NOT NULL,
     FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
@@ -82,6 +82,8 @@ CREATE TABLE IF NOT EXISTS IncomesExpenses (
     event_id INTEGER NOT NULL,
     incexp_concept TEXT NOT NULL,
     incexp_amount INTEGER NOT NULL,
+    
+    
     incexp_status TEXT NOT NULL CHECK(incexp_status IN ('Estimated', 'Paid')) DEFAULT 'Estimated',
     FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
