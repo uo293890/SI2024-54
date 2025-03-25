@@ -1,32 +1,120 @@
--- Types (si aún no están)
-INSERT INTO Type (type_id, type_name) VALUES
-(10, 'Hackathon');
+INSERT INTO Type (type_name)
+VALUES
+ ('Week Event'),
+ ('Educational'),
+ ('Conference'),
+ ('Forum'),
+ ('Expo'),
+ ('Summit'),
+ ('Hackathon');
 
--- Event
-INSERT INTO Event (event_id, type_id, event_name, event_inidate, event_enddate, event_location, event_status) VALUES
-(10, 10, 'Asturias Tech Hackathon', '2025-05-25', '2025-05-27', 'Oviedo', 'Planned');
+-- Eventos (todos válidos ahora)
+INSERT INTO Event (type_id, event_name, event_inidate, event_enddate, event_location, event_status)
+VALUES
+ (1, 'ImpulsoTIC Week', '2023-11-10', '2023-11-15', 'Oviedo', 'Closed'),
+ (2, 'Hour of Code', '2023-12-01', '2023-12-07', 'Gijón', 'Closed'),
+ (6, 'Tech Innovation Summit', '2023-09-10', '2023-09-12', 'Oviedo', 'Closed'),
+ (4, 'Cyber Security Forum', '2023-10-05', '2023-10-07', 'Avilés', 'Closed'),
+ (3, 'AI & Data Science Conference', '2024-05-01', '2024-05-05', 'Madrid', 'Planned'),
+ (5, 'Blockchain Expo', '2024-06-01', '2024-06-03', 'Barcelona', 'Planned'),
+ (7, 'Asturias Tech Hackathon', '2025-05-25', '2025-05-27', 'Oviedo', 'Planned');
 
 -- Sponsors
-INSERT INTO Sponsor (sponsor_id, sponsor_name) VALUES
-(20, 'TechNova'),
-(21, 'FutureMind');
+INSERT INTO Sponsor (sponsor_name)
+VALUES
+ ('Caja Rural de Asturias'),
+ ('CCII'),
+ ('TechCorp'),
+ ('CyberSecure Inc'),
+ ('AI Research Group'),
+ ('Blockchain Global'),
+ ('GlobalTech Solutions'),
+ ('SecureNet Corp'),
+ ('CloudWare'),
+ ('Data Analytics Inc'),
+ ('Startup Accelerator'),
+ ('TechNova'),
+ ('FutureMind');
 
--- Contacts
-INSERT INTO SpContact (spcontact_id, sponsor_id, spcontact_name, spcontact_number, spcontact_email) VALUES
-(20, 20, 'Lucía Torres', '+34611112222', 'lucia.torres@technova.com'),
-(21, 21, 'Jorge Rivera', '+34622223333', 'jorge.rivera@futuremind.ai');
+-- Contactos (solo usando sponsor_id del 1 al 13)
+INSERT INTO SpContact (sponsor_id, spcontact_name, spcontact_number, spcontact_email)
+VALUES
+ (1, 'Maria Perez', '+34987654321', 'maria.perez@cajarural.com'),
+ (2, 'James Brown', '+34123456789', 'james.brown@ccii.com'),
+ (7, 'Alice White', '+34981234567', 'alice.white@globaltech.com'),
+ (8, 'Michael Scott', '+34965432109', 'michael.scott@securenet.com'),
+ (3, 'Robert Wilson', '+34123412345', 'robert.wilson@techcorp.com'),
+ (12, 'Lucía Torres', '+34611112222', 'lucia.torres@technova.com'),
+ (13, 'Jorge Rivera', '+34622223333', 'jorge.rivera@futuremind.ai');
 
--- GB Members
-INSERT INTO GbMember (gbmember_id, gbmember_name, gbmember_email, gbmember_position) VALUES
-(10, 'Marina Díaz', 'marina.diaz@example.com', 'Board Member'),
-(11, 'Carlos Ruiz', 'carlos.ruiz@example.com', 'Board Member');
+-- Miembros del Consejo
+INSERT INTO GbMember (gbmember_name, gbmember_email, gbmember_position)
+VALUES
+ ('Dean', 'dean@example.com', 'President'),
+ ('Alexander', 'alexander@example.com', 'Treasurer'),
+ ('Laura Johnson', 'laura.johnson@example.com', 'Board Member'),
+ ('Michael Smith', 'michael.smith@example.com', 'Board Member'),
+ ('Sophia Williams', 'sophia.williams@example.com', 'Board Member'),
+ ('Daniel Martinez', 'daniel.martinez@example.com', 'Board Member'),
+ ('Marina Díaz', 'marina.diaz@example.com', 'Board Member'),
+ ('Carlos Ruiz', 'carlos.ruiz@example.com', 'Board Member');
 
--- Sponsorship levels
-INSERT INTO LevelOfSponsorship (level_id, event_id, level_name, level_minamount, advantages) VALUES
-(20, 10, 'Gold', 4000, 'Stand + branding'),
-(21, 10, 'Silver', 2500, 'Stand only');
+-- Niveles de patrocinio (evento_id válido de 1 a 7)
+INSERT INTO LevelOfSponsorship (event_id, level_name, level_minamount, advantages)
+VALUES
+ (1, 'Gold', 2000, 'Full visibility, booth, keynote slot'),
+ (1, 'Silver', 1500, 'Visibility, booth'),
+ (2, 'Gold', 2500, 'Top visibility and full package'),
+ (2, 'Bronze', 1000, 'Visibility only'),
+ (3, 'Platinum', 3000, 'All access and premium visibility'),
+ (4, 'Gold', 2500, 'Full access'),
+ (6, 'Gold', 4000, 'Stand + branding'),
+ (7, 'Silver', 2500, 'Stand only');
 
--- Agreements visibles
-INSERT INTO Agreement (agreement_id, level_id, gbmember_id, spcontact_id, agreement_date, agreement_amount, agreement_status) VALUES
-(20, 20, 10, 20, '2025-03-20', 4200, 'Agreed'),
-(21, 21, 11, 21, '2025-03-21', 2600, 'Agreed');
+-- Acuerdos válidos
+INSERT INTO Agreement (level_id, gbmember_id, spcontact_id, agreement_date, agreement_amount, agreement_status)
+VALUES
+ (1, 1, 1, '2023-10-01', 2500, 'Paid'),
+ (1, 2, 2, '2023-10-05', 3000, 'Paid'),
+ (1, 3, 3, '2023-10-10', 4000, 'Agreed'),
+ (1, 4, 4, '2023-09-20', 5000, 'Agreed'),
+ (3, 2, 1, '2024-03-01', 3000, 'Paid'),
+ (3, 3, 3, '2024-03-15', 2500, 'Agreed'),
+ (3, 4, 4, '2024-04-05', 4000, 'Agreed'),
+ (3, 5, 5, '2024-02-15', 5000, 'Agreed'),
+ (7, 6, 6, '2025-03-20', 4200, 'Agreed'),
+ (8, 7, 7, '2025-03-21', 2600, 'Agreed');
+
+-- Facturas
+INSERT INTO Invoice (agreement_id, invoice_date, invoice_number, invoice_vat)
+VALUES
+ (1, '2023-11-16', '000000001', 21.0),
+ (2, '2024-11-16', '000000002', 21.0),
+ (3, '2024-07-01', '000000003', 21.0),
+ (4, '2023-09-15', '000000004', 21.0),
+ (5, '2024-02-25', '000000005', 21.0),
+ (6, '2025-04-15', '000000006', 21.0);
+
+-- Ingresos y gastos
+INSERT INTO IncomesExpenses (event_id, incexp_concept, incexp_amount, incexp_status)
+VALUES
+ (1, 'Marketing Campaign', 5000, 'Paid'),
+ (1, 'Venue Rental', 2000, 'Paid'),
+ (2, 'Communication Services', 6000, 'Paid'),
+ (3, 'Equipment Rental', 1500, 'Estimated'),
+ (4, 'Security Equipment Rental', 4000, 'Paid'),
+ (4, 'Cybersecurity Awareness Campaign', 1800, 'Paid'),
+ (5, 'Data Protection Services', 2500, 'Paid'),
+ (6, 'Cloud Hosting Setup', 3000, 'Estimated');
+
+-- Movimientos
+INSERT INTO Movement (incexp_id, invoice_id, movement_date, movement_concept, movement_amount)
+VALUES
+ (1, NULL, '2023-11-16', 'Marketing Expenses', 5000),
+ (2, NULL, '2023-11-16', 'Venue Rental Payment', 2000),
+ (3, NULL, '2024-06-25', 'Equipment Rental Advance', 1500),
+ (NULL, 3, '2024-07-02', 'TechCorp Sponsorship Payment', 4000),
+ (5, NULL, '2023-09-15', 'Security Equipment Rental', 4000),
+ (6, NULL, '2023-09-15', 'Cybersecurity Awareness Campaign', 1800),
+ (7, NULL, '2024-02-20', 'Data Protection Services', 2500),
+ (8, 6, '2025-04-16', 'Cloud Hosting Setup Payment', 3000);
