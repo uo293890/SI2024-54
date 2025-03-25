@@ -2,211 +2,148 @@ package giis.demo.util;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Date;
 import java.time.LocalDate;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-
-import giis.demo.tkrun.*;
+import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
+import giis.demo.tkrun.*;
 
 public class SwingMain {
     private JFrame frame;
     private JTextField textDate;
-    public Date date;
-    
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() { //NOSONAR codigo autogenerado
-			public void run() {
-				try {
-					SwingMain window = new SwingMain();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace(); //NOSONAR codigo autogenerado
-				}
-			}
-		});
-	}
+    public java.util.Date date;
 
-	/**
-	 * Create the application.
-	 */
-	public SwingMain() {
-		initialize();
-	}
-    
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setTitle("Main");
-		frame.setBounds(0, 0, 400, 300);
-		frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		
-		JScrollPane scrollPane = new JScrollPane();
-        frame.getContentPane().setLayout(new BorderLayout(0, 0));
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                SwingMain window = new SwingMain();
+                window.frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public SwingMain() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame = new JFrame();
+        frame.setTitle("COIIPA Sponsorship Management");
+        frame.setBounds(100, 100, 800, 700);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+
+        JScrollPane scrollPane = new JScrollPane();
+        frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new MigLayout("", "[grow]", "[][][][][]"));
-		
-     // Botón para inicializar base de datos
-        JButton btnInicializarBaseDeDatos = new JButton("Inicializar Base de Datos en Blanco");
-        btnInicializarBaseDeDatos.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Database db = new Database();
-                db.createDatabase(false);
-            }
+        panel.setLayout(new MigLayout("", "[grow,fill]", "[][][][][][][][][][][][]"));
+
+        Font buttonFont = new Font("Arial", Font.BOLD, 18);
+
+        JButton btnInitDB = new JButton("Initialize Blank Database");
+        btnInitDB.setFont(buttonFont);
+        btnInitDB.addActionListener(e -> new Database().createDatabase(false));
+        panel.add(btnInitDB, "wrap");
+
+        JButton btnLoadData = new JButton("Load Sample Data");
+        btnLoadData.setFont(buttonFont);
+        btnLoadData.addActionListener(e -> {
+            Database db = new Database();
+            db.createDatabase(false);
+            db.loadDatabase();
         });
-        panel.add(btnInicializarBaseDeDatos, "grow, wrap");	
-			
-     // Botón para cargar datos iniciales
-        JButton btnCargarDatosIniciales = new JButton("Cargar Datos Iniciales para Pruebas");
-        btnCargarDatosIniciales.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Database db = new Database();
-                db.createDatabase(false);
-                db.loadDatabase();
-            }
+        panel.add(btnLoadData, "wrap");
+
+        JButton btnRegisterAgreement = new JButton("Register Sponsorship Agreement");
+        btnRegisterAgreement.setFont(buttonFont);
+        btnRegisterAgreement.addActionListener(e -> {
+            RegisterSponsorshipAgreementView view = new RegisterSponsorshipAgreementView();
+            new RegisterSponsorshipAgreementController(new RegisterSponsorshipAgreementModel(), view);
+            view.setVisible(true);
         });
-        panel.add(btnCargarDatosIniciales, "grow, wrap");
-        
-     // Botón para Sponsorship Agreement Registration
-        JButton btnSponsorshipAgreementRegistration = new JButton("Sponsorship Agreement Registration");
-        btnSponsorshipAgreementRegistration.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                RegisterSponsorshipAgreementModel model = new RegisterSponsorshipAgreementModel();
-                RegisterSponsorshipAgreementView view = new RegisterSponsorshipAgreementView();
-                new RegisterSponsorshipAgreementController(model, view);
-                view.setVisible(true);
-            }
+        panel.add(btnRegisterAgreement, "wrap");
+
+        JButton btnFinancialStatus = new JButton("Activity Financial Status");
+        btnFinancialStatus.setFont(buttonFont);
+        btnFinancialStatus.addActionListener(e -> {
+            ActivityFinancialStatusView view = new ActivityFinancialStatusView();
+            new ActivityFinancialStatusController(new ActivityFinancialStatusModel(), view);
+            view.setVisible(true);
         });
-        panel.add(btnSponsorshipAgreementRegistration, "grow, wrap");
-        
-     // Botón para Activity Financial Status
-        JButton btnActivityFinancialStatus = new JButton("Activity Financial Status");
-        btnActivityFinancialStatus.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	ActivityFinancialStatusModel model = new ActivityFinancialStatusModel();
-            	ActivityFinancialStatusView view = new ActivityFinancialStatusView();
-                new ActivityFinancialStatusController(model, view);
-                view.setVisible(true);
-            }
+        panel.add(btnFinancialStatus, "wrap");
+
+        JButton btnReport = new JButton("Generate Income & Expense Report");
+        btnReport.setFont(buttonFont);
+        btnReport.addActionListener(e -> {
+            FinancialReportView view = new FinancialReportView();
+            new FinancialReportController(new FinancialReportModel(), view);
+            view.setVisible(true);
         });
-        panel.add(btnActivityFinancialStatus, "grow, wrap");
-        
-     // Botón para Report
-        JButton btnReport = new JButton("Generate Income and Expense Report");
-        btnReport.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	FinancialReportView reportView = new FinancialReportView();
-                FinancialReportModel reportModel = new FinancialReportModel();
-                new FinancialReportController(reportModel, reportView);
-                reportView.setVisible(true);
-            }
+        panel.add(btnReport, "wrap");
+
+        JButton btnInvoice = new JButton("Manage Invoices");
+        btnInvoice.setFont(buttonFont);
+        btnInvoice.addActionListener(e -> {
+            InvoiceView view = new InvoiceView();
+            new InvoiceController(new InvoiceModel(), view);
+            view.setVisible(true);
         });
-        panel.add(btnReport, "grow, wrap");
-        
-     // Botón para Invoice
-        JButton btnInvoice = new JButton("Send Invoice");
-        btnInvoice.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	InvoiceView invoiceView = new InvoiceView();
-                InvoiceModel invoiceModel = new InvoiceModel();
-                new InvoiceController(invoiceModel, invoiceView);
-                invoiceView.setVisible(true);
-            }
-        });
-        panel.add(btnInvoice, "grow, wrap");
-     
-        
-     // Botón para Register Payment
+        panel.add(btnInvoice, "wrap");
+
         JButton btnRegisterPayment = new JButton("Register Payment");
-        btnRegisterPayment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                RegisterPaymentModel model = new RegisterPaymentModel();
-                RegisterPaymentView view = new RegisterPaymentView();
-                new RegisterPaymentController(model, view);
-                view.setVisible(true);
-            }
+        btnRegisterPayment.setFont(buttonFont);
+        btnRegisterPayment.addActionListener(e -> {
+            RegisterPaymentView view = new RegisterPaymentView();
+            new RegisterPaymentController(new RegisterPaymentModel(), view);
+            view.setVisible(true);
         });
-        panel.add(btnRegisterPayment, "grow, wrap");
+        panel.add(btnRegisterPayment, "wrap");
 
-        
-     // Botón para abrir la ventana de cierre de eventos
         JButton btnEventClosure = new JButton("Close Event");
-        btnEventClosure.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ClosureEventView view = new ClosureEventView();
-                CloseEventModel model = new CloseEventModel();
-                ClosureEventController controller = new ClosureEventController(model, view);
-                view.setVisible(true);
-            }
+        btnEventClosure.setFont(buttonFont);
+        btnEventClosure.addActionListener(e -> {
+            ClosureEventView view = new ClosureEventView();
+            new ClosureEventController(new CloseEventModel(), view);
+            view.setVisible(true);
         });
-        panel.add(btnEventClosure, "grow, wrap"); 
-        
-        
-        
-     // Botón para Payment
-        JButton btnPayment = new JButton("Payment");
-        btnPayment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	PaymentView paymentView = new PaymentView();
-                PaymentModel paymentModel = new PaymentModel();
-                new PaymentController(paymentModel, paymentView);
-                paymentView.setVisible(true);
-            }
-        });
-        panel.add(btnPayment, "grow, wrap");
-        
-     // Botón para Other Movement
-        JButton btnOtherMovement = new JButton("Other Movement");
-        btnOtherMovement.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	OtherMovementView otherMovementView = new OtherMovementView();
-                OtherMovementModel otherMovementModel = new OtherMovementModel();
-                new OtherMovementController(otherMovementModel, otherMovementView);
-                otherMovementView.setVisible(true);
-            }
-        });
-        panel.add(btnOtherMovement, "grow, wrap");
+        panel.add(btnEventClosure, "wrap");
 
-	textDate = new JTextField();
-    	textDate.setText(LocalDate.now().toString());
-    	panel.add(textDate, "grow, wrap");
-    			
-    	JButton btnSetDate = new JButton("Set Date");
-    	btnSetDate.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {	
-    			try{
-    				date = Util.isoStringToDate(textDate.getText());
-    			} catch(ApplicationException a) {
-    				JOptionPane.showMessageDialog(frame, "Date Format Invalid, Try: YYYY-MM-DD", "Set Date Error", JOptionPane.ERROR_MESSAGE);
-    			}
-    			JOptionPane.showMessageDialog(frame, "Date set correctly", "Date set", JOptionPane.INFORMATION_MESSAGE);
-    		}});
-    	panel.add(btnSetDate, "grow, wrap");
-                
+        
+
+        JButton btnOtherMovement = new JButton("Other Financial Movement");
+        btnOtherMovement.setFont(buttonFont);
+        btnOtherMovement.addActionListener(e -> {
+            OtherMovementView view = new OtherMovementView();
+            new OtherMovementController(new OtherMovementModel(), view);
+            view.setVisible(true);
+        });
+        panel.add(btnOtherMovement, "wrap");
+
+        textDate = new JTextField(LocalDate.now().toString());
+        textDate.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(textDate, "grow, wrap");
+
+        JButton btnSetDate = new JButton("Set Working Date");
+        btnSetDate.setFont(buttonFont);
+        btnSetDate.addActionListener((ActionEvent e) -> {
+            try {
+                date = Util.isoStringToDate(textDate.getText());
+                JOptionPane.showMessageDialog(frame, "Date set correctly", "Date set", JOptionPane.INFORMATION_MESSAGE);
+            } catch (ApplicationException ex) {
+                JOptionPane.showMessageDialog(frame, "Date Format Invalid, Try: YYYY-MM-DD", "Set Date Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        panel.add(btnSetDate, "grow, wrap");
+
         scrollPane.setViewportView(panel);
-	}
+    }
 
-	public JFrame getFrame() { return this.frame; }
-	
+    public JFrame getFrame() {
+        return frame;
+    }
 }

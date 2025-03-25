@@ -5,11 +5,21 @@ import giis.demo.util.Database;
 import java.util.Date;
 import java.util.List;
 
+
+/**
+ * Model class responsible for database access and business logic related to invoices.
+ * Interacts with the Invoice, Movement, and Event tables.
+ */
 public class InvoiceModel {
     private Database db = new Database();
 
     /**
-     * Guarda una nueva factura SIN fecha de envío (invoice_date se registra al mandarla).
+     * Stores a new invoice in the database without a send date.
+     *
+     * @param invoiceNumber Unique identifier for the invoice.
+     * @param agreementId   ID of the agreement being invoiced.
+     * @param invoiceVat    VAT applied to the invoice.
+     * @throws Exception if the database update fails.
      */
     public void saveInvoice(String invoiceNumber, int agreementId, double invoiceVat) throws Exception {
         String sql = "INSERT INTO Invoice (agreement_id, invoice_number, invoice_vat) " +
@@ -19,7 +29,11 @@ public class InvoiceModel {
 
 
     /**
-     * Establece la fecha de envío de la factura (cuando realmente se manda).
+     * Sets the date when an invoice was actually sent to the sponsor.
+     *
+     * @param invoiceNumber Unique identifier for the invoice.
+     * @param invoiceDate   Date the invoice was sent, in YYYY-MM-DD format.
+     * @throws Exception if the database update fails.
      */
     public void setInvoiceDate(String invoiceNumber, String invoiceDate) throws Exception {
         String sql = "UPDATE Invoice SET invoice_date = '" + invoiceDate + "' WHERE invoice_number = '" + invoiceNumber + "'";
@@ -27,7 +41,11 @@ public class InvoiceModel {
     }
 
     /**
-     * Registra un movimiento de tipo "Invoice Sent" en la tabla Movement.
+     * Records a new "Invoice Sent" financial movement associated with the invoice.
+     *
+     * @param invoiceNumber The invoice's identifier.
+     * @param sentDate      The date the invoice was sent.
+     * @throws Exception if the database insert fails.
      */
     public void recordMovementForInvoice(String invoiceNumber, String sentDate) throws Exception {
         String sql = "INSERT INTO Movement (invoice_id, movement_date, movement_concept, movement_amount) " +
@@ -36,7 +54,10 @@ public class InvoiceModel {
     }
 
     /**
-     * Devuelve todas las actividades (eventos) disponibles.
+     * Retrieves a list of all event names from the Event table.
+     *
+     * @return A list of Object arrays, each containing one event name.
+     * @throws Exception if the query fails.
      */
     public List<Object[]> getAllEvents() throws Exception {
         String sql = "SELECT DISTINCT event_name FROM Event";
@@ -44,8 +65,11 @@ public class InvoiceModel {
     }
 
     /**
-     * Devuelve todos los acuerdos de patrocinio asociados a una actividad.
-     * Incluye un campo "has_invoice" para saber si ya se generó factura.
+     * Retrieves all agreements for a given activity, including whether an invoice has been generated.
+     *
+     * @param activityName The name of the activity.
+     * @return A list of agreements and related sponsor/contact data.
+     * @throws Exception if the query fails.
      */
     public List<Object[]> getAgreementsForActivity(String activityName) throws Exception {
         String sql = "SELECT a.agreement_id, s.sponsor_name, c.spcontact_name, c.spcontact_email, " +
@@ -64,7 +88,11 @@ public class InvoiceModel {
 
 
     /**
-     * Devuelve la fecha de inicio del evento (actividad).
+     * Retrieves the start date of the given event.
+     *
+     * @param activityName The name of the event.
+     * @return A Date object representing the event's start date.
+     * @throws RuntimeException if the event is not found.
      */
     public Date getEventStartDate(String activityName) {
         String sql = "SELECT event_inidate FROM Event WHERE event_name = '" + activityName + "'";
