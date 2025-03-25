@@ -1,4 +1,3 @@
-// InvoiceController.java
 package giis.demo.tkrun;
 
 import java.text.SimpleDateFormat;
@@ -18,7 +17,7 @@ public class InvoiceController {
     }
 
     private void initController() {
-        //view.getGenerateButton().addActionListener(e -> generateInvoice());
+        view.getGenerateButton().addActionListener(e -> generateInvoice());
         view.getSendButton().addActionListener(e -> sendInvoice());
         view.getActivityDropdown().addActionListener(e -> loadAgreementsForSelectedActivity());
     }
@@ -45,10 +44,9 @@ public class InvoiceController {
         }
     }
 
-    /*private void generateInvoice() {
+    private void generateInvoice() {
         try {
             String invoiceNumber = view.getInvoiceNumber().trim();
-            String invoiceDate = view.getInvoiceDate();
             double invoiceVat = Double.parseDouble(view.getInvoiceVat().trim());
             int agreementId = Integer.parseInt(view.getSelectedAgreement());
 
@@ -59,30 +57,52 @@ public class InvoiceController {
             long diffInMillis = eventDate.getTime() - today.getTime();
             long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
 
+            // DEBUG: imprime fechas
+            System.out.println("Event date: " + eventDate);
+            System.out.println("Today: " + today);
+            System.out.println("Days between: " + diffInDays);
+
             if (diffInDays < 28) {
                 view.showError("The invoice must be generated at least 4 weeks before the event.");
                 return;
             }
 
-            model.saveInvoice(invoiceNumber, agreementId, invoiceDate, invoiceVat);
+            model.saveInvoice(invoiceNumber, agreementId, invoiceVat);
 
-            view.showMessage("Invoice generated successfully.");
+            view.showMessage("Invoice generated successfully. You can now send it.");
+            view.addGeneratedInvoice(invoiceNumber, "", view.getRecipientName(), view.getInvoiceVat());
+
+            view.getSendButton().setEnabled(true);
             view.removeSelectedAgreement();
+
         } catch (Exception ex) {
             view.showError("Error generating invoice: " + ex.getMessage());
         }
-    }*/
-
+    }
 
 
     private void sendInvoice() {
         try {
             String invoiceNumber = view.getInvoiceNumber().trim();
-            String sentDate = dateFormat.format(new Date());
+            String invoiceDate = dateFormat.format(new Date());
 
-            model.recordMovementForInvoice(invoiceNumber, sentDate);
-            view.showMessage("Invoice sent successfully on " + sentDate);
-            view.removeSelectedAgreement();
+            // Registrar fecha de envío en la factura
+            model.setInvoiceDate(invoiceNumber, invoiceDate);
+
+            // Registrar movimiento de envío
+            model.recordMovementForInvoice(invoiceNumber, invoiceDate);
+
+            // Mostrar fecha en el campo de la vista
+            view.updateInvoiceDateField(invoiceDate);
+
+            view.showMessage("Invoice sent successfully on " + invoiceDate);
+
+            // Opcional: podrías actualizar la fila en la tabla de facturas generadas si se desea
+            // (por ejemplo, actualizar columna "Date Sent")
+
+            view.getSendButton().setEnabled(false);
+            view.clearInvoiceFields();
+
         } catch (Exception ex) {
             view.showError("Error sending invoice: " + ex.getMessage());
         }
