@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ItemEvent;
 
 public class ClosureEventView extends JDialog {
     private static final long serialVersionUID = 1L;
@@ -18,7 +17,6 @@ public class ClosureEventView extends JDialog {
     private JLabel lblFinalResult;
     private JComboBox<String> filterComboBox;
 
-    private JButton btnCheckClosure;
     private JButton btnCloseEvent;
     private JButton btnForceClose;
     private JButton btnReopen;
@@ -28,7 +26,7 @@ public class ClosureEventView extends JDialog {
         setTitle("Event Closure Management");
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(1100, 700); // Proportional and not full screen
+        setSize(1100, 700); // Proportional size, not full screen
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(15, 15));
 
@@ -51,7 +49,7 @@ public class ClosureEventView extends JDialog {
         tableEvents.setFont(new Font("Arial", Font.PLAIN, 15));
         tableEvents.setRowHeight(28);
         JScrollPane scrollEvents = new JScrollPane(tableEvents);
-        scrollEvents.setBorder(BorderFactory.createTitledBorder("Planned or Closed Events"));
+        scrollEvents.setBorder(BorderFactory.createTitledBorder("Events (Planned or Closed)"));
         scrollEvents.setPreferredSize(new Dimension(500, 300));
         contentPanel.add(scrollEvents, BorderLayout.WEST);
 
@@ -77,20 +75,17 @@ public class ClosureEventView extends JDialog {
 
         // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        //btnCheckClosure = new JButton("Check Criteria");
         btnCloseEvent = new JButton("Close Event");
         btnForceClose = new JButton("Force Close");
         btnReopen = new JButton("Reopen");
         btnCloseDialog = new JButton("Exit");
 
         Font btnFont = new Font("Arial", Font.BOLD, 15);
-        //btnCheckClosure.setFont(btnFont);
         btnCloseEvent.setFont(btnFont);
         btnForceClose.setFont(btnFont);
         btnReopen.setFont(btnFont);
         btnCloseDialog.setFont(btnFont);
 
-        //buttonPanel.add(btnCheckClosure);
         buttonPanel.add(btnCloseEvent);
         buttonPanel.add(btnForceClose);
         buttonPanel.add(btnReopen);
@@ -106,7 +101,6 @@ public class ClosureEventView extends JDialog {
 
     private JLabel createStatusLabel() {
         JLabel label = new JLabel("", SwingConstants.LEFT);
-        //label.setFont(new Font("Arial", Font.PLAIN, 15));
         return label;
     }
 
@@ -141,10 +135,6 @@ public class ClosureEventView extends JDialog {
 
     public JLabel getLblFinalResult() {
         return lblFinalResult;
-    }
-
-    public JButton getBtnCheckClosure() {
-        return btnCheckClosure;
     }
 
     public JButton getBtnCloseEvent() {
@@ -198,6 +188,4 @@ public class ClosureEventView extends JDialog {
         panelStatus.revalidate();
         panelStatus.repaint();
     }
-
-    
 }

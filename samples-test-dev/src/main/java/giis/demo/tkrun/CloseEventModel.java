@@ -6,11 +6,13 @@ import java.util.List;
 
 public class CloseEventModel extends Database {
 
+    // Join Event with Type to get the full event details
     public List<Object[]> getEventsToClose() {
         return this.executeQueryArray("""
-            SELECT event_id, event_name, event_inidate, event_enddate, event_status 
-            FROM Event
-            WHERE event_status IN ('Planned', 'Closed')
+            SELECT e.event_id, t.type_name, e.event_name, e.event_inidate, e.event_enddate, e.event_location, e.event_status 
+            FROM Event e
+            LEFT JOIN Type t ON e.type_id = t.type_id
+            WHERE e.event_status IN ('Planned', 'Closed')
         """);
     }
 

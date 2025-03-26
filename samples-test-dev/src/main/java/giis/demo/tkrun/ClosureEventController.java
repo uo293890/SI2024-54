@@ -1,7 +1,6 @@
 package giis.demo.tkrun;
 
 import giis.demo.util.SwingUtil;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ItemEvent;
@@ -32,12 +31,11 @@ public class ClosureEventController {
             }
         });
 
-        //view.getBtnCheckClosure().addActionListener(e -> updateStatusPanel());
-
         view.getBtnCloseEvent().addActionListener(e -> {
             int row = view.getTableEvents().getSelectedRow();
             if (row == -1) return;
-            String status = view.getTableEvents().getValueAt(row, 4).toString();
+            // "Status" is in the 7th column (index 6)
+            String status = view.getTableEvents().getValueAt(row, 6).toString();
             if ("Closed".equalsIgnoreCase(status)) {
                 showError("This event is already closed.");
                 return;
@@ -52,7 +50,7 @@ public class ClosureEventController {
         view.getBtnForceClose().addActionListener(e -> {
             int row = view.getTableEvents().getSelectedRow();
             if (row == -1) return;
-            String status = view.getTableEvents().getValueAt(row, 4).toString();
+            String status = view.getTableEvents().getValueAt(row, 6).toString();
             if ("Closed".equalsIgnoreCase(status)) {
                 showError("This event is already closed.");
                 return;
@@ -70,9 +68,9 @@ public class ClosureEventController {
         view.getBtnReopen().addActionListener(e -> {
             int row = view.getTableEvents().getSelectedRow();
             if (row == -1) return;
-            String status = view.getTableEvents().getValueAt(row, 4).toString();
+            String status = view.getTableEvents().getValueAt(row, 6).toString();
             if ("Planned".equalsIgnoreCase(status)) {
-                showError("Event is already planned and cannot be reopened.");
+                showError("This event is already planned and cannot be reopened.");
                 return;
             }
             int eventId = (int) view.getTableEvents().getValueAt(row, 0);
@@ -88,9 +86,11 @@ public class ClosureEventController {
     private void loadFilteredEvents() {
         String filter = (String) view.getFilterComboBox().getSelectedItem();
 
-        DefaultTableModel tableModel = new DefaultTableModel(new String[]{"ID", "Name", "Start Date", "End Date", "Status"}, 0);
+        // Build table model with complete event data
+        DefaultTableModel tableModel = new DefaultTableModel(
+            new String[]{"ID", "Type", "Name", "Start Date", "End Date", "Location", "Status"}, 0);
         for (Object[] row : model.getEventsToClose()) {
-            String status = row[4].toString();
+            String status = row[6].toString();
             if ("Only Closed".equals(filter) && !"Closed".equalsIgnoreCase(status)) continue;
             if ("Only Planned".equals(filter) && !"Planned".equalsIgnoreCase(status)) continue;
             tableModel.addRow(row);
@@ -113,13 +113,17 @@ public class ClosureEventController {
         boolean incomeOk = model.allIncomesExpensesPaid(eventId);
         boolean noMovements = !model.hasPendingMovements(eventId);
 
-        view.setStatusLabel(view.getLblAgreementStatus(), agreementsOk, "All agreements are paid or closed.", "Some agreements are not paid or closed.");
-        view.setStatusLabel(view.getLblInvoicesStatus(), invoicesOk, "All invoices have been generated.", "Some invoices are missing.");
-        view.setStatusLabel(view.getLblIncomeExpensesStatus(), incomeOk, "All income/expenses marked as paid.", "Some income/expenses are still estimated.");
-        view.setStatusLabel(view.getLblPendingMovementsStatus(), noMovements, "No pending financial movements.", "There are pending financial movements.");
+        view.setStatusLabel(view.getLblAgreementStatus(), agreementsOk,
+            "All agreements are paid or closed.", "Some agreements are not paid or closed.");
+        view.setStatusLabel(view.getLblInvoicesStatus(), invoicesOk,
+            "All invoices have been generated.", "Some invoices are missing.");
+        view.setStatusLabel(view.getLblIncomeExpensesStatus(), incomeOk,
+            "All incomes/expenses are marked as paid.", "Some incomes/expenses are still pending.");
+        view.setStatusLabel(view.getLblPendingMovementsStatus(), noMovements,
+            "No pending financial movements.", "There are pending financial movements.");
 
         if (agreementsOk && invoicesOk && incomeOk && noMovements) {
-            view.getLblFinalResult().setText("✔ All closure conditions met.");
+            view.getLblFinalResult().setText("✔ All conditions met for closure.");
             view.getLblFinalResult().setForeground(new java.awt.Color(0, 128, 0));
             view.getBtnCloseEvent().setEnabled(true);
             view.getBtnForceClose().setEnabled(false);
