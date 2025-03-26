@@ -1,185 +1,146 @@
 package giis.demo.tkrun;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JOptionPane;
+import java.util.List;
+
+/**
+ * Controller class for managing the invoice generation and sending process.
+ * It handles user interactions from the InvoiceView and coordinates business logic via InvoiceModel.
+ * Ensures that invoices are only generated under valid conditions (e.g., 4 weeks before the event).
+ */
 
 public class InvoiceController {
     private InvoiceModel model;
     private InvoiceView view;
-    private SimpleDateFormat dateFormat;
-    
-    // Datos fiscales del emisor (COIIPA)
-    private static final String ISSUER_NAME = "COIIPA";
-    private static final String ISSUER_FISCAL_NUMBER = "A12345678"; // Ejemplo
-    private static final String ISSUER_ADDRESS = "123 Issuer Street, City";
-    private static final String ISSUER_EMAIL = "issuer@coiipa.es";
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    /**
+     * Constructs a new InvoiceController.
+     *
+     * @param model The InvoiceModel responsible for data access.
+     * @param view  The InvoiceView representing the UI.
+     */
     
     public InvoiceController(InvoiceModel model, InvoiceView view) {
         this.model = model;
         this.view = view;
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        initView();
         initController();
+        loadActivities();
     }
+
     
-    private void initView() {
-        view.setVisible(true);
-    }
-    
+    /**
+     * Initializes UI listeners and control flow.
+     * Connects buttons and dropdowns to their corresponding controller actions.
+     */
     private void initController() {
-        view.getGenerateButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                generateInvoice();
-            }
-        });
-        
-        view.getRegisterButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                registerInvoice();
-            }
-        });
-        
-        view.getSendButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                sendInvoice();
-            }
-        });
+        view.getGenerateButton().addActionListener(e -> generateInvoice());
+        view.getSendButton().addActionListener(e -> sendInvoice());
+        view.getActivityDropdown().addActionListener(e -> loadAgreementsForSelectedActivity());
     }
+
     
-    // Genera el número de factura y asigna la fecha actual
+    /**
+     * Loads all available event activities from the database and populates the activity dropdown.
+     */
+
+    private void loadActivities() {
+        try {
+            List<Object[]> activities = model.getAllEvents();
+            view.populateActivityDropdown(activities);
+        } catch (Exception e) {
+            view.showError("Error loading activities: " + e.getMessage());
+        }
+    }
+
+    
+    /**
+     * Loads all sponsorship agreements for the currently selected activity.
+     * Populates the agreement table in the view with the relevant data.
+     */
+    private void loadAgreementsForSelectedActivity() {
+        try {
+            String selectedActivity = view.getSelectedActivity();
+            if (selectedActivity == null || selectedActivity.isEmpty()) {
+                return;
+            }
+            List<Object[]> agreements = model.getAgreementsForActivity(selectedActivity);
+            view.populateAgreementTable(agreements);
+        } catch (Exception e) {
+            view.showError("Error loading agreements: " + e.getMessage());
+        }
+    }
+
+    
+    /**
+     * Validates invoice generation constraints, such as the 4-week requirement before event start.
+     * If valid, saves a new invoice in the database and updates the UI accordingly.
+     */
     private void generateInvoice() {
         try {
-            InvoiceDTO newInvoice = new InvoiceDTO();
-            newInvoice.setInvoiceNumber(model.generateInvoiceNumber());
-            newInvoice.setInvoiceDate(new Date());
-            view.setInvoiceNumber(newInvoice.getInvoiceNumber());
-            view.setInvoiceDate(dateFormat.format(newInvoice.getInvoiceDate()));
+            String invoiceNumber = view.getInvoiceNumber().trim();
+            double invoiceVat = Double.parseDouble(view.getInvoiceVat().trim());
+            int agreementId = Integer.parseInt(view.getSelectedAgreement());
+
+            String activityName = view.getSelectedActivity();
+            Date eventDate = model.getEventStartDate(activityName);
+            Date today = new Date();
+
+            long diffInMillis = eventDate.getTime() - today.getTime();
+            long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
+
+            // DEBUG: imprime fechas
+            System.out.println("Event date: " + eventDate);
+            System.out.println("Today: " + today);
+            System.out.println("Days between: " + diffInDays);
+
+            if (diffInDays < 28) {
+                view.showError("The invoice must be generated at least 4 weeks before the event.");
+                return;
+            }
+
+            model.saveInvoice(invoiceNumber, agreementId, invoiceVat);
+
+            view.showMessage("Invoice generated successfully. You can now send it.");
+            view.addGeneratedInvoice(invoiceNumber, "", view.getRecipientName(), view.getInvoiceVat());
+
+            view.getSendButton().setEnabled(true);
+            view.removeSelectedAgreement();
+
         } catch (Exception ex) {
             view.showError("Error generating invoice: " + ex.getMessage());
         }
     }
+
+
     
-    // Registra la factura en la base de datos (solo se almacenan los campos definidos en el DDL)
-    private void registerInvoice() {
-        try {
-            // Validaciones de campos obligatorios para la factura
-            if (view.getInvoiceNumber().trim().isEmpty()) {
-                view.showError("Invoice number cannot be empty.");
-                return;
-            }
-            if (view.getInvoiceDate().trim().isEmpty()) {
-                view.showError("Invoice date cannot be empty.");
-                return;
-            }
-            if (view.getAgreementId().trim().isEmpty()) {
-                view.showError("Agreement ID cannot be empty.");
-                return;
-            }
-            if (view.getInvoiceVat().trim().isEmpty()) {
-                view.showError("Invoice VAT cannot be empty.");
-                return;
-            }
-            // Validar el formato de la fecha de la factura
-            Date invoiceDate;
-            try {
-                invoiceDate = dateFormat.parse(view.getInvoiceDate());
-            } catch (Exception e) {
-                view.showError("The invoice date format is incorrect. It should be dd/MM/yyyy.");
-                return;
-            }
-            
-            // Validar que el Agreement ID sea un entero
-            int agreementId;
-            try {
-                agreementId = Integer.parseInt(view.getAgreementId());
-            } catch (NumberFormatException e) {
-                view.showError("Agreement ID must be an integer.");
-                return;
-            }
-            
-            // Validar que el VAT sea un número válido y no negativo
-            double invoiceVat;
-            try {
-                invoiceVat = Double.parseDouble(view.getInvoiceVat());
-            } catch (NumberFormatException e) {
-                view.showError("Invoice VAT must be a valid number.");
-                return;
-            }
-            if (invoiceVat < 0) {
-                view.showError("Invoice VAT cannot be negative.");
-                return;
-            }
-            
-            // Validación opcional: formato del email del receptor (para envío)
-            if (!view.getRecipientEmail().trim().isEmpty() && !view.getRecipientEmail().contains("@")) {
-                view.showError("Recipient email is not valid.");
-                return;
-            }
-            
-            // Si se ha proporcionado la fecha del evento, comprobar que la factura se genera al menos 4 semanas (28 días) antes
-            if (!view.getEventDate().trim().isEmpty()) {
-                try {
-                    Date eventDate = dateFormat.parse(view.getEventDate());
-                    long diff = eventDate.getTime() - invoiceDate.getTime();
-                    long daysDiff = diff / (1000 * 60 * 60 * 24);
-                    if (daysDiff < 28) {
-                        int response = JOptionPane.showConfirmDialog(view,
-                            "The invoice is being generated less than 4 weeks before the event. Do you want to proceed?",
-                            "Warning", JOptionPane.YES_NO_OPTION);
-                        if (response != JOptionPane.YES_OPTION) {
-                            return;
-                        }
-                    }
-                } catch (Exception e) {
-                    view.showError("The event date format is incorrect. It should be dd/MM/yyyy.");
-                    return;
-                }
-            }
-            
-            // Crear y poblar el InvoiceDTO (solo los datos que se guardan en la tabla Invoice)
-            InvoiceDTO invoice = new InvoiceDTO();
-            invoice.setInvoiceNumber(view.getInvoiceNumber());
-            invoice.setInvoiceDate(invoiceDate);
-            invoice.setAgreementId(agreementId);
-            invoice.setInvoiceVat(invoiceVat);
-            
-            model.saveInvoice(invoice);
-            view.showMessage("Invoice registered successfully.");
-            // Opcional: limpiar el formulario
-            // view.clearForm();
-        } catch (Exception ex) {
-            view.showError("Error registering invoice: " + ex.getMessage());
-        }
-    }
-    
-    // Simula el envío de la factura por email utilizando los datos adicionales (no almacenados en la tabla Invoice)
+    /**
+     * Finalizes the invoice process by recording the send date and registering a financial movement.
+     * Updates the view with the sending date and disables further interactions.
+     */
     private void sendInvoice() {
         try {
-            if (view.getInvoiceNumber().trim().isEmpty()) {
-                view.showError("Invoice number is required to send the invoice.");
-                return;
-            }
-            if (view.getRecipientEmail().trim().isEmpty()) {
-                view.showError("Recipient email is required to send the invoice.");
-                return;
-            }
-            
-            // Construir el contenido del email
-            String emailContent = "Dear " + view.getRecipientName() + ",\n\n" +
-                "Please find attached your invoice details below:\n" +
-                "Invoice Number: " + view.getInvoiceNumber() + "\n" +
-                "Invoice Date: " + view.getInvoiceDate() + "\n" +
-                "Invoice VAT: " + view.getInvoiceVat() + "\n\n" +
-                "Issuer: " + ISSUER_NAME + "\n" +
-                "Issuer Fiscal Number: " + ISSUER_FISCAL_NUMBER + "\n" +
-                "Issuer Address: " + ISSUER_ADDRESS + "\n\n" +
-                "Thank you.";
-            
-            // Simulación del envío del email (en un escenario real se integraría un API de correo)
-            view.showMessage("Invoice sent to " + view.getRecipientEmail() + " successfully.\n\n" + emailContent);
+            String invoiceNumber = view.getInvoiceNumber().trim();
+            String invoiceDate = dateFormat.format(new Date());
+
+            // Registrar fecha de envío en la factura
+            model.setInvoiceDate(invoiceNumber, invoiceDate);
+
+            // Registrar movimiento de envío
+            model.recordMovementForInvoice(invoiceNumber, invoiceDate);
+
+            // Mostrar fecha en el campo de la vista
+            view.updateInvoiceDateField(invoiceDate);
+
+            view.showMessage("Invoice sent successfully on " + invoiceDate);
+
+            // Opcional: podrías actualizar la fila en la tabla de facturas generadas si se desea
+            // (por ejemplo, actualizar columna "Date Sent")
+
+            view.getSendButton().setEnabled(false);
+            view.clearInvoiceFields();
+
         } catch (Exception ex) {
             view.showError("Error sending invoice: " + ex.getMessage());
         }

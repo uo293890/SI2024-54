@@ -3,213 +3,213 @@ package giis.demo.tkrun;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.List;
 
 public class RegisterSponsorshipAgreementView extends JFrame {
     private JComboBox<String> eventComboBox;
     private JComboBox<String> sponsorComboBox;
-    private JTextField nameField;
-    private JTextField numberField;
-    private JTextField emailField;
+    private JComboBox<String> sponsorshipLevelComboBox;
     private JComboBox<String> gbMemberComboBox;
+    private JComboBox<String> sponsorContactComboBox;
     private JTextField agreementDateField;
     private JTextField agreedAmountField;
-    private JCheckBox sendEmailCheckBox;
     private JButton registerButton;
+    
+    private List<RegisterSponsorshipAgreementDTO> currentSponsorshipLevels;
+    private List<RegisterSponsorshipAgreementDTO> currentSponsorContacts;
 
     public RegisterSponsorshipAgreementView() {
         initialize();
     }
 
     private void initialize() {
-        setTitle("Register Sponsorship Agreement");
-        setSize(700, 500); // Adjusted window size for better spacing
+        setTitle("Sponsorship Agreement Registration");
+        setSize(800, 400); // Increased window size for additional components
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window on the screen
+        setLocationRelativeTo(null);
 
-        // Use GridBagLayout for flexible and organized layout
-        setLayout(new GridBagLayout());
+        // Main panel with GridBagLayout
+        JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // Add padding around components
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Make components fill horizontally
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
-        // Add Event ComboBox
+        // Event Selection
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(new JLabel("Event:"), gbc);
+        mainPanel.add(new JLabel("Event:"), gbc);
 
         gbc.gridx = 1;
         eventComboBox = new JComboBox<>();
-        add(eventComboBox, gbc);
+        mainPanel.add(eventComboBox, gbc);
 
-        // Add Sponsor ComboBox
+        // Sponsor Selection
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("Sponsor:"), gbc);
+        mainPanel.add(new JLabel("Sponsor:"), gbc);
 
         gbc.gridx = 1;
         sponsorComboBox = new JComboBox<>();
-        add(sponsorComboBox, gbc);
+        mainPanel.add(sponsorComboBox, gbc);
 
-        // Create a panel for Sponsor Contact Information
-        JPanel contactPanel = new JPanel();
-        contactPanel.setLayout(new GridBagLayout());
-        contactPanel.setBorder(BorderFactory.createTitledBorder(
+        // Sponsor Contact Selection
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        mainPanel.add(new JLabel("Sponsor Contact:"), gbc);
+
+        gbc.gridx = 1;
+        sponsorContactComboBox = new JComboBox<>();
+        mainPanel.add(sponsorContactComboBox, gbc);
+
+        // GB Member Selection
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        mainPanel.add(new JLabel("Governing Board Member:"), gbc);
+
+        gbc.gridx = 1;
+        gbMemberComboBox = new JComboBox<>();
+        mainPanel.add(gbMemberComboBox, gbc);
+
+        // Sponsorship Level Selection
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        mainPanel.add(new JLabel("Sponsorship Level:"), gbc);
+
+        gbc.gridx = 1;
+        sponsorshipLevelComboBox = new JComboBox<>();
+        mainPanel.add(sponsorshipLevelComboBox, gbc);
+
+        // Agreement Details Panel
+        JPanel detailsPanel = new JPanel(new GridBagLayout());
+        detailsPanel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.GRAY), 
-            "Sponsor Contact Information", 
+            "Agreement Details", 
             TitledBorder.LEFT, 
             TitledBorder.TOP
         ));
 
-        GridBagConstraints gbcContact = new GridBagConstraints();
-        gbcContact.insets = new Insets(5, 5, 5, 5); // Add padding
-        gbcContact.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints gbcDetails = new GridBagConstraints();
+        gbcDetails.insets = new Insets(5, 5, 5, 5);
+        gbcDetails.fill = GridBagConstraints.HORIZONTAL;
 
-        // Add Contact Name Field
-        gbcContact.gridx = 0;
-        gbcContact.gridy = 0;
-        contactPanel.add(new JLabel("Name:"), gbcContact);
+        // Agreement Date
+        gbcDetails.gridx = 0;
+        gbcDetails.gridy = 0;
+        detailsPanel.add(new JLabel("Agreement Date (YYYY-MM-DD):"), gbcDetails);
 
-        gbcContact.gridx = 1;
-        nameField = new JTextField(20);
-        contactPanel.add(nameField, gbcContact);
-
-        // Add Contact Number Field
-        gbcContact.gridx = 0;
-        gbcContact.gridy = 1;
-        contactPanel.add(new JLabel("Number:"), gbcContact);
-
-        gbcContact.gridx = 1;
-        numberField = new JTextField(20);
-        contactPanel.add(numberField, gbcContact);
-
-        // Add Contact Email Field
-        gbcContact.gridx = 0;
-        gbcContact.gridy = 2;
-        contactPanel.add(new JLabel("Email:"), gbcContact);
-
-        gbcContact.gridx = 1;
-        emailField = new JTextField(20);
-        contactPanel.add(emailField, gbcContact);
-
-        // Add the Contact Panel to the main layout
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2; // Span across two columns
-        add(contactPanel, gbc);
-        
-        // Add GB Member ComboBox
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        add(new JLabel("Governing Board Member:"), gbc);
-
-        gbc.gridx = 1;
-        gbMemberComboBox = new JComboBox<>();
-        add(gbMemberComboBox, gbc);
-
-        // Add Agreement Date Field
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 1; // Reset gridwidth
-        add(new JLabel("Agreement Date (YYYY-MM-DD):"), gbc);
-
-        gbc.gridx = 1;
+        gbcDetails.gridx = 1;
         agreementDateField = new JTextField(20);
-        add(agreementDateField, gbc);
+        detailsPanel.add(agreementDateField, gbcDetails);
 
-        // Add Agreed Amount Field
+        // Agreed Amount
+        gbcDetails.gridx = 0;
+        gbcDetails.gridy = 1;
+        detailsPanel.add(new JLabel("Agreed Amount:"), gbcDetails);
+
+        gbcDetails.gridx = 1;
+        agreedAmountField = new JTextField(20);
+        detailsPanel.add(agreedAmountField, gbcDetails);
+
+        // Add details panel to main panel
         gbc.gridx = 0;
         gbc.gridy = 5;
-        add(new JLabel("Agreed Amount:"), gbc);
+        gbc.gridwidth = 2;
+        mainPanel.add(detailsPanel, gbc);
 
-        gbc.gridx = 1;
-        agreedAmountField = new JTextField(20);
-        add(agreedAmountField, gbc);
-        
-        /* FUTURE SPRINT ADDITION
-        // Add the "Send Email" Checkbox
+        // Register Button
         gbc.gridx = 0;
         gbc.gridy = 6;
-        gbc.gridwidth = 2; // Span across two columns
-        sendEmailCheckBox = new JCheckBox("Send Email to GB Member");
-        sendEmailCheckBox.setSelected(true); // Default to checked
-        add(sendEmailCheckBox, gbc);
-        */
-
-        // Add Register Button
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 2; // Span across two columns
+        gbc.gridwidth = 2;
         registerButton = new JButton("Register Agreement");
         registerButton.setFont(new Font("Arial", Font.BOLD, 14));
         registerButton.setBackground(new Color(0, 153, 204));
         registerButton.setForeground(Color.WHITE);
         registerButton.setFocusPainted(false);
-        add(registerButton, gbc);
-        
-        numberField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                char c = evt.getKeyChar();
-                if (!Character.isDigit(c) && c != '+') {
-                	showError("Phone number must be +00123456789");
-                    evt.consume(); // Ignore the event if it's not a digit
-                }
-            }
-        });
+        mainPanel.add(registerButton, gbc);
 
-        agreementDateField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                char c = evt.getKeyChar();
-                if (!Character.isDigit(c) && c != '-') {
-                	showError("Date must be YYYY-MM-DD");
-                    evt.consume(); // Allow only digits and hyphen (-) for date
-                }
-            }
-        });
-
-        agreedAmountField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                char c = evt.getKeyChar();
-                if (!Character.isDigit(c) && c != '.') {
-                	showError("You can only type numbers in format 0 or 0.0");
-                    evt.consume(); // Allow only numbers and decimal point
-                }
-            }
-        });
-
+        add(mainPanel);
     }
 
     // Getters for UI components
     public JComboBox<String> getEventComboBox() { return eventComboBox; }
     public JComboBox<String> getSponsorComboBox() { return sponsorComboBox; }
-    public JTextField getContactWorkerField() { return nameField; }
-    public JTextField getContactNumberField() { return numberField; }
-    public JTextField getContactEmailField() { return emailField; }
-    public JComboBox<String> getGBMemberComboBox() { return gbMemberComboBox; }
+    public JComboBox<String> getSponsorshipLevelComboBox() { return sponsorshipLevelComboBox; }
+    public JComboBox<String> getGbMemberComboBox() { return gbMemberComboBox; }
+    public JComboBox<String> getSponsorContactComboBox() { return sponsorContactComboBox; }
     public JTextField getAgreementDateField() { return agreementDateField; }
     public JTextField getAgreedAmountField() { return agreedAmountField; }
-    public JCheckBox getSendEmailCheckBox() { return sendEmailCheckBox; }
     public JButton getRegisterButton() { return registerButton; }
 
+    // Methods to update combo boxes
+    public void updateSponsorshipLevels(List<RegisterSponsorshipAgreementDTO> levels) {
+        sponsorshipLevelComboBox.removeAllItems();         
+        this.currentSponsorshipLevels = levels;
+        
+        // Always add a default option
+        sponsorshipLevelComboBox.addItem("-- Select Level --");
+        
+        if (levels != null && !levels.isEmpty()) {
+            for (RegisterSponsorshipAgreementDTO level : levels) {
+                String displayText = String.format("%s (Min: €%,.2f)", 
+                    level.getLevelName(), 
+                    level.getLevelMinAmount());
+                sponsorshipLevelComboBox.addItem(displayText);
+            }
+        } else {
+            // Explicitly handle no-levels case
+        	sponsorshipLevelComboBox.removeItem(0);
+            sponsorshipLevelComboBox.addItem("No levels available");
+            sponsorshipLevelComboBox.setEnabled(false);
+        }
+    }
 
-    // Method to display a success message
+    public void updateSponsorContacts(List<RegisterSponsorshipAgreementDTO> contacts) {
+        sponsorContactComboBox.removeAllItems();
+        this.currentSponsorContacts = contacts;
+        
+        for (RegisterSponsorshipAgreementDTO contact : contacts) {
+            sponsorContactComboBox.addItem(
+                contact.getSpContactName() + " - " + contact.getSpContactEmail()
+            );
+        }
+    }
+    
+    public void resetLevelsComboBox() {
+        sponsorshipLevelComboBox.removeAllItems();
+        sponsorshipLevelComboBox.addItem("-- Select Level --");
+        sponsorshipLevelComboBox.setEnabled(true);
+        currentSponsorshipLevels = null;
+    }
+
+    // Methods to get current data
+    public List<RegisterSponsorshipAgreementDTO> getCurrentSponsorshipLevels() {
+        return currentSponsorshipLevels;
+    }
+
+    public List<RegisterSponsorshipAgreementDTO> getCurrentSponsorContacts() {
+        return currentSponsorContacts;
+    }
+
+    // Message display methods
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // Method to display an error message
     public void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    // Method to clear all input fields
+    // Clear form method
     public void clearForm() {
         eventComboBox.setSelectedIndex(0);
         sponsorComboBox.setSelectedIndex(0);
-        nameField.setText("");
-        numberField.setText("");
-        emailField.setText("");
+        resetLevelsComboBox();
         gbMemberComboBox.setSelectedIndex(0);
+        sponsorContactComboBox.removeAllItems();
+        sponsorContactComboBox.addItem("-- Select Contact --");
         agreementDateField.setText("");
         agreedAmountField.setText("");
+        currentSponsorContacts = null;
     }
 }
