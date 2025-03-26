@@ -1,9 +1,9 @@
 package giis.demo.tkrun;
+
 /**
  * Data Transfer Object (DTO) representing an invoice.
  * Used to pass invoice data between layers without exposing database details.
  */
-
 public class InvoiceDTO {
     private String invoiceNumber;
     private int agreementId;
@@ -14,7 +14,10 @@ public class InvoiceDTO {
     private String recipientTaxId;
     private String recipientAddress;
 
-    
+    private final String issuerName = "COIIPA";
+    private final String issuerTaxId = "G33026339";
+    private final String issuerAddress = "Calle Asturias, 20, 33004 Oviedo, Asturias, España";
+
     /**
      * Constructs a new InvoiceDTO with the required fields.
      *
@@ -30,8 +33,6 @@ public class InvoiceDTO {
     }
 
     // Getters
-    
-    
     public String getInvoiceNumber() { return invoiceNumber; }
     public int getAgreementId() { return agreementId; }
     public String getInvoiceDate() { return invoiceDate; }
@@ -39,6 +40,10 @@ public class InvoiceDTO {
     public String getRecipientName() { return recipientName; }
     public String getRecipientTaxId() { return recipientTaxId; }
     public String getRecipientAddress() { return recipientAddress; }
+
+    public String getIssuerName() { return issuerName; }
+    public String getIssuerTaxId() { return issuerTaxId; }
+    public String getIssuerAddress() { return issuerAddress; }
 
     // Setters
     public void setInvoiceNumber(String invoiceNumber) { this.invoiceNumber = invoiceNumber; }
@@ -48,4 +53,15 @@ public class InvoiceDTO {
     public void setRecipientName(String recipientName) { this.recipientName = recipientName; }
     public void setRecipientTaxId(String recipientTaxId) { this.recipientTaxId = recipientTaxId; }
     public void setRecipientAddress(String recipientAddress) { this.recipientAddress = recipientAddress; }
-}
+
+    /**
+     * Validates if all mandatory recipient tax data is present according to Spanish simplified invoice rules.
+     *
+     * @return true if recipient name, tax ID and address are not null or empty.
+     */
+    public boolean hasValidRecipientData() {
+        return recipientName != null && !recipientName.trim().isEmpty()
+            && recipientTaxId != null && !recipientTaxId.trim().isEmpty()
+            && recipientAddress != null && !recipientAddress.trim().isEmpty();
+    }
+} 

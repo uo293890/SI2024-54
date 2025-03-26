@@ -7,21 +7,14 @@ import java.util.List;
 /**
  * Controller class for managing the invoice generation and sending process.
  * It handles user interactions from the InvoiceView and coordinates business logic via InvoiceModel.
- * Ensures that invoices are only generated under valid conditions (e.g., 4 weeks before the event).
+ * Ensures that invoices are only generated under valid conditions (e.g., 4 weeks before the event),
+ * or earlier if the sponsor requests it, according to Spanish simplified invoice regulation.
  */
-
 public class InvoiceController {
     private InvoiceModel model;
     private InvoiceView view;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * Constructs a new InvoiceController.
-     *
-     * @param model The InvoiceModel responsible for data access.
-     * @param view  The InvoiceView representing the UI.
-     */
-    
     public InvoiceController(InvoiceModel model, InvoiceView view) {
         this.model = model;
         this.view = view;
@@ -29,21 +22,11 @@ public class InvoiceController {
         loadActivities();
     }
 
-    
-    /**
-     * Initializes UI listeners and control flow.
-     * Connects buttons and dropdowns to their corresponding controller actions.
-     */
     private void initController() {
         view.getGenerateButton().addActionListener(e -> generateInvoice());
         view.getSendButton().addActionListener(e -> sendInvoice());
         view.getActivityDropdown().addActionListener(e -> loadAgreementsForSelectedActivity());
     }
-
-    
-    /**
-     * Loads all available event activities from the database and populates the activity dropdown.
-     */
 
     private void loadActivities() {
         try {
@@ -54,10 +37,18 @@ public class InvoiceController {
         }
     }
 
-    
     /**
-     * Loads all sponsorship agreements for the currently selected activity.
-     * Populates the agreement table in the view with the relevant data.
+     * Loads all agreement data for the selected activity.
+     * The query returns 9 columns:
+     * [0] Agreement ID (hidden),
+     * [1] Sponsor Name,
+     * [2] Contact Name,
+     * [3] Email,
+     * [4] Amount,
+     * [5] Event Date,
+     * [6] Event Location,
+     * [7] Sponsorship Level,
+     * [8] Agreement Status.
      */
     private void loadAgreementsForSelectedActivity() {
         try {
@@ -65,6 +56,7 @@ public class InvoiceController {
             if (selectedActivity == null || selectedActivity.isEmpty()) {
                 return;
             }
+            // Retrieve full agreement data including new attributes and the hidden agreement ID
             List<Object[]> agreements = model.getAgreementsForActivity(selectedActivity);
             view.populateAgreementTable(agreements);
         } catch (Exception e) {
@@ -72,16 +64,22 @@ public class InvoiceController {
         }
     }
 
-    
-    /**
-     * Validates invoice generation constraints, such as the 4-week requirement before event start.
-     * If valid, saves a new invoice in the database and updates the UI accordingly.
-     */
     private void generateInvoice() {
         try {
             String invoiceNumber = view.getInvoiceNumber().trim();
             double invoiceVat = Double.parseDouble(view.getInvoiceVat().trim());
+            // Retrieve the agreement ID from the hidden column (column index 0) of the selected row
             int agreementId = Integer.parseInt(view.getSelectedAgreement());
+
+            InvoiceDTO invoice = new InvoiceDTO(invoiceNumber, agreementId, invoiceVat);
+            invoice.setRecipientName(view.getRecipientName());
+            invoice.setRecipientTaxId(view.getRecipientTaxId());
+            invoice.setRecipientAddress(view.getRecipientAddress());
+
+            if (!invoice.hasValidRecipientData()) {
+                view.showError("Recipient tax data (name, tax ID, address) must be provided.");
+                return;
+            }
 
             String activityName = view.getSelectedActivity();
             Date eventDate = model.getEventStartDate(activityName);
@@ -90,20 +88,20 @@ public class InvoiceController {
             long diffInMillis = eventDate.getTime() - today.getTime();
             long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
 
-            // DEBUG: imprime fechas
-            System.out.println("Event date: " + eventDate);
-            System.out.println("Today: " + today);
-            System.out.println("Days between: " + diffInDays);
-
             if (diffInDays < 28) {
-                view.showError("The invoice must be generated at least 4 weeks before the event.");
-                return;
+                int confirm = javax.swing.JOptionPane.showConfirmDialog(null,
+                        "This invoice is being generated less than 4 weeks before the event.\n" +
+                        "Are you sure the sponsor requested it in advance?",
+                        "Invoice Warning", javax.swing.JOptionPane.YES_NO_OPTION);
+                if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+                    return;
+                }
             }
 
-            model.saveInvoice(invoiceNumber, agreementId, invoiceVat);
+            model.saveInvoice(invoice.getInvoiceNumber(), invoice.getAgreementId(), invoice.getInvoiceVat());
 
             view.showMessage("Invoice generated successfully. You can now send it.");
-            view.addGeneratedInvoice(invoiceNumber, "", view.getRecipientName(), view.getInvoiceVat());
+            view.addGeneratedInvoice(invoice.getInvoiceNumber(), "", invoice.getRecipientName(), String.valueOf(invoice.getInvoiceVat()));
 
             view.getSendButton().setEnabled(true);
             view.removeSelectedAgreement();
@@ -113,30 +111,16 @@ public class InvoiceController {
         }
     }
 
-
-    
-    /**
-     * Finalizes the invoice process by recording the send date and registering a financial movement.
-     * Updates the view with the sending date and disables further interactions.
-     */
     private void sendInvoice() {
         try {
             String invoiceNumber = view.getInvoiceNumber().trim();
             String invoiceDate = dateFormat.format(new Date());
 
-            // Registrar fecha de envío en la factura
             model.setInvoiceDate(invoiceNumber, invoiceDate);
-
-            // Registrar movimiento de envío
             model.recordMovementForInvoice(invoiceNumber, invoiceDate);
 
-            // Mostrar fecha en el campo de la vista
             view.updateInvoiceDateField(invoiceDate);
-
             view.showMessage("Invoice sent successfully on " + invoiceDate);
-
-            // Opcional: podrías actualizar la fila en la tabla de facturas generadas si se desea
-            // (por ejemplo, actualizar columna "Date Sent")
 
             view.getSendButton().setEnabled(false);
             view.clearInvoiceFields();
