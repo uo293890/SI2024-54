@@ -66,4 +66,15 @@ public class RegisterPaymentModel extends Database {
             agreementId
         );
     }
+    
+    public List<Object[]> getAgreementsByStatus(String status) {
+        String sql = "SELECT a.agreement_id, s.sponsor_name, c.spcontact_name, a.agreement_amount, a.agreement_status " +
+                     "FROM Agreement a " +
+                     "JOIN SpContact c ON a.spcontact_id = c.spcontact_id " +
+                     "JOIN Sponsor s ON c.sponsor_id = s.sponsor_id " +
+                     "WHERE a.agreement_status = ?";
+        return this.executeQueryArray(sql, new Object[]{ status });
+    }
+
+
 } 

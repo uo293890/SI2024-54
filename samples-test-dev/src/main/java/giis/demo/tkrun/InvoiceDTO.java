@@ -1,4 +1,8 @@
 package giis.demo.tkrun;
+/**
+ * Data Transfer Object (DTO) representing an invoice.
+ * Used to pass invoice data between layers without exposing database details.
+ */
 
 public class InvoiceDTO {
     private String invoiceNumber;
@@ -10,6 +14,14 @@ public class InvoiceDTO {
     private String recipientTaxId;
     private String recipientAddress;
 
+    
+    /**
+     * Constructs a new InvoiceDTO with the required fields.
+     *
+     * @param invoiceNumber Unique identifier for the invoice.
+     * @param agreementId   Associated agreement ID.
+     * @param invoiceVat    VAT percentage applied to the invoice.
+     */
     public InvoiceDTO(String invoiceNumber, int agreementId, double invoiceVat) {
         this.invoiceNumber = invoiceNumber;
         this.agreementId = agreementId;
@@ -18,6 +30,8 @@ public class InvoiceDTO {
     }
 
     // Getters
+    
+    
     public String getInvoiceNumber() { return invoiceNumber; }
     public int getAgreementId() { return agreementId; }
     public String getInvoiceDate() { return invoiceDate; }

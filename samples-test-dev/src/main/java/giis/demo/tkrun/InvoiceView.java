@@ -8,6 +8,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+
+
+/**
+ * Graphical user interface (GUI) for managing invoices.
+ * Allows users to select activities and agreements, generate invoices, and send them.
+ * Displays invoice details and a list of already generated invoices.
+ */
 public class InvoiceView extends JFrame {
     private JComboBox<String> activityDropdown;
     private JTable agreementTable, generatedInvoicesTable;
@@ -16,6 +23,9 @@ public class InvoiceView extends JFrame {
     private JTextField txtRecipientName, txtRecipientTaxId, txtRecipientAddress;
     private JButton btnGenerate, btnSend;
 
+    /**
+     * Initializes the view, creating all UI components and layout.
+     */
     public InvoiceView() {
         setTitle("Invoice Management");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -151,6 +161,12 @@ public class InvoiceView extends JFrame {
         return activityDropdown;
     }
 
+    
+    /**
+     * Populates the activity dropdown with a list of event names.
+     *
+     * @param activities List of Object arrays containing event names.
+     */
     public void populateActivityDropdown(List<Object[]> activities) {
         activityDropdown.removeAllItems();
         for (Object[] activity : activities) {
@@ -158,6 +174,12 @@ public class InvoiceView extends JFrame {
         }
     }
 
+    
+    /**
+     * Populates the agreement table with agreement data.
+     *
+     * @param agreements List of Object arrays containing agreement information.
+     */
     public void populateAgreementTable(List<Object[]> agreements) {
         agreementTableModel.setRowCount(0);
         for (Object[] agreement : agreements) {
@@ -165,6 +187,11 @@ public class InvoiceView extends JFrame {
         }
     }
 
+    
+    /**
+     * Removes the currently selected agreement from the table.
+     * Typically called after an invoice is generated.
+     */
     public void removeSelectedAgreement() {
         int selectedRow = agreementTable.getSelectedRow();
         if (selectedRow != -1) {
@@ -174,6 +201,10 @@ public class InvoiceView extends JFrame {
         }
     }
 
+    
+    /**
+     * Clears all invoice detail fields in the view.
+     */
     public void clearInvoiceFields() {
         txtInvoiceNumber.setText("");
         txtInvoiceDate.setText("");
@@ -183,18 +214,42 @@ public class InvoiceView extends JFrame {
         txtRecipientAddress.setText("");
     }
 
+    
+    /**
+     * Adds a new row to the table of generated invoices.
+     *
+     * @param invoiceNumber Invoice identifier.
+     * @param date          Date the invoice was sent.
+     * @param recipient     Name of the recipient.
+     * @param vat           VAT percentage.
+     */
     public void addGeneratedInvoice(String invoiceNumber, String date, String recipient, String vat) {
         generatedInvoicesTableModel.addRow(new Object[]{invoiceNumber, date, recipient, vat});
     }
 
+    /**
+     * Updates the invoice date field in the UI.
+     *
+     * @param date The sending date in string format.
+     */
     public void updateInvoiceDateField(String date) {
         txtInvoiceDate.setText(date);
     }
 
+    /**
+     * Displays a generic information message dialog.
+     *
+     * @param message The message to show.
+     */
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(null, message, "Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Displays an error dialog with the given message.
+     *
+     * @param message The error message to show.
+     */
     public void showError(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
