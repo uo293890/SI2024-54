@@ -2,197 +2,132 @@ package giis.demo.tkrun;
 
 import giis.demo.tkrun.OtherIncomeExpenseDTO.MovementStatus;
 import giis.demo.tkrun.OtherIncomeExpenseDTO.MovementType;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 /**
- * A simple Swing dialog for registering "other income or expense" movements.
+ * Vista para manejar otros ingresos/gastos. 
+ * Incluye pestaña de formulario (registro) y pestaña para mostrar la tabla completa (17 columnas).
  */
 public class OtherIncomeExpenseView extends JDialog {
 
     private static final long serialVersionUID = 1L;
 
-    // Combo box for Movement Type: INCOME or EXPENSE
+    // -- Pestaña 1: Registro --
     private JComboBox<MovementType> comboType;
-
-    // Combo box for Movement Status: ESTIMATED or PAID
     private JComboBox<MovementStatus> comboStatus;
-
-    // Combo box for selecting an Event (placeholder for demonstration)
-    // In a real scenario, you might fill it with EventDTO objects or IDs
     private JComboBox<String> comboEvent;
-
-    // Text fields
-    private JTextField txtAmount;       // Estimated Amount
-    private JTextField txtPaidAmount;   // Paid Amount (only relevant if status = PAID)
-    private JTextField txtPaidDate;     // Date of payment (only if status = PAID)
-    private JTextField txtConcept;      // Short description of the movement
-
-    // Buttons
+    private JTextField txtEstimatedAmount;
+    private JTextField txtPaidAmount;
+    private JTextField txtPaidDate;
+    private JTextField txtConcept;
     private JButton btnRegister;
-    private JButton btnCancel;
+    private JButton btnClear;
 
-    /**
-     * Constructs the dialog for registering a new "other income or expense."
-     */
+    // -- Pestaña 2: Tabla completa --
+    private JTable tableMovements;
+    private DefaultTableModel tableModel;
+    private JTabbedPane tabbedPane;
+
     public OtherIncomeExpenseView(Frame parent) {
-        super(parent, "Register Other Income or Expense", true);
-        initComponents();
+        super(parent, "Gestión de Otros Ingresos/Gastos", true);
+        initializeComponents();
         setLocationRelativeTo(parent);
+        setSize(900, 600);
     }
 
-    /**
-     * Initialize GUI components and layout.
-     */
-    private void initComponents() {
-        // Basic settings
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(500, 400);
-        setLayout(new BorderLayout(10, 10));
-        JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        add(contentPanel, BorderLayout.CENTER);
+    private void initializeComponents() {
+        tabbedPane = new JTabbedPane();
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        // --- Pestaña 1: Formulario ---
+        JPanel registerPanel = new JPanel(new MigLayout("", "[grow, fill][grow, fill]", "[][][][][][][][]"));
+        registerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Row 0: Movement Type
-        JLabel lblType = new JLabel("Movement Type:");
-        gbc.gridx = 0; 
-        gbc.gridy = 0;
-        contentPanel.add(lblType, gbc);
-
+        registerPanel.add(new JLabel("Tipo de Movimiento:"), "cell 0 0");
         comboType = new JComboBox<>(MovementType.values());
-        gbc.gridx = 1; 
-        gbc.gridy = 0;
-        contentPanel.add(comboType, gbc);
+        registerPanel.add(comboType, "cell 1 0");
 
-        // Row 1: Movement Status
-        JLabel lblStatus = new JLabel("Movement Status:");
-        gbc.gridx = 0; 
-        gbc.gridy = 1;
-        contentPanel.add(lblStatus, gbc);
-
+        registerPanel.add(new JLabel("Estado del Movimiento:"), "cell 0 1");
         comboStatus = new JComboBox<>(MovementStatus.values());
-        gbc.gridx = 1; 
-        gbc.gridy = 1;
-        contentPanel.add(comboStatus, gbc);
+        registerPanel.add(comboStatus, "cell 1 1");
 
-        // Row 2: Event selection
-        JLabel lblEvent = new JLabel("Event:");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        contentPanel.add(lblEvent, gbc);
+        registerPanel.add(new JLabel("Evento:"), "cell 0 2");
+        comboEvent = new JComboBox<>(new String[]{"Evento 1", "Evento 2", "Evento 3"});
+        registerPanel.add(comboEvent, "cell 1 2");
 
-        // For demo, we'll just add a few placeholder items in the combo
-        // In real usage, you'd populate it dynamically (in the controller or via a method)
-        comboEvent = new JComboBox<>(new String[]{"Event 1", "Event 2", "Event 3"});
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        contentPanel.add(comboEvent, gbc);
+        registerPanel.add(new JLabel("Monto Estimado:"), "cell 0 3");
+        txtEstimatedAmount = new JTextField();
+        registerPanel.add(txtEstimatedAmount, "cell 1 3");
 
-        // Row 3: Estimated Amount
-        JLabel lblAmount = new JLabel("Estimated Amount:");
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        contentPanel.add(lblAmount, gbc);
-
-        txtAmount = new JTextField();
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        contentPanel.add(txtAmount, gbc);
-
-        // Row 4: Paid Amount
-        JLabel lblPaidAmount = new JLabel("Paid Amount:");
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        contentPanel.add(lblPaidAmount, gbc);
-
+        registerPanel.add(new JLabel("Monto Pagado:"), "cell 0 4");
         txtPaidAmount = new JTextField();
-        gbc.gridx = 1;
-        gbc.gridy = 4;
-        contentPanel.add(txtPaidAmount, gbc);
+        registerPanel.add(txtPaidAmount, "cell 1 4");
 
-        // Row 5: Paid Date
-        JLabel lblPaidDate = new JLabel("Paid Date (yyyy-MM-dd):");
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        contentPanel.add(lblPaidDate, gbc);
-
+        registerPanel.add(new JLabel("Fecha de Pago (yyyy-MM-dd):"), "cell 0 5");
         txtPaidDate = new JTextField();
-        gbc.gridx = 1;
-        gbc.gridy = 5;
-        contentPanel.add(txtPaidDate, gbc);
+        registerPanel.add(txtPaidDate, "cell 1 5");
 
-        // Row 6: Concept
-        JLabel lblConcept = new JLabel("Concept:");
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        contentPanel.add(lblConcept, gbc);
-
+        registerPanel.add(new JLabel("Concepto:"), "cell 0 6");
         txtConcept = new JTextField();
-        gbc.gridx = 1;
-        gbc.gridy = 6;
-        contentPanel.add(txtConcept, gbc);
+        registerPanel.add(txtConcept, "cell 1 6");
 
-        // Buttons panel
+        btnRegister = new JButton("Registrar Movimiento");
+        btnClear = new JButton("Limpiar Campos");
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btnRegister = new JButton("Register");
-        btnCancel = new JButton("Cancel");
         buttonPanel.add(btnRegister);
-        buttonPanel.add(btnCancel);
+        buttonPanel.add(btnClear);
+        registerPanel.add(buttonPanel, "cell 0 7 2 1, align right");
 
-        add(buttonPanel, BorderLayout.SOUTH);
+        tabbedPane.addTab("Registrar Movimiento", registerPanel);
+
+        // --- Pestaña 2: Tabla con todas las columnas (join) ---
+        JPanel listPanel = new JPanel(new BorderLayout());
+        tableModel = new DefaultTableModel(
+            new String[]{
+                "incexp_id", "event_id", "event_name", "type_id", "type_name",
+                "event_inidate", "event_enddate", "event_location", "event_status",
+                "incexp_concept", "incexp_amount", "incexp_status",
+                "movement_id", "invoice_id", "movement_date", "movement_concept", "movement_amount"
+            },
+            0
+        );
+        tableMovements = new JTable(tableModel);
+        tableMovements.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // scroll horizontal
+        tableMovements.setFillsViewportHeight(true);
+
+        JScrollPane scrollPane = new JScrollPane(tableMovements);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+        tabbedPane.addTab("Todas las Columnas DB", listPanel);
+
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(tabbedPane, BorderLayout.CENTER);
     }
+
+    // -- Getters para el Controller --
+    public JComboBox<MovementType> getComboType() { return comboType; }
+    public JComboBox<MovementStatus> getComboStatus() { return comboStatus; }
+    public JComboBox<String> getComboEvent() { return comboEvent; }
+    public JTextField getTxtEstimatedAmount() { return txtEstimatedAmount; }
+    public JTextField getTxtPaidAmount() { return txtPaidAmount; }
+    public JTextField getTxtPaidDate() { return txtPaidDate; }
+    public JTextField getTxtConcept() { return txtConcept; }
+    public JButton getBtnRegister() { return btnRegister; }
+    public JButton getBtnClear() { return btnClear; }
+
+    public JTable getTableMovements() { return tableMovements; }
+    public DefaultTableModel getTableModel() { return tableModel; }
 
     /**
-     * If your system identifies events by an integer ID, you could store these IDs in the combo box
-     * (perhaps as an EventDTO or a simple map). For demonstration, we return a fixed ID or the index.
+     * Actualiza la tabla con los datos (17 columnas) del join.
      */
-    public int getSelectedEventId() {
-        // For demonstration, return the index as the event ID
-        // or adapt this to your real data model
-        return comboEvent.getSelectedIndex() + 1; // e.g., 1,2,3
-    }
-
-    // Getters for the components that the controller needs
-
-    public JComboBox<MovementType> getComboType() {
-        return comboType;
-    }
-
-    public JComboBox<MovementStatus> getComboStatus() {
-        return comboStatus;
-    }
-
-    public JComboBox<String> getComboEvent() {
-        return comboEvent;
-    }
-
-    public JTextField getTxtAmount() {
-        return txtAmount;
-    }
-
-    public JTextField getTxtPaidAmount() {
-        return txtPaidAmount;
-    }
-
-    public JTextField getTxtPaidDate() {
-        return txtPaidDate;
-    }
-
-    public JTextField getTxtConcept() {
-        return txtConcept;
-    }
-
-    public JButton getBtnRegister() {
-        return btnRegister;
-    }
-
-    public JButton getBtnCancel() {
-        return btnCancel;
+    public void updateMovementsTable(Object[][] data) {
+        tableModel.setRowCount(0);
+        for (Object[] row : data) {
+            tableModel.addRow(row);
+        }
     }
 }

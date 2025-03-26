@@ -103,6 +103,19 @@ public class SwingMain {
             view.setVisible(true);
         });
         panel.add(btnRegisterPayment, "wrap");
+        
+        
+     // Renamed button to avoid duplicate variable names
+        JButton btnRegisterEstimatedIncomeExpense = new JButton("Register estimated income/expense");
+        btnRegisterEstimatedIncomeExpense.setFont(buttonFont);
+        btnRegisterEstimatedIncomeExpense.addActionListener(e -> {
+            OtherIncomeExpenseView view = new OtherIncomeExpenseView(frame);
+            new OtherIncomeExpenseController(new OtherIncomeExpenseModel(), view);
+            view.setVisible(true);
+        });
+        panel.add(btnRegisterEstimatedIncomeExpense, "wrap");
+        
+        
 
         JButton btnEventClosure = new JButton("Close Event");
         btnEventClosure.setFont(buttonFont);
