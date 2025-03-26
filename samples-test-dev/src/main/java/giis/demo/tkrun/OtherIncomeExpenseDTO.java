@@ -4,11 +4,6 @@ import java.time.LocalDate;
 
 /**
  * DTO que representa un movimiento de ingreso/gasto.
- * 
- * - MovementType: INCOME o EXPENSE
- * - MovementStatus: ESTIMATED o PAID
- * 
- * Para movimientos pagados, se almacenan fecha y monto pagado.
  */
 public class OtherIncomeExpenseDTO {
 
@@ -20,17 +15,19 @@ public class OtherIncomeExpenseDTO {
         ESTIMATED, PAID
     }
 
-    private int movementId;          // ID asignado por DB (no se usa en IncomesExpenses directamente)
-    private int eventId;             // ID del evento asociado
+    private int movementId;
+    private int eventId;
     private MovementType movementType;
     private MovementStatus movementStatus;
-    private double estimatedAmount;  // Monto estimado
-    private double paidAmount;       // Monto pagado (si corresponde)
-    private LocalDate paidDate;      // Fecha de pago (si corresponde)
-    private String concept;          // Concepto o descripción
+    private double estimatedAmount;
+    private double paidAmount;
+    private LocalDate paidDate;
+    private String concept;
 
-    public OtherIncomeExpenseDTO(int movementId, int eventId, MovementType movementType, MovementStatus movementStatus,
-                                 double estimatedAmount, double paidAmount, LocalDate paidDate, String concept) {
+    public OtherIncomeExpenseDTO(int movementId, int eventId,
+                                 MovementType movementType, MovementStatus movementStatus,
+                                 double estimatedAmount, double paidAmount,
+                                 LocalDate paidDate, String concept) {
         this.movementId = movementId;
         this.eventId = eventId;
         this.movementType = movementType;

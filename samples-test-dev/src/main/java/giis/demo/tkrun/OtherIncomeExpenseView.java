@@ -1,133 +1,106 @@
 package giis.demo.tkrun;
 
-import giis.demo.tkrun.OtherIncomeExpenseDTO.MovementStatus;
-import giis.demo.tkrun.OtherIncomeExpenseDTO.MovementType;
 import net.miginfocom.swing.MigLayout;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 /**
- * Vista para manejar otros ingresos/gastos. 
- * Incluye pestaña de formulario (registro) y pestaña para mostrar la tabla completa (17 columnas).
+ * Vista para registrar otros ingresos o gastos.
+ * Simula el prototipo: Type, Event, Amount (€), Concept, y botones Cancel/Register.
  */
 public class OtherIncomeExpenseView extends JDialog {
 
-    private static final long serialVersionUID = 1L;
+    // -- 1) Combo para seleccionar el tipo: None / INCOME / EXPENSE
+    private JComboBox<String> comboType;
 
-    // -- Pestaña 1: Registro --
-    private JComboBox<MovementType> comboType;
-    private JComboBox<MovementStatus> comboStatus;
+    // -- 2) Combo para seleccionar el evento (p.ej. "Anniversary")
     private JComboBox<String> comboEvent;
-    private JTextField txtEstimatedAmount;
-    private JTextField txtPaidAmount;
-    private JTextField txtPaidDate;
-    private JTextField txtConcept;
-    private JButton btnRegister;
-    private JButton btnClear;
 
-    // -- Pestaña 2: Tabla completa --
-    private JTable tableMovements;
-    private DefaultTableModel tableModel;
-    private JTabbedPane tabbedPane;
+    // -- 3) Campo para el monto (Amount)
+    private JTextField txtAmount;
+    private JLabel lblCurrency; // etiqueta "€"
+
+    // -- 4) Campo para el concepto
+    private JTextField txtConcept;
+
+    // -- 5) Botones Cancel y Register
+    private JButton btnCancel;
+    private JButton btnRegister;
 
     public OtherIncomeExpenseView(Frame parent) {
-        super(parent, "Gestión de Otros Ingresos/Gastos", true);
-        initializeComponents();
+        super(parent, "Register other income or expenses", true);
+        initComponents();
         setLocationRelativeTo(parent);
-        setSize(900, 600);
+        setSize(400, 250); // tamaño aproximado
     }
 
-    private void initializeComponents() {
-        tabbedPane = new JTabbedPane();
+    private void initComponents() {
+        // Layout MIG: 2 columnas, filas dinámicas
+        JPanel mainPanel = new JPanel(new MigLayout("", "[grow,fill][grow,fill]", "[][][][][]"));
+        mainPanel.setBorder(new EmptyBorder(10,10,10,10));
 
-        // --- Pestaña 1: Formulario ---
-        JPanel registerPanel = new JPanel(new MigLayout("", "[grow, fill][grow, fill]", "[][][][][][][][]"));
-        registerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        // 1) Label y combo "Type"
+        mainPanel.add(new JLabel("Type:"), "cell 0 0");
+        comboType = new JComboBox<>(new String[] { "--None--", "INCOME", "EXPENSE" });
+        mainPanel.add(comboType, "cell 1 0");
 
-        registerPanel.add(new JLabel("Tipo de Movimiento:"), "cell 0 0");
-        comboType = new JComboBox<>(MovementType.values());
-        registerPanel.add(comboType, "cell 1 0");
+        // 2) Label y combo "Event"
+        mainPanel.add(new JLabel("Event:"), "cell 0 1");
+        comboEvent = new JComboBox<>();
+        // Se llenará desde el controlador con la lista de eventos
+        mainPanel.add(comboEvent, "cell 1 1");
 
-        registerPanel.add(new JLabel("Estado del Movimiento:"), "cell 0 1");
-        comboStatus = new JComboBox<>(MovementStatus.values());
-        registerPanel.add(comboStatus, "cell 1 1");
+        // 3) Label y campo "Amount" con etiqueta "€"
+        mainPanel.add(new JLabel("Amount:"), "cell 0 2");
+        // Usamos un panel para Amount y el label "€"
+        JPanel amountPanel = new JPanel(new BorderLayout());
+        txtAmount = new JTextField();
+        lblCurrency = new JLabel("€");
+        amountPanel.add(txtAmount, BorderLayout.CENTER);
+        amountPanel.add(lblCurrency, BorderLayout.EAST);
+        mainPanel.add(amountPanel, "cell 1 2, growx");
 
-        registerPanel.add(new JLabel("Evento:"), "cell 0 2");
-        comboEvent = new JComboBox<>(new String[]{"Evento 1", "Evento 2", "Evento 3"});
-        registerPanel.add(comboEvent, "cell 1 2");
-
-        registerPanel.add(new JLabel("Monto Estimado:"), "cell 0 3");
-        txtEstimatedAmount = new JTextField();
-        registerPanel.add(txtEstimatedAmount, "cell 1 3");
-
-        registerPanel.add(new JLabel("Monto Pagado:"), "cell 0 4");
-        txtPaidAmount = new JTextField();
-        registerPanel.add(txtPaidAmount, "cell 1 4");
-
-        registerPanel.add(new JLabel("Fecha de Pago (yyyy-MM-dd):"), "cell 0 5");
-        txtPaidDate = new JTextField();
-        registerPanel.add(txtPaidDate, "cell 1 5");
-
-        registerPanel.add(new JLabel("Concepto:"), "cell 0 6");
+        // 4) Label y campo "Concept"
+        mainPanel.add(new JLabel("Concept:"), "cell 0 3");
         txtConcept = new JTextField();
-        registerPanel.add(txtConcept, "cell 1 6");
+        mainPanel.add(txtConcept, "cell 1 3");
 
-        btnRegister = new JButton("Registrar Movimiento");
-        btnClear = new JButton("Limpiar Campos");
+        // 5) Panel con botones Cancel y Register
+        btnCancel = new JButton("Cancel");
+        btnRegister = new JButton("Register");
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(btnCancel);
         buttonPanel.add(btnRegister);
-        buttonPanel.add(btnClear);
-        registerPanel.add(buttonPanel, "cell 0 7 2 1, align right");
 
-        tabbedPane.addTab("Registrar Movimiento", registerPanel);
-
-        // --- Pestaña 2: Tabla con todas las columnas (join) ---
-        JPanel listPanel = new JPanel(new BorderLayout());
-        tableModel = new DefaultTableModel(
-            new String[]{
-                "incexp_id", "event_id", "event_name", "type_id", "type_name",
-                "event_inidate", "event_enddate", "event_location", "event_status",
-                "incexp_concept", "incexp_amount", "incexp_status",
-                "movement_id", "invoice_id", "movement_date", "movement_concept", "movement_amount"
-            },
-            0
-        );
-        tableMovements = new JTable(tableModel);
-        tableMovements.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // scroll horizontal
-        tableMovements.setFillsViewportHeight(true);
-
-        JScrollPane scrollPane = new JScrollPane(tableMovements);
-        listPanel.add(scrollPane, BorderLayout.CENTER);
-        tabbedPane.addTab("Todas las Columnas DB", listPanel);
+        mainPanel.add(buttonPanel, "cell 0 4 2 1, align right");
 
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
     }
 
-    // -- Getters para el Controller --
-    public JComboBox<MovementType> getComboType() { return comboType; }
-    public JComboBox<MovementStatus> getComboStatus() { return comboStatus; }
-    public JComboBox<String> getComboEvent() { return comboEvent; }
-    public JTextField getTxtEstimatedAmount() { return txtEstimatedAmount; }
-    public JTextField getTxtPaidAmount() { return txtPaidAmount; }
-    public JTextField getTxtPaidDate() { return txtPaidDate; }
-    public JTextField getTxtConcept() { return txtConcept; }
-    public JButton getBtnRegister() { return btnRegister; }
-    public JButton getBtnClear() { return btnClear; }
+    // Getters para el controlador
+    public JComboBox<String> getComboType() {
+        return comboType;
+    }
 
-    public JTable getTableMovements() { return tableMovements; }
-    public DefaultTableModel getTableModel() { return tableModel; }
+    public JComboBox<String> getComboEvent() {
+        return comboEvent;
+    }
 
-    /**
-     * Actualiza la tabla con los datos (17 columnas) del join.
-     */
-    public void updateMovementsTable(Object[][] data) {
-        tableModel.setRowCount(0);
-        for (Object[] row : data) {
-            tableModel.addRow(row);
-        }
+    public JTextField getTxtAmount() {
+        return txtAmount;
+    }
+
+    public JTextField getTxtConcept() {
+        return txtConcept;
+    }
+
+    public JButton getBtnCancel() {
+        return btnCancel;
+    }
+
+    public JButton getBtnRegister() {
+        return btnRegister;
     }
 }
