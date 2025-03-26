@@ -8,10 +8,10 @@ public class RegisterSponsorshipAgreementModel {
     
     // SQL Queries
     private static final String SQL_GET_EVENTS = 
-        "SELECT event_id AS eventId, event_name AS eventName FROM Event WHERE event_status = 'Planned';";
+        "SELECT event_id AS eventId, event_name AS eventName FROM Event WHERE event_status = 'Planned'";
     
     private static final String SQL_GET_SPONSORS = 
-        "SELECT sponsor_id AS sponsorId, sponsor_name AS sponsorName FROM Sponsor;";
+    	    "SELECT sponsor_id AS sponsorId, sponsor_name AS sponsorName FROM Sponsor";
     
     private static final String SQL_GET_GBMEMBERS = 
         "SELECT gbmember_id AS gbMemberId, gbmember_name AS gbMemberName, " +

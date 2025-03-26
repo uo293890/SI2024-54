@@ -24,7 +24,7 @@ public class RegisterSponsorshipAgreementView extends JFrame {
 
     private void initialize() {
         setTitle("Sponsorship Agreement Registration");
-        setSize(800, 600); // Increased window size for additional components
+        setSize(800, 400); // Increased window size for additional components
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -65,7 +65,7 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         // GB Member Selection
         gbc.gridx = 0;
         gbc.gridy = 3;
-        mainPanel.add(new JLabel("GB Member Negotiator:"), gbc);
+        mainPanel.add(new JLabel("Governing Board Member:"), gbc);
 
         gbc.gridx = 1;
         gbMemberComboBox = new JComboBox<>();
@@ -143,19 +143,43 @@ public class RegisterSponsorshipAgreementView extends JFrame {
 
     // Methods to update combo boxes
     public void updateSponsorshipLevels(List<RegisterSponsorshipAgreementDTO> levels) {
-        sponsorshipLevelComboBox.removeAllItems();
+        sponsorshipLevelComboBox.removeAllItems();         
         this.currentSponsorshipLevels = levels;
-        for (RegisterSponsorshipAgreementDTO level : levels) {
-            sponsorshipLevelComboBox.addItem(level.getLevelName() + " (Min: " + level.getLevelMinAmount() + ")");
+        
+        // Always add a default option
+        sponsorshipLevelComboBox.addItem("-- Select Level --");
+        
+        if (levels != null && !levels.isEmpty()) {
+            for (RegisterSponsorshipAgreementDTO level : levels) {
+                String displayText = String.format("%s (Min: €%,.2f)", 
+                    level.getLevelName(), 
+                    level.getLevelMinAmount());
+                sponsorshipLevelComboBox.addItem(displayText);
+            }
+        } else {
+            // Explicitly handle no-levels case
+        	sponsorshipLevelComboBox.removeItem(0);
+            sponsorshipLevelComboBox.addItem("No levels available");
+            sponsorshipLevelComboBox.setEnabled(false);
         }
     }
 
     public void updateSponsorContacts(List<RegisterSponsorshipAgreementDTO> contacts) {
         sponsorContactComboBox.removeAllItems();
         this.currentSponsorContacts = contacts;
+        
         for (RegisterSponsorshipAgreementDTO contact : contacts) {
-            sponsorContactComboBox.addItem(contact.getSpContactName() + " - " + contact.getSpContactEmail());
+            sponsorContactComboBox.addItem(
+                contact.getSpContactName() + " - " + contact.getSpContactEmail()
+            );
         }
+    }
+    
+    public void resetLevelsComboBox() {
+        sponsorshipLevelComboBox.removeAllItems();
+        sponsorshipLevelComboBox.addItem("-- Select Level --");
+        sponsorshipLevelComboBox.setEnabled(true);
+        currentSponsorshipLevels = null;
     }
 
     // Methods to get current data
@@ -180,12 +204,12 @@ public class RegisterSponsorshipAgreementView extends JFrame {
     public void clearForm() {
         eventComboBox.setSelectedIndex(0);
         sponsorComboBox.setSelectedIndex(0);
-        sponsorshipLevelComboBox.removeAllItems();
+        resetLevelsComboBox();
         gbMemberComboBox.setSelectedIndex(0);
         sponsorContactComboBox.removeAllItems();
+        sponsorContactComboBox.addItem("-- Select Contact --");
         agreementDateField.setText("");
         agreedAmountField.setText("");
-        currentSponsorshipLevels = null;
         currentSponsorContacts = null;
     }
 }
