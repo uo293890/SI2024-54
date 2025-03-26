@@ -68,11 +68,11 @@ public class SwingMain {
         });
         panel.add(btnRegisterAgreement, "wrap");
 
-        JButton btnFinancialStatus = new JButton("Activity Financial Status");
+        JButton btnFinancialStatus = new JButton("Consult Activity Financial Status");
         btnFinancialStatus.setFont(buttonFont);
         btnFinancialStatus.addActionListener(e -> {
-            ActivityFinancialStatusView view = new ActivityFinancialStatusView();
-            new ActivityFinancialStatusController(new ActivityFinancialStatusModel(), view);
+            ConsultActivityFinancialStatusView view = new ConsultActivityFinancialStatusView();
+            new ConsultActivityFinancialStatusController(new ConsultActivityFinancialStatusModel(), view);
             view.setVisible(true);
         });
         panel.add(btnFinancialStatus, "wrap");

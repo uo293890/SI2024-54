@@ -5,55 +5,50 @@ import java.time.LocalDate;
 public class ConsultActivityFinancialStatusDTO {
     // Event details
     private int eventId;
-    private String eventTitle;
+    private String eventName;
+    private String eventInidate;
+    private String eventEnddate;
+    private String eventStatus;
+    private String typeName;
 
-    // Edition details
-    private int editionId;
-    private String editionTitle;
-    private String editionStartDate;
-    private String editionEndDate;
-    private String editionStatus;
-
-    // Agreement details
+    // Sponsor/Agreement details
     private int agreementId;
     private String sponsorName;
     private LocalDate agreementDate;
     private double agreementAmount;
     private String agreementStatus;
+    private String levelName;
 
-    // Otherie (expenses) details
-    private int otherieId;
-    private double otherieAmount;
-    private String otherieDescription;
-    private String otherieStatus;
+    // Income/Expense details
+    private int incexpId;
+    private String incexpConcept;
+    private double incexpAmount;
+    private String incexpStatus;
 
-    // Invoice (income) details
+    // Invoice details
     private int invoiceId;
     private LocalDate invoiceDate;
     private double invoiceAmount;
-    private String invoiceStatus;
+    private String invoiceNumber;
 
     // Getters and Setters
     public int getEventId() { return eventId; }
     public void setEventId(int eventId) { this.eventId = eventId; }
 
-    public String getEventTitle() { return eventTitle; }
-    public void setEventTitle(String eventTitle) { this.eventTitle = eventTitle; }
+    public String getEventName() { return eventName; }
+    public void setEventName(String eventName) { this.eventName = eventName; }
 
-    public int getEditionId() { return editionId; }
-    public void setEditionId(int editionId) { this.editionId = editionId; }
+    public String getEventInidate() { return eventInidate; }
+    public void setEventInidate(String eventInidate) { this.eventInidate = eventInidate; }
 
-    public String getEditionTitle() { return editionTitle; }
-    public void setEditionTitle(String editionTitle) { this.editionTitle = editionTitle; }
+    public String getEventEnddate() { return eventEnddate; }
+    public void setEventEnddate(String eventEnddate) { this.eventEnddate = eventEnddate; }
 
-    public String getEditionStartDate() { return editionStartDate; }
-    public void setEditionStartDate(String editionStartDate) { this.editionStartDate = editionStartDate; }
+    public String getEventStatus() { return eventStatus; }
+    public void setEventStatus(String eventStatus) { this.eventStatus = eventStatus; }
 
-    public String getEditionEndDate() { return editionEndDate; }
-    public void setEditionEndDate(String editionEndDate) { this.editionEndDate = editionEndDate; }
-
-    public String getEditionStatus() { return editionStatus; }
-    public void setEditionStatus(String editionStatus) { this.editionStatus = editionStatus; }
+    public String getTypeName() { return typeName; }
+    public void setTypeName(String typeName) { this.typeName = typeName; }
 
     public int getAgreementId() { return agreementId; }
     public void setAgreementId(int agreementId) { this.agreementId = agreementId; }
@@ -70,17 +65,20 @@ public class ConsultActivityFinancialStatusDTO {
     public String getAgreementStatus() { return agreementStatus; }
     public void setAgreementStatus(String agreementStatus) { this.agreementStatus = agreementStatus; }
 
-    public int getOtherieId() { return otherieId; }
-    public void setOtherieId(int otherieId) { this.otherieId = otherieId; }
+    public String getLevelName() { return levelName; }
+    public void setLevelName(String levelName) { this.levelName = levelName; }
 
-    public double getOtherieAmount() { return otherieAmount; }
-    public void setOtherieAmount(double otherieAmount) { this.otherieAmount = otherieAmount; }
+    public int getIncexpId() { return incexpId; }
+    public void setIncexpId(int incexpId) { this.incexpId = incexpId; }
 
-    public String getOtherieDescription() { return otherieDescription; }
-    public void setOtherieDescription(String otherieDescription) { this.otherieDescription = otherieDescription; }
+    public String getIncexpConcept() { return incexpConcept; }
+    public void setIncexpConcept(String incexpConcept) { this.incexpConcept = incexpConcept; }
 
-    public String getOtherieStatus() { return otherieStatus; }
-    public void setOtherieStatus(String otherieStatus) { this.otherieStatus = otherieStatus; }
+    public double getIncexpAmount() { return incexpAmount; }
+    public void setIncexpAmount(double incexpAmount) { this.incexpAmount = incexpAmount; }
+
+    public String getIncexpStatus() { return incexpStatus; }
+    public void setIncexpStatus(String incexpStatus) { this.incexpStatus = incexpStatus; }
 
     public int getInvoiceId() { return invoiceId; }
     public void setInvoiceId(int invoiceId) { this.invoiceId = invoiceId; }
@@ -91,6 +89,6 @@ public class ConsultActivityFinancialStatusDTO {
     public double getInvoiceAmount() { return invoiceAmount; }
     public void setInvoiceAmount(double invoiceAmount) { this.invoiceAmount = invoiceAmount; }
 
-    public String getInvoiceStatus() { return invoiceStatus; }
-    public void setInvoiceStatus(String invoiceStatus) { this.invoiceStatus = invoiceStatus; }
+    public String getInvoiceNumber() { return invoiceNumber; }
+    public void setInvoiceNumber(String invoiceNumber) { this.invoiceNumber = invoiceNumber; }
 }

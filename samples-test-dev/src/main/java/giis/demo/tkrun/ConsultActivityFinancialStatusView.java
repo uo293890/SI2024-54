@@ -166,5 +166,6 @@ public class ConsultActivityFinancialStatusView extends JFrame {
 	public JLabel getExpensesEstimatedLabel() { return expensesEstimatedLabel; }
 	public JLabel getExpensesPaidLabel() { return expensesPaidLabel; }
 	
+	
 
 }
