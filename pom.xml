@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>SI2024-54</groupId>
-	<artifactId>SI2024-54</artifactId>
+	<groupId>giis</groupId>
+	<artifactId>samples-test-dev</artifactId>
 	<version>2.1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<organization>
@@ -24,7 +24,7 @@
 		
 		<surefire.version>3.5.2</surefire.version>
 		
-		<slf4j.version>2.0.16</slf4j.version>
+		<slf4j.version>2.0.17</slf4j.version>
 	</properties>
 
 	<dependencies>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.49.0.0</version>
+			<version>3.49.1.0</version>
 		</dependency>
 		<!-- Logs -->
 		<dependency>
@@ -66,7 +66,6 @@
 		    <artifactId>slf4j-api</artifactId>
 		    <version>${slf4j.version}</version>
 		</dependency>
-		
 		<dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-reload4j</artifactId>
@@ -87,19 +86,13 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.10.0</version>
+			<version>1.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.18.2</version>
+			<version>2.18.3</version>
 		</dependency>
-		
-		<dependency>
-    <groupId>net.sf.jt400</groupId>
-    <artifactId>jt400</artifactId>
-    <version>11.1</version>
-</dependency>
 	</dependencies>
 
 	<build>
@@ -171,7 +164,44 @@
 				</executions>
 			</plugin>
 
-			
+			<!-- Reports de test en formato html estilo junit, generados con ant -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>junit-reports-ut</id>
+						<phase>test</phase>
+						<configuration>
+							<target unless="skipTests">
+								<junitreport todir="target/surefire-reports">
+									<fileset dir="target/surefire-reports">
+										<include name="**/*.xml" />
+									</fileset>
+									<report format="frames" todir="target/site/junit-frames" />
+									<report format="noframes" todir="target/site/junit-noframes" />
+								</junitreport>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-junit</artifactId>
+						<version>1.10.15</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-trax</artifactId>
+						<version>1.8.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 			
 			<!-- Generacion de documentacion javadoc (en fase install) -->
 			<plugin>
