@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
@@ -12,10 +13,12 @@ import giis.demo.util.ApplicationException;
 public class RegisterSponsorshipAgreementController {
     private RegisterSponsorshipAgreementModel model;
     private RegisterSponsorshipAgreementView view;
+    private LocalDate workingDate;
 
-    public RegisterSponsorshipAgreementController(RegisterSponsorshipAgreementModel model, RegisterSponsorshipAgreementView view) {
+    public RegisterSponsorshipAgreementController(RegisterSponsorshipAgreementModel model, RegisterSponsorshipAgreementView view, LocalDate workingDate) {
         this.model = model;
         this.view = view;
+        this.workingDate = workingDate;
         this.initView();
         this.initController();
     }
@@ -110,7 +113,8 @@ public class RegisterSponsorshipAgreementController {
         if (selectedLevelIndex < 1 || selectedLevelIndex > levels.size()) {
             throw new ApplicationException("Please select a valid sponsorship level");
         }
-        dto.setLevelId(levels.get(selectedLevelIndex - 1).getLevelId());
+        RegisterSponsorshipAgreementDTO selectedLevel = levels.get(selectedLevelIndex - 1);
+        dto.setLevelId(selectedLevel.getLevelId());
 
         // Set GB member
         int selectedGbMemberIndex = view.getGbMemberComboBox().getSelectedIndex();
@@ -128,9 +132,29 @@ public class RegisterSponsorshipAgreementController {
         }
         dto.setSpContactId(contacts.get(selectedContactIndex - 1).getSpContactId());
 
-        // Set date and amount
-        dto.setAgreementDate(java.time.LocalDate.parse(view.getAgreementDateField().getText()));
-        dto.setAgreementAmount(Double.parseDouble(view.getAgreedAmountField().getText()));
+        // Set date and validate it's not in the past
+        LocalDate agreementDate = LocalDate.parse(view.getAgreementDateField().getText());
+        if (agreementDate.isBefore(workingDate)) {
+            throw new ApplicationException("Agreement date cannot be in the past");
+        }
+        dto.setAgreementDate(agreementDate);
+        
+        // Get and validate the agreed amount
+        double agreedAmount;
+        try {
+            agreedAmount = Double.parseDouble(view.getAgreedAmountField().getText());
+        } catch (NumberFormatException e) {
+            throw new ApplicationException("Invalid amount format. Please enter a valid number.");
+        }
+        
+        // Check if amount meets the minimum requirement for the level
+        if (agreedAmount < selectedLevel.getLevelMinAmount()) {
+            throw new ApplicationException(String.format(
+                "The agreed amount (%.2f) is below the minimum required (%.2f) for this sponsorship level",
+                agreedAmount, selectedLevel.getLevelMinAmount()));
+        }
+        dto.setAgreementAmount(agreedAmount);
+        
         dto.setAgreementStatus("Agreed");
 
         return dto;
@@ -140,9 +164,6 @@ public class RegisterSponsorshipAgreementController {
         if (view.getEventComboBox().getSelectedIndex() <= 0) {
             throw new ApplicationException("Please select an event");
         }
-        if (view.getSponsorshipLevelComboBox().getSelectedIndex() <= 0) {
-            throw new ApplicationException("Please select a sponsorship level");
-        }
         if (view.getSponsorComboBox().getSelectedIndex() <= 0) {
             throw new ApplicationException("Please select a sponsor");
         }
@@ -150,7 +171,10 @@ public class RegisterSponsorshipAgreementController {
             throw new ApplicationException("Please select a sponsor contact");
         }
         if (view.getGbMemberComboBox().getSelectedIndex() <= 0) {
-            throw new ApplicationException("Please select a GB member");
+            throw new ApplicationException("Please select a Governing Board Member");
+        }
+        if (view.getSponsorshipLevelComboBox().getSelectedIndex() <= 0) {
+            throw new ApplicationException("Please select a sponsorship level");
         }
         if (view.getAgreementDateField().getText().isEmpty()) {
             throw new ApplicationException("Please enter an agreement date");
@@ -186,6 +210,15 @@ public class RegisterSponsorshipAgreementController {
             for (RegisterSponsorshipAgreementDTO member : gbMembers) {
                 view.getGbMemberComboBox().addItem(member.getGbMemberName() + " (" + member.getGbMemberPosition() + ")");
             }
+            
+            view.getSponsorContactComboBox().removeAllItems();
+            view.getSponsorContactComboBox().addItem("-- Select Sponsor Contact --");
+            
+            view.getSponsorshipLevelComboBox().removeAllItems();
+            view.getSponsorshipLevelComboBox().addItem("-- Select Level --");
+            
+            view.getAgreementDateField().setText(workingDate.toString());
+            view.getAgreedAmountField().setText("");
             
         } catch (ApplicationException ex) {
             view.showError("Error initializing form: " + ex.getMessage());
