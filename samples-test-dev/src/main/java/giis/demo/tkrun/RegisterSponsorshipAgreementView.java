@@ -168,6 +168,9 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         sponsorContactComboBox.removeAllItems();
         this.currentSponsorContacts = contacts;
         
+        // Always add a default option
+        sponsorContactComboBox.addItem("-- Select Sponsor Contact --");
+        
         for (RegisterSponsorshipAgreementDTO contact : contacts) {
             sponsorContactComboBox.addItem(
                 contact.getSpContactName() + " - " + contact.getSpContactEmail()
@@ -204,12 +207,13 @@ public class RegisterSponsorshipAgreementView extends JFrame {
     public void clearForm() {
         eventComboBox.setSelectedIndex(0);
         sponsorComboBox.setSelectedIndex(0);
-        resetLevelsComboBox();
         gbMemberComboBox.setSelectedIndex(0);
         sponsorContactComboBox.removeAllItems();
-        sponsorContactComboBox.addItem("-- Select Contact --");
+        currentSponsorContacts = null;
+        sponsorshipLevelComboBox.setEnabled(true);
+        sponsorshipLevelComboBox.removeAllItems();
+        currentSponsorshipLevels = null;
         agreementDateField.setText("");
         agreedAmountField.setText("");
-        currentSponsorContacts = null;
     }
 }
