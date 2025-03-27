@@ -115,6 +115,15 @@ public class SwingMain {
             view.setVisible(true);
         });
         panel.add(btnFinancialStatus, "wrap");
+        
+        JButton btnRegisterEvent = new JButton("Register a new Event");
+        btnRegisterEvent.setFont(buttonFont);
+        btnRegisterEvent.addActionListener(e -> {
+            RegisterEventView view = new RegisterEventView();
+            new RegisterEventController(new RegisterEventModel(), view, workingDate);
+            view.setVisible(true);
+        });
+        panel.add(btnRegisterEvent, "wrap");
 
         JButton btnReport = new JButton("Generate Income & Expense Report");
         btnReport.setFont(buttonFont);
