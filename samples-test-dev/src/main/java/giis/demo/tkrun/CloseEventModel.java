@@ -8,53 +8,48 @@ public class CloseEventModel extends Database {
 
     // Join Event with Type to get the full event details
     public List<Object[]> getEventsToClose() {
-        return this.executeQueryArray("""
-            SELECT e.event_id, t.type_name, e.event_name, e.event_inidate, e.event_enddate, e.event_location, e.event_status 
-            FROM Event e
-            LEFT JOIN Type t ON e.type_id = t.type_id
-            WHERE e.event_status IN ('Planned', 'Closed')
-        """);
+        String sql = "SELECT e.event_id, t.type_name, e.event_name, e.event_inidate, e.event_enddate, e.event_location, e.event_status " +
+                     "FROM Event e " +
+                     "LEFT JOIN Type t ON e.type_id = t.type_id " +
+                     "WHERE e.event_status IN ('Planned', 'Closed')";
+        return this.executeQueryArray(sql);
     }
 
     public boolean checkAgreementsPaidOrClosed(int eventId) {
-        List<Object[]> result = this.executeQueryArray("""
-            SELECT COUNT(*) FROM Agreement
-            JOIN LevelOfSponsorship USING (level_id)
-            WHERE event_id = ? AND agreement_status NOT IN ('Paid', 'Closed')
-        """, eventId);
+        String sql = "SELECT COUNT(*) FROM Agreement " +
+                     "JOIN LevelOfSponsorship USING (level_id) " +
+                     "WHERE event_id = ? AND agreement_status NOT IN ('Paid', 'Closed')";
+        List<Object[]> result = this.executeQueryArray(sql, eventId);
         return ((Number) result.get(0)[0]).intValue() == 0;
     }
 
     public boolean checkAllInvoicesExist(int eventId) {
-        List<Object[]> result = this.executeQueryArray("""
-            SELECT COUNT(*) FROM Agreement a
-            JOIN LevelOfSponsorship l ON a.level_id = l.level_id
-            WHERE l.event_id = ? AND NOT EXISTS (
-                SELECT 1 FROM Invoice i WHERE i.agreement_id = a.agreement_id
-            )
-        """, eventId);
+        String sql = "SELECT COUNT(*) FROM Agreement a " +
+                     "JOIN LevelOfSponsorship l ON a.level_id = l.level_id " +
+                     "WHERE l.event_id = ? AND NOT EXISTS (" +
+                     "    SELECT 1 FROM Invoice i WHERE i.agreement_id = a.agreement_id" +
+                     ")";
+        List<Object[]> result = this.executeQueryArray(sql, eventId);
         return ((Number) result.get(0)[0]).intValue() == 0;
     }
 
     public boolean checkIncomesExpensesPaid(int eventId) {
-        List<Object[]> result = this.executeQueryArray("""
-            SELECT COUNT(*) FROM IncomesExpenses
-            WHERE event_id = ? AND incexp_status != 'Paid'
-        """, eventId);
+        String sql = "SELECT COUNT(*) FROM IncomesExpenses " +
+                     "WHERE event_id = ? AND incexp_status != 'Paid'";
+        List<Object[]> result = this.executeQueryArray(sql, eventId);
         return ((Number) result.get(0)[0]).intValue() == 0;
     }
 
     public boolean checkNoPendingMovements(int eventId) {
-        List<Object[]> result = this.executeQueryArray("""
-            SELECT COUNT(*) FROM Movement m
-            LEFT JOIN Invoice i ON m.invoice_id = i.invoice_id
-            LEFT JOIN IncomesExpenses ie ON m.incexp_id = ie.incexp_id
-            WHERE (i.agreement_id IN (
-                SELECT agreement_id FROM Agreement a
-                JOIN LevelOfSponsorship l ON a.level_id = l.level_id
-                WHERE l.event_id = ?
-            ) OR ie.event_id = ?) AND m.movement_amount IS NULL
-        """, eventId, eventId);
+        String sql = "SELECT COUNT(*) FROM Movement m " +
+                     "LEFT JOIN Invoice i ON m.invoice_id = i.invoice_id " +
+                     "LEFT JOIN IncomesExpenses ie ON m.incexp_id = ie.incexp_id " +
+                     "WHERE (i.agreement_id IN (" +
+                     "    SELECT agreement_id FROM Agreement a " +
+                     "    JOIN LevelOfSponsorship l ON a.level_id = l.level_id " +
+                     "    WHERE l.event_id = ?" +
+                     ") OR ie.event_id = ?) AND m.movement_amount IS NULL";
+        List<Object[]> result = this.executeQueryArray(sql, eventId, eventId);
         return ((Number) result.get(0)[0]).intValue() == 0;
     }
 

@@ -19,10 +19,8 @@ public class OtherIncomeExpenseModel extends Database {
                 ? "Paid"
                 : "Estimated";
 
-        String sqlInsert = """
-            INSERT INTO IncomesExpenses (event_id, incexp_concept, incexp_amount, incexp_status)
-            VALUES (?, ?, ?, ?)
-        """;
+        String sqlInsert = "INSERT INTO IncomesExpenses (event_id, incexp_concept, incexp_amount, incexp_status) " +
+                           "VALUES (?, ?, ?, ?)";
         Object[] params = new Object[] {
             dto.getEventId(),
             dto.getConcept(),
@@ -37,10 +35,8 @@ public class OtherIncomeExpenseModel extends Database {
 
         // Si es PAID, también insertamos en Movement
         if (dto.getMovementStatus() == OtherIncomeExpenseDTO.MovementStatus.PAID && dto.getPaidDate() != null) {
-            String sqlInsertMovement = """
-                INSERT INTO Movement (incexp_id, invoice_id, movement_date, movement_concept, movement_amount)
-                VALUES (?, NULL, ?, ?, ?)
-            """;
+            String sqlInsertMovement = "INSERT INTO Movement (incexp_id, invoice_id, movement_date, movement_concept, movement_amount) " +
+                                       "VALUES (?, NULL, ?, ?, ?)";
             java.sql.Date movementDate = java.sql.Date.valueOf(dto.getPaidDate());
             Object[] paramsMovement = new Object[] {
                 newIncexpId,
@@ -56,30 +52,28 @@ public class OtherIncomeExpenseModel extends Database {
      * Devuelve los datos (17 columnas) del join de IncomesExpenses + Event + Type + Movement.
      */
     public Object[][] getAllIncomesExpensesFull() {
-        String sql = """
-            SELECT i.incexp_id,
-                   i.event_id,
-                   e.event_name,
-                   e.type_id,
-                   t.type_name,
-                   e.event_inidate,
-                   e.event_enddate,
-                   e.event_location,
-                   e.event_status,
-                   i.incexp_concept,
-                   i.incexp_amount,
-                   i.incexp_status,
-                   m.movement_id,
-                   m.invoice_id,
-                   m.movement_date,
-                   m.movement_concept,
-                   m.movement_amount
-              FROM IncomesExpenses i
-              JOIN Event e ON i.event_id = e.event_id
-              LEFT JOIN Type t ON e.type_id = t.type_id
-              LEFT JOIN Movement m ON i.incexp_id = m.incexp_id
-             ORDER BY i.incexp_id
-        """;
+        String sql = "SELECT i.incexp_id, " +
+                     "i.event_id, " +
+                     "e.event_name, " +
+                     "e.type_id, " +
+                     "t.type_name, " +
+                     "e.event_inidate, " +
+                     "e.event_enddate, " +
+                     "e.event_location, " +
+                     "e.event_status, " +
+                     "i.incexp_concept, " +
+                     "i.incexp_amount, " +
+                     "i.incexp_status, " +
+                     "m.movement_id, " +
+                     "m.invoice_id, " +
+                     "m.movement_date, " +
+                     "m.movement_concept, " +
+                     "m.movement_amount " +
+                     "FROM IncomesExpenses i " +
+                     "JOIN Event e ON i.event_id = e.event_id " +
+                     "LEFT JOIN Type t ON e.type_id = t.type_id " +
+                     "LEFT JOIN Movement m ON i.incexp_id = m.incexp_id " +
+                     "ORDER BY i.incexp_id";
 
         List<Object[]> list = this.executeQueryArray(sql);
         Object[][] data = new Object[list.size()][17];
