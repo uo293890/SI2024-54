@@ -68,6 +68,7 @@ VALUES
  (2, 'Bronze', 1000, 'Visibility only'),
  (3, 'Platinum', 3000, 'All access and premium visibility'),
  (4, 'Gold', 2500, 'Full access'),
+ (5, 'Silver', 1500, 'Visibility, booth'),
  (6, 'Silver', 1500, 'Visibility, booth'),
  (6, 'Gold', 4000, 'Stand + branding'),
  (7, 'Silver', 2500, 'Stand only');
