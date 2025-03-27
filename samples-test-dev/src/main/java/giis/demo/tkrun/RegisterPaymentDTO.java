@@ -1,7 +1,5 @@
 package giis.demo.tkrun;
 
-
-
 public class RegisterPaymentDTO {
     private String paymentDate;
     private String concept;
@@ -14,8 +12,20 @@ public class RegisterPaymentDTO {
         this.amount = amount;
         this.invoiceId = invoiceId;
     }
-    public String getPaymentDate() { return paymentDate; }
-    public String getConcept() { return concept; }
-    public double getAmount() { return amount; }
-    public int getInvoiceId() { return invoiceId; }
+
+    public String getPaymentDate() {
+        return paymentDate;
+    }
+    
+    public String getConcept() {
+        return concept;
+    }
+    
+    public double getAmount() {
+        return amount;
+    }
+    
+    public int getInvoiceId() {
+        return invoiceId;
+    }
 }
