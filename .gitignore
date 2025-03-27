@@ -1,4 +1,1 @@
-target
-.sonar
-#sqlite databases
-*.db 
+/target/
