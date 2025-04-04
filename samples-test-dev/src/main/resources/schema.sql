@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS LevelOfSponsorship (
     event_id INTEGER NOT NULL,
     level_name TEXT NOT NULL,
     level_minamount INTEGER NOT NULL,
-    advantages TEXT NOT NULL,
     FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
 
