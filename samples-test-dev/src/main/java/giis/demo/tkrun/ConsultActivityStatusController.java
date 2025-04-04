@@ -6,12 +6,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class ConsultActivityFinancialStatusController {
-    private ConsultActivityFinancialStatusModel model;
-    private ConsultActivityFinancialStatusView view;
+public class ConsultActivityStatusController {
+    private ConsultActivityStatusModel model;
+    private ConsultActivityStatusView view;
 
-    public ConsultActivityFinancialStatusController(ConsultActivityFinancialStatusModel model, 
-                                                 ConsultActivityFinancialStatusView view) {
+    public ConsultActivityStatusController(ConsultActivityStatusModel model, 
+                                                 ConsultActivityStatusView view) {
         this.model = model;
         this.view = view;
         this.initView();
@@ -41,11 +41,11 @@ public class ConsultActivityFinancialStatusController {
     }
 
     private void loadEventsTable() {
-        List<ConsultActivityFinancialStatusDTO> events = model.getAllEvents();
+        List<ConsultActivityStatusDTO> events = model.getAllEvents();
         DefaultTableModel tableModel = view.getEventsTableModel();
         tableModel.setRowCount(0); // Clear existing data
         
-        for (ConsultActivityFinancialStatusDTO event : events) {
+        for (ConsultActivityStatusDTO event : events) {
             tableModel.addRow(new Object[]{
                 event.getEventName(),
                 event.getEventInidate(),
@@ -57,8 +57,8 @@ public class ConsultActivityFinancialStatusController {
     }
 
     private int getEventIdByName(String eventName) {
-        List<ConsultActivityFinancialStatusDTO> events = model.getAllEvents();
-        for (ConsultActivityFinancialStatusDTO event : events) {
+        List<ConsultActivityStatusDTO> events = model.getAllEvents();
+        for (ConsultActivityStatusDTO event : events) {
             if (event.getEventName().equals(eventName)) {
                 return event.getEventId();
             }
@@ -74,11 +74,11 @@ public class ConsultActivityFinancialStatusController {
     }
 
     private void updateSponsorsTable(int eventId) {
-        List<ConsultActivityFinancialStatusDTO> sponsors = model.getSponsorsForEvent(eventId);
+        List<ConsultActivityStatusDTO> sponsors = model.getSponsorsForEvent(eventId);
         DefaultTableModel tableModel = view.getSponsorsTableModel();
         tableModel.setRowCount(0);
         
-        for (ConsultActivityFinancialStatusDTO sponsor : sponsors) {
+        for (ConsultActivityStatusDTO sponsor : sponsors) {
             tableModel.addRow(new Object[]{
                 sponsor.getSponsorName(),
                 sponsor.getLevelName(),
@@ -90,11 +90,11 @@ public class ConsultActivityFinancialStatusController {
     }
 
     private void updateIncomesTable(int eventId) {
-        List<ConsultActivityFinancialStatusDTO> incomes = model.getIncomesForEvent(eventId);
+        List<ConsultActivityStatusDTO> incomes = model.getIncomesForEvent(eventId);
         DefaultTableModel tableModel = view.getIncomesTableModel();
         tableModel.setRowCount(0);
         
-        for (ConsultActivityFinancialStatusDTO income : incomes) {
+        for (ConsultActivityStatusDTO income : incomes) {
             tableModel.addRow(new Object[]{
                 income.getIncexpConcept(),
                 String.format("€%.2f", income.getIncexpAmount()),
@@ -104,11 +104,11 @@ public class ConsultActivityFinancialStatusController {
     }
 
     private void updateExpensesTable(int eventId) {
-        List<ConsultActivityFinancialStatusDTO> expenses = model.getExpensesForEvent(eventId);
+        List<ConsultActivityStatusDTO> expenses = model.getExpensesForEvent(eventId);
         DefaultTableModel tableModel = view.getExpensesTableModel();
         tableModel.setRowCount(0);
         
-        for (ConsultActivityFinancialStatusDTO expense : expenses) {
+        for (ConsultActivityStatusDTO expense : expenses) {
             tableModel.addRow(new Object[]{
                 expense.getIncexpConcept(),
                 String.format("€%.2f", expense.getIncexpAmount()),

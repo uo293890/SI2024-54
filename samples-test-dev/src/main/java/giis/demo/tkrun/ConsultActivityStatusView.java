@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 
-public class ConsultActivityFinancialStatusView extends JFrame {
+public class ConsultActivityStatusView extends JFrame {
     private JTable eventsTable;
     private JTable sponsorsTable;
     private JTable incomesTable;
@@ -37,13 +37,13 @@ public class ConsultActivityFinancialStatusView extends JFrame {
     private JLabel expensesEstimatedLabel;
     private JLabel expensesPaidLabel;
 
-    public ConsultActivityFinancialStatusView() {
+    public ConsultActivityStatusView() {
         initialize();
         setupEventSelectionListener();
     }
 
     private void initialize() {
-        setTitle("Consult Activity Financial Status");
+        setTitle("Consult Activity Status");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);

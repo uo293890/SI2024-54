@@ -3,7 +3,7 @@ package giis.demo.tkrun;
 import giis.demo.util.Database;
 import java.util.List;
 
-public class ConsultActivityFinancialStatusModel {
+public class ConsultActivityStatusModel {
     private Database db = new Database();
 
     // SQL Queries
@@ -49,55 +49,55 @@ public class ConsultActivityFinancialStatusModel {
         "FROM IncomesExpenses " +
         "WHERE event_id = ? AND incexp_amount < 0 AND incexp_status = 'Paid'";
 
-    public List<ConsultActivityFinancialStatusDTO> getAllEvents() {
-        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_EVENTS);
+    public List<ConsultActivityStatusDTO> getAllEvents() {
+        return db.executeQueryPojo(ConsultActivityStatusDTO.class, SQL_GET_EVENTS);
     }
 
-    public List<ConsultActivityFinancialStatusDTO> getSponsorsForEvent(int eventId) {
-        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_SPONSORS, eventId);
+    public List<ConsultActivityStatusDTO> getSponsorsForEvent(int eventId) {
+        return db.executeQueryPojo(ConsultActivityStatusDTO.class, SQL_GET_SPONSORS, eventId);
     }
 
-    public List<ConsultActivityFinancialStatusDTO> getIncomesForEvent(int eventId) {
-        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_INCOMES, eventId);
+    public List<ConsultActivityStatusDTO> getIncomesForEvent(int eventId) {
+        return db.executeQueryPojo(ConsultActivityStatusDTO.class, SQL_GET_INCOMES, eventId);
     }
 
-    public List<ConsultActivityFinancialStatusDTO> getExpensesForEvent(int eventId) {
-        return db.executeQueryPojo(ConsultActivityFinancialStatusDTO.class, SQL_GET_EXPENSES, eventId);
+    public List<ConsultActivityStatusDTO> getExpensesForEvent(int eventId) {
+        return db.executeQueryPojo(ConsultActivityStatusDTO.class, SQL_GET_EXPENSES, eventId);
     }
 
     public double getSponsorsPaidForEvent(int eventId) {
-        List<ConsultActivityFinancialStatusDTO> results = db.executeQueryPojo(
-            ConsultActivityFinancialStatusDTO.class, SQL_GET_PAID_SPONSORS, eventId);
-        return results.stream().mapToDouble(ConsultActivityFinancialStatusDTO::getAgreementAmount).sum();
+        List<ConsultActivityStatusDTO> results = db.executeQueryPojo(
+            ConsultActivityStatusDTO.class, SQL_GET_PAID_SPONSORS, eventId);
+        return results.stream().mapToDouble(ConsultActivityStatusDTO::getAgreementAmount).sum();
     }
 
     public double getIncomesPaidForEvent(int eventId) {
-        List<ConsultActivityFinancialStatusDTO> results = db.executeQueryPojo(
-            ConsultActivityFinancialStatusDTO.class, SQL_GET_PAID_INCOMES, eventId);
-        return results.stream().mapToDouble(ConsultActivityFinancialStatusDTO::getIncexpAmount).sum();
+        List<ConsultActivityStatusDTO> results = db.executeQueryPojo(
+            ConsultActivityStatusDTO.class, SQL_GET_PAID_INCOMES, eventId);
+        return results.stream().mapToDouble(ConsultActivityStatusDTO::getIncexpAmount).sum();
     }
 
     public double getExpensesPaidForEvent(int eventId) {
-        List<ConsultActivityFinancialStatusDTO> results = db.executeQueryPojo(
-            ConsultActivityFinancialStatusDTO.class, SQL_GET_PAID_EXPENSES, eventId);
-        return results.stream().mapToDouble(ConsultActivityFinancialStatusDTO::getIncexpAmount).sum();
+        List<ConsultActivityStatusDTO> results = db.executeQueryPojo(
+            ConsultActivityStatusDTO.class, SQL_GET_PAID_EXPENSES, eventId);
+        return results.stream().mapToDouble(ConsultActivityStatusDTO::getIncexpAmount).sum();
     }
 
     public double getSponsorsEstimatedForEvent(int eventId) {
         return getSponsorsForEvent(eventId).stream()
-            .mapToDouble(ConsultActivityFinancialStatusDTO::getAgreementAmount)
+            .mapToDouble(ConsultActivityStatusDTO::getAgreementAmount)
             .sum();
     }
 
     public double getIncomesEstimatedForEvent(int eventId) {
         return getIncomesForEvent(eventId).stream()
-            .mapToDouble(ConsultActivityFinancialStatusDTO::getIncexpAmount)
+            .mapToDouble(ConsultActivityStatusDTO::getIncexpAmount)
             .sum();
     }
 
     public double getExpensesEstimatedForEvent(int eventId) {
         return getExpensesForEvent(eventId).stream()
-            .mapToDouble(ConsultActivityFinancialStatusDTO::getIncexpAmount)
+            .mapToDouble(ConsultActivityStatusDTO::getIncexpAmount)
             .sum();
     }
 }

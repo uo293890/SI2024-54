@@ -23,7 +23,7 @@ public class RegisterSponsorshipAgreementView extends JFrame {
     }
 
     private void initialize() {
-        setTitle("Sponsorship Agreement Registration");
+        setTitle("Register Sponsorship Agreement");
         setSize(800, 400); // Increased window size for additional components
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);

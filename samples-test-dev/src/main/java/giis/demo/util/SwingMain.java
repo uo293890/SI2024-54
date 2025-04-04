@@ -132,10 +132,10 @@ public class SwingMain {
         });
         sponsorshipPanel.add(btnRegisterAgreement, "grow, wrap");
 
-        JButton btnFinancialStatus = createMinimalButton("Consult Financial Status", buttonFont, buttonColor, borderColor);
+        JButton btnFinancialStatus = createMinimalButton("Consult Activity Status", buttonFont, buttonColor, borderColor);
         btnFinancialStatus.addActionListener(e -> {
-            ConsultActivityFinancialStatusView view = new ConsultActivityFinancialStatusView();
-            new ConsultActivityFinancialStatusController(new ConsultActivityFinancialStatusModel(), view);
+            ConsultActivityStatusView view = new ConsultActivityStatusView();
+            new ConsultActivityStatusController(new ConsultActivityStatusModel(), view);
             view.setVisible(true);
         });
         sponsorshipPanel.add(btnFinancialStatus, "grow");
