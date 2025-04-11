@@ -8,10 +8,10 @@ public class ConsultActivityStatusModel {
 
     // SQL Queries
     private static final String SQL_GET_EVENTS = 
-        "SELECT e.event_id as eventId, e.event_name as eventName, " +
-        "e.event_inidate as eventInidate, e.event_enddate as eventEnddate, " +
-        "e.event_status as eventStatus, t.type_name as typeName " +
-        "FROM Event e JOIN Type t ON e.type_id = t.type_id";
+    	"SELECT e.event_id as eventId, e.event_name as eventName, " +
+    	"e.event_inidate as eventInidate, e.event_enddate as eventEnddate, " +
+    	"e.event_status as eventStatus, t.type_name as typeName " +
+    	"FROM Event e LEFT JOIN Type t ON e.type_id = t.type_id";
 
     private static final String SQL_GET_SPONSORS = 
         "SELECT a.agreement_id as agreementId, s.sponsor_name as sponsorName, " +
