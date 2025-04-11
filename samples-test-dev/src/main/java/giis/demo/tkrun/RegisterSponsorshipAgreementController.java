@@ -132,10 +132,10 @@ public class RegisterSponsorshipAgreementController {
         }
         dto.setSpContactId(contacts.get(selectedContactIndex - 1).getSpContactId());
 
-        // Set date and validate it's not in the past
+        // Set date
         LocalDate agreementDate = LocalDate.parse(view.getAgreementDateField().getText());
-        if (agreementDate.isBefore(workingDate)) {
-            throw new ApplicationException("Agreement date cannot be in the past");
+        if (agreementDate.isAfter(workingDate)) {
+            view.showMessage("You have set the date on the future");
         }
         dto.setAgreementDate(agreementDate);
         

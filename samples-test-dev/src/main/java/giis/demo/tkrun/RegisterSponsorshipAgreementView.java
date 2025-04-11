@@ -124,7 +124,7 @@ public class RegisterSponsorshipAgreementView extends JFrame {
         registerButton = new JButton("Register Agreement");
         registerButton.setFont(new Font("Arial", Font.BOLD, 14));
         registerButton.setBackground(new Color(0, 153, 204));
-        registerButton.setForeground(Color.WHITE);
+        registerButton.setForeground(Color.BLACK);
         registerButton.setFocusPainted(false);
         mainPanel.add(registerButton, gbc);
 

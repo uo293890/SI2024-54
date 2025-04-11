@@ -24,7 +24,7 @@ public class RegisterSponsorshipAgreementModel {
     
     private static final String SQL_GET_SPONSORSHIP_LEVELS = 
         "SELECT level_id AS levelId, level_name AS levelName, " +
-        "level_minamount AS levelMinAmount, advantages " +
+        "level_minamount AS levelMinAmount " +
         "FROM LevelOfSponsorship WHERE event_id = ?;";
 
     /**
