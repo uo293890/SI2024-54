@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class RegisterEventDTO {
+	private int eventId;
     private int typeId;
     private String typeName;
     private String eventName;
@@ -14,6 +15,9 @@ public class RegisterEventDTO {
     private List<SponsorshipLevelDTO> sponsorshipLevels;
 
     // Getters and Setters
+    public int getEventId() { return eventId; }
+    public void setEventId(int eventId) { this.eventId = eventId; }
+    
     public int getTypeId() { return typeId; }
     public void setTypeId(int typeId) { this.typeId = typeId; }
     

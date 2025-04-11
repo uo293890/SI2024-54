@@ -32,11 +32,18 @@ public class RegisterEventModel {
  	           dto.getLocation(), 
  	           dto.getStatus());
         
+        // Get the most recent event_id
+        String getLastIdSql = "SELECT MAX(event_id) AS eventId FROM Event";
+        int eventId = db.executeQueryPojo(RegisterEventDTO.class, getLastIdSql).get(0).getEventId();
+
+        // Insert sponsorship levels using the retrieved eventId
         for (RegisterEventDTO.SponsorshipLevelDTO level : dto.getSponsorshipLevels()) {
-        	db.executeUpdate(sqlL, 
-      	           level.getEventId(),
-      	           level.getLevelName(),
-      	           level.getMinAmount());        }
+            level.setEventId(eventId); // Assign the retrieved event ID
+            db.executeUpdate(sqlL,
+                    level.getEventId(),
+                    level.getLevelName(),
+                    level.getMinAmount());
+        }
     }
     
 }
