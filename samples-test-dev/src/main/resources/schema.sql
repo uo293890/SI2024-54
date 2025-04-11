@@ -81,8 +81,6 @@ CREATE TABLE IF NOT EXISTS IncomesExpenses (
     event_id INTEGER NOT NULL,
     incexp_concept TEXT NOT NULL,
     incexp_amount INTEGER NOT NULL,
-    
-    
     incexp_status TEXT NOT NULL CHECK(incexp_status IN ('Estimated', 'Paid')) DEFAULT 'Estimated',
     FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
