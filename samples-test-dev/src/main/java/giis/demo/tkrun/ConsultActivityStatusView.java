@@ -51,7 +51,7 @@ public class ConsultActivityStatusView extends JFrame {
 
         // Header Panel
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel titleLabel = new JLabel("Activity Financial Status");
+        JLabel titleLabel = new JLabel("Activity Status");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerPanel.add(titleLabel);
         add(headerPanel, BorderLayout.NORTH);
