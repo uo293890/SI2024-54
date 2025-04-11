@@ -135,8 +135,17 @@ public class RegisterSponsorshipAgreementController {
         // Set date
         LocalDate agreementDate = LocalDate.parse(view.getAgreementDateField().getText());
         if (agreementDate.isAfter(workingDate)) {
-            view.showMessage("You have set the date on the future");
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                null,
+                "The date entered is in the future. Are you sure you want to proceed?",
+                "Future Date Confirmation",
+                javax.swing.JOptionPane.YES_NO_OPTION
+            );
+            if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+                throw new ApplicationException("Operation cancelled by the user due to future date.");
+            }
         }
+
         dto.setAgreementDate(agreementDate);
         
         // Get and validate the agreed amount
