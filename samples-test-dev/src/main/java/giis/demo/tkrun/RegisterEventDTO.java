@@ -45,7 +45,6 @@ public class RegisterEventDTO {
     	private int eventId;
         private String levelName;
         private double minAmount;
-        private String advantages;
 
         // Getters and Setters
         public int getEventId() { return eventId; }
@@ -56,8 +55,5 @@ public class RegisterEventDTO {
         
         public double getMinAmount() { return minAmount; }
         public void setMinAmount(double minAmount) { this.minAmount = minAmount; }
-        
-        public String getAdvantages() { return advantages; }
-        public void setAdvantages(String advantages) { this.advantages = advantages; }
     }
 }

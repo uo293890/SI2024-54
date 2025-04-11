@@ -102,7 +102,6 @@ public class RegisterEventView extends JFrame {
     public class LevelPanel extends JPanel {
         JTextField nameField;
         JTextField minAmountField;
-        JTextArea advantagesArea;
         JButton removeButton;
         
         public LevelPanel() {
@@ -126,13 +125,6 @@ public class RegisterEventView extends JFrame {
             minAmountField = new JTextField(10);
             add(minAmountField, gbc);
             
-            // Advantages
-            gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 3;
-            gbc.fill = GridBagConstraints.BOTH;
-            advantagesArea = new JTextArea(3, 40);
-            advantagesArea.setLineWrap(true);
-            add(new JScrollPane(advantagesArea), gbc);
-            
             // Remove button
             gbc.gridx = 3; gbc.gridy = 1; gbc.gridwidth = 1;
             gbc.fill = GridBagConstraints.NONE;
@@ -142,7 +134,6 @@ public class RegisterEventView extends JFrame {
         
         public JTextField getNameField() { return nameField; }
         public JTextField getMinAmountField() { return minAmountField; }
-        public JTextArea getAdvantagesArea() { return advantagesArea; }
     }
     
     // Public methods 

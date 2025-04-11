@@ -22,7 +22,7 @@ public class RegisterEventModel {
                 "VALUES (?, ?, ?, ?, ?, ?)";
     	
     	String sqlL = "INSERT INTO LevelOfSponsorship (event_id, level_name, " +
-    	        "level_minamount, advantages) VALUES (?, ?, ?, ?)";
+    	        "level_minamount) VALUES (?, ?, ?)";
         
         db.executeUpdate(sql, 
  	           dto.getTypeId(), 
@@ -36,9 +36,7 @@ public class RegisterEventModel {
         	db.executeUpdate(sqlL, 
       	           level.getEventId(),
       	           level.getLevelName(),
-      	           level.getMinAmount(), 
-      	           level.getAdvantages());
-        }
+      	           level.getMinAmount());        }
     }
     
 }
