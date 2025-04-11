@@ -78,7 +78,15 @@ public class RegisterEventController {
                 
                 // Check against working date
                 if (startDate.isBefore(workingDate)) {
-                    throw new ApplicationException("Start date cannot be before the working date (" + workingDate + ")");
+                	int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                	        null,
+                	        "The date entered is in the past. Are you sure you want to proceed?",
+                	        "Past Date Confirmation",
+                	        javax.swing.JOptionPane.YES_NO_OPTION
+                	    );
+                	    if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+                	        throw new ApplicationException("Operation cancelled by the user due to past date.");
+                	    }
                 }
             }
             
