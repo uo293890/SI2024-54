@@ -124,6 +124,14 @@ public class SwingMain {
         // 4. Sponsorship Management Section
         JPanel sponsorshipPanel = createSectionPanel("Sponsorship Management", sectionColor);
         
+        JButton btnRegisterSponsor = createMinimalButton("Register New Sponsor", buttonFont, buttonColor, borderColor);
+        btnRegisterSponsor.addActionListener(e -> {
+            RegisterSponsorView view = new RegisterSponsorView();
+            new RegisterSponsorController(new RegisterSponsorModel(), view);
+            view.setVisible(true);
+        });
+        sponsorshipPanel.add(btnRegisterSponsor, "grow, wrap");
+        
         JButton btnRegisterAgreement = createMinimalButton("Register Sponsorship Agreement", buttonFont, buttonColor, borderColor);
         btnRegisterAgreement.addActionListener(e -> {
             RegisterSponsorshipAgreementView view = new RegisterSponsorshipAgreementView();
