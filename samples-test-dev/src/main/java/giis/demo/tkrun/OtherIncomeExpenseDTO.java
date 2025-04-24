@@ -3,104 +3,48 @@ package giis.demo.tkrun;
 import java.time.LocalDate;
 
 /**
- * DTO que representa un movimiento de ingreso/gasto.
+ * Data object (DTO) for a summary of an Income/Expense entry,
+ * including the calculated total paid amount.
  */
 public class OtherIncomeExpenseDTO {
 
-    public enum MovementType {
-        INCOME, EXPENSE
-    }
-
-    public enum MovementStatus {
-        ESTIMATED, PAID
-    }
-
-    private int movementId;
+    // Fields for an entry summary + calculated total paid
+    private int incexpId; // Entry ID
     private int eventId;
-    private MovementType movementType;
-    private MovementStatus movementStatus;
-    private double estimatedAmount;
-    private double paidAmount;
-    private LocalDate paidDate;
-    private String concept;
+    private String eventName; // Event name
+    private String concept; // Entry concept
+    private double estimatedAmount; // Original estimated amount (can be negative for expenses)
+    private String status; // Entry status
+    private double totalPaid; // Sum of related movement amounts (can be negative)
 
-    public OtherIncomeExpenseDTO(int movementId, int eventId,
-                                 MovementType movementType, MovementStatus movementStatus,
-                                 double estimatedAmount, double paidAmount,
-                                 LocalDate paidDate, String concept) {
-        this.movementId = movementId;
+    // Constructor to create DTO from database data
+    public OtherIncomeExpenseDTO(int incexpId, int eventId, String eventName, String concept,
+                                 double estimatedAmount, String status, double totalPaid) {
+        this.incexpId = incexpId;
         this.eventId = eventId;
-        this.movementType = movementType;
-        this.movementStatus = movementStatus;
-        this.estimatedAmount = estimatedAmount;
-        this.paidAmount = paidAmount;
-        this.paidDate = paidDate;
+        this.eventName = eventName;
         this.concept = concept;
-    }
-
-    // Getters y setters
-
-    public int getMovementId() {
-        return movementId;
-    }
-
-    public void setMovementId(int movementId) {
-        this.movementId = movementId;
-    }
-
-    public int getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
-    }
-
-    public MovementType getMovementType() {
-        return movementType;
-    }
-
-    public void setMovementType(MovementType movementType) {
-        this.movementType = movementType;
-    }
-
-    public MovementStatus getMovementStatus() {
-        return movementStatus;
-    }
-
-    public void setMovementStatus(MovementStatus movementStatus) {
-        this.movementStatus = movementStatus;
-    }
-
-    public double getEstimatedAmount() {
-        return estimatedAmount;
-    }
-
-    public void setEstimatedAmount(double estimatedAmount) {
         this.estimatedAmount = estimatedAmount;
+        this.status = status;
+        this.totalPaid = totalPaid;
     }
 
-    public double getPaidAmount() {
-        return paidAmount;
-    }
+    // Getters for fields (used by controller and view)
+    public int getIncexpId() { return incexpId; }
+    public int getEventId() { return eventId; }
+    public String getEventName() { return eventName; }
+    public String getConcept() { return concept; }
+    public double getEstimatedAmount() { return estimatedAmount; } // Raw estimated amount
+    public String getStatus() { return status; }
+    public double getTotalPaid() { return totalPaid; } // Raw total paid
 
-    public void setPaidAmount(double paidAmount) {
-        this.paidAmount = paidAmount;
-    }
+    // Helper to determine if it's an income or expense based on estimated amount sign
+    public String getType() { return estimatedAmount >= 0 ? "Income" : "Expense"; }
 
-    public LocalDate getPaidDate() {
-        return paidDate;
-    }
+    // Helper to get estimated amount as positive for display in table
+    public double getEstimatedAmountForDisplay() { return Math.abs(estimatedAmount); }
 
-    public void setPaidDate(LocalDate paidDate) {
-        this.paidDate = paidDate;
-    }
-
-    public String getConcept() {
-        return concept;
-    }
-
-    public void setConcept(String concept) {
-        this.concept = concept;
-    }
+    // Helper to get remaining amount (Estimated - Total Paid)
+    // This value is used by the table renderer to determine display text and color
+    public double getRemainingAmountRaw() { return estimatedAmount - totalPaid; }
 }

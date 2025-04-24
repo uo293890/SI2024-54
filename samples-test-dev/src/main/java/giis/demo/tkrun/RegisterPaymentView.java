@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -16,13 +17,13 @@ public class RegisterPaymentView extends JDialog {
 
     // Tables for Pending Agreements, Paid Agreements, and Payment History
     private JTable tableAgreements;         // Pending agreements
-    private JTable tablePaidAgreements;       // Paid agreements
+    private JTable tablePaidAgreements;        // Paid agreements
     private JTable tablePreviousPayments;     // Payment history
 
     // Fields for payment registration
     private JTextField txtPaymentDate;
     private JTextField txtPaymentAmount;
-    private JTextField txtPaymentConcept;
+    private JTextField txtPaymentConcept; // Optional field
 
     // Labels for validation messages and summary
     private JLabel lblValidation;
@@ -33,25 +34,29 @@ public class RegisterPaymentView extends JDialog {
     private JButton btnRegister;
     private JButton btnCancel;
 
-    // Variables for managing payment amounts
+    // Variable for managing payment amounts - used by controller to track remaining
     private double currentRemainingAmount = 0.0;
-    private Double lastValidAmount = null;
 
     public RegisterPaymentView() {
         setTitle("Sponsor Payment Registration");
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(1200, 800);
+        setMinimumSize(new Dimension(800, 600)); // Added minimum size
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
         setLayout(new BorderLayout(15, 15));
+        getRootPane().setBorder(new EmptyBorder(10, 10, 10, 10)); // Add padding
 
         // Create a JTabbedPane to separate Pending and Paid agreements
         JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setPreferredSize(new Dimension(700, 400)); // Preferred size for tables
 
         // Panel for Pending Agreements
         JPanel pendingPanel = new JPanel(new BorderLayout(10, 10));
         tableAgreements = new JTable();
+        tableAgreements.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane scrollPending = new JScrollPane(tableAgreements);
         scrollPending.setBorder(BorderFactory.createTitledBorder("Pending Agreements"));
         pendingPanel.add(scrollPending, BorderLayout.CENTER);
@@ -60,6 +65,8 @@ public class RegisterPaymentView extends JDialog {
         // Panel for Paid Agreements
         JPanel paidPanel = new JPanel(new BorderLayout(10, 10));
         tablePaidAgreements = new JTable();
+        tablePaidAgreements.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane scrollPaid = new JScrollPane(tablePaidAgreements);
         scrollPaid.setBorder(BorderFactory.createTitledBorder("Paid Agreements"));
         paidPanel.add(scrollPaid, BorderLayout.CENTER);
@@ -68,8 +75,11 @@ public class RegisterPaymentView extends JDialog {
         // Panel for Payment History
         JPanel previousPaymentsPanel = new JPanel(new BorderLayout(10, 10));
         tablePreviousPayments = new JTable();
+        tablePreviousPayments.setEnabled(false); // Make history table non-interactive
+
         JScrollPane scrollPayments = new JScrollPane(tablePreviousPayments);
         scrollPayments.setBorder(BorderFactory.createTitledBorder("Payment History"));
+        scrollPayments.setPreferredSize(new Dimension(700, 200)); // Give history table some size
         previousPaymentsPanel.add(scrollPayments, BorderLayout.CENTER);
 
         // Central panel that groups the tabbed pane and payment history
@@ -81,104 +91,84 @@ public class RegisterPaymentView extends JDialog {
         // Right panel for the payment registration form
         JPanel rightPanel = new JPanel(new BorderLayout(10, 10));
         rightPanel.setBorder(new TitledBorder("New Payment"));
+        rightPanel.setPreferredSize(new Dimension(350, 0)); // Fixed width for the right panel
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(5, 5, 5, 5); // Adjusted insets
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         int row = 0;
-        // Initialize the payment date with the current date
-        txtPaymentDate = new JTextField(LocalDate.now().toString());
+        // Initialize the payment date - CONTROLLER WILL SET THE ACTUAL WORKING DATE
+        txtPaymentDate = new JTextField();
         txtPaymentAmount = new JTextField();
-        txtPaymentConcept = new JTextField();
+        txtPaymentConcept = new JTextField(); // Concept is optional
 
         lblValidation = new JLabel();
+        lblValidation.setPreferredSize(new Dimension(300, 20)); // Give validation label size
         lblRemainingAmount = new JLabel();
+        lblRemainingAmount.setPreferredSize(new Dimension(300, 20)); // Give remaining label size
         lblSummary = new JLabel();
+        lblSummary.setPreferredSize(new Dimension(300, 20)); // Give summary label size
 
         addLabelField(formPanel, gbc, row++, "Payment Date (YYYY-MM-DD):", txtPaymentDate);
         addLabelField(formPanel, gbc, row++, "Payment Amount (€):", txtPaymentAmount);
-        addLabelField(formPanel, gbc, row++, "Payment Concept:", txtPaymentConcept);
-        addLabelField(formPanel, gbc, row++, "Validation Status:", lblValidation);
-        addLabelField(formPanel, gbc, row++, "Remaining Amount (€):", lblRemainingAmount);
-        addLabelField(formPanel, gbc, row++, "Total Summary:", lblSummary);
+        addLabelField(formPanel, gbc, row++, "Payment Concept (Optional):", txtPaymentConcept); // Updated label text
+
+        // Add labels directly without label fields to control gridbag layout better
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(new JSeparator(), gbc); // Separator
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(new JLabel("Validation Status:"), gbc);
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(lblValidation, gbc);
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(new JSeparator(), gbc); // Separator
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(new JLabel("Calculated Remaining (€):"), gbc);
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(lblRemainingAmount, gbc);
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(new JSeparator(), gbc); // Separator
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(new JLabel("Agreement Summary:"), gbc);
+        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2; formPanel.add(lblSummary, gbc);
+
 
         // Buttons
         btnRegister = new JButton("Register Payment");
-        btnRegister.setEnabled(false);
+        btnRegister.setEnabled(false); // Start disabled until an agreement is selected and inputs are valid
         btnCancel = new JButton("Cancel");
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0)); // Adjusted flow layout
+        buttonPanel.setBorder(new EmptyBorder(10,0,0,0)); // Add space above buttons
         buttonPanel.add(btnRegister);
         buttonPanel.add(btnCancel);
 
         JPanel paymentPanel = new JPanel(new BorderLayout());
-        paymentPanel.add(formPanel, BorderLayout.CENTER);
+        paymentPanel.add(formPanel, BorderLayout.NORTH); // Use NORTH to prevent fields from stretching vertically
         paymentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        rightPanel.add(paymentPanel, BorderLayout.CENTER);
+        rightPanel.add(paymentPanel, BorderLayout.NORTH); // Use NORTH to prevent the panel from stretching vertically
         add(rightPanel, BorderLayout.EAST);
 
-        // Real-time validation for the amount and date fields
-        txtPaymentAmount.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent e) {
-                updateRemainingLabel();
-            }
-        });
-        txtPaymentDate.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent e) {
-                validateDateFormat();
-            }
-        });
+        // Ensure remaining amount label is updated when currentRemainingAmount is set
+        lblRemainingAmount.setText(String.format("%.2f", currentRemainingAmount));
+
     }
 
-    private void updateRemainingLabel() {
-        String input = txtPaymentAmount.getText().trim();
-        if (input.isEmpty()) {
-            lblRemainingAmount.setText(String.format("%.2f", currentRemainingAmount));
-            lastValidAmount = null;
-            return;
-        }
-        try {
-            double amount = Double.parseDouble(input);
-            if (amount < 0) throw new NumberFormatException();
-            lastValidAmount = amount;
-            double remaining = currentRemainingAmount - amount;
-            lblRemainingAmount.setText(String.format("%.2f", remaining));
-        } catch (NumberFormatException ex) {
-            lblRemainingAmount.setText(String.format("%.2f", currentRemainingAmount));
-            lastValidAmount = null;
-        }
+    // Helper method for adding labels and fields using GridBagLayout
+    private void addLabelField(JPanel panel, GridBagConstraints gbc, int y, String labelText, JComponent field) {
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        gbc.weightx = 0.0; // Labels don't grow
+        gbc.anchor = GridBagConstraints.WEST; // Align label to the west
+        panel.add(new JLabel(labelText), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0; // Field takes remaining space
+        gbc.anchor = GridBagConstraints.EAST; // Align field to the east
+        panel.add(field, gbc);
     }
 
-    private void validateDateFormat() {
-        String input = txtPaymentDate.getText().trim();
-        try {
-            LocalDate.parse(input, DateTimeFormatter.ISO_LOCAL_DATE);
-            txtPaymentDate.setForeground(Color.BLACK);
-        } catch (DateTimeParseException e) {
-            txtPaymentDate.setForeground(Color.RED);
-        }
-    }
 
     public void setCurrentRemainingAmount(double amount) {
         this.currentRemainingAmount = amount;
-        this.lastValidAmount = null;
-        lblRemainingAmount.setText(String.format("%.2f", amount));
+        // Update the label immediately when this is set (typically on agreement selection)
+        // Note: updateValidation will also update this based on entered amount
+        // lblRemainingAmount.setText(String.format("%.2f €", amount));
     }
 
-    public Double getEnteredAmount() {
-        return lastValidAmount;
-    }
-
-    private void addLabelField(JPanel panel, GridBagConstraints gbc, int y, String label, JComponent field) {
-        gbc.gridx = 0;
-        gbc.gridy = y;
-        gbc.weightx = 0.3;
-        panel.add(new JLabel(label), gbc);
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        panel.add(field, gbc);
-    }
 
     // Getters for components (used by the controller)
     public JTable getTableAgreements() {
@@ -227,24 +217,51 @@ public class RegisterPaymentView extends JDialog {
 
     public void setTableModelAgreements(DefaultTableModel model) {
         tableAgreements.setModel(model);
-        tableAgreements.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // Column rendering and selection mode is set in the Controller init
     }
 
     public void setTableModelPaidAgreements(DefaultTableModel model) {
         tablePaidAgreements.setModel(model);
-        tablePaidAgreements.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+         // Selection mode is set in the Controller init
     }
 
     public void setTableModelPayments(DefaultTableModel model) {
         tablePreviousPayments.setModel(model);
+         // Disable editing and column reordering
+         if (tablePreviousPayments.getColumnModel().getColumnCount() > 0) {
+             for (int i = 0; i < tablePreviousPayments.getColumnCount(); i++) {
+                 tablePreviousPayments.getColumnModel().getColumn(i).setResizable(false);
+             }
+             tablePreviousPayments.getTableHeader().setReorderingAllowed(false);
+         }
     }
 
     public void clearPaymentFields() {
+        // Clear amount and concept
         txtPaymentAmount.setText("");
         txtPaymentConcept.setText("");
+        // Validation and remaining labels are updated by updateValidation
         lblValidation.setText("");
-        lblRemainingAmount.setText(String.format("%.2f", currentRemainingAmount));
-        lblSummary.setText("");
-        lastValidAmount = null;
+        lblRemainingAmount.setText(""); // Clear remaining on full clear
+        lblSummary.setText(""); // Clear summary on full clear
+        // Keep the register button disabled until validation passes again
+        btnRegister.setEnabled(false);
+    }
+
+     // Clear fields except the date
+     public void clearPaymentFieldsExceptDate() {
+         txtPaymentAmount.setText("");
+         txtPaymentConcept.setText("");
+         // Validation and remaining labels are updated by updateValidation
+         lblValidation.setText("");
+         lblRemainingAmount.setText(""); // Clear remaining as it depends on entered amount
+         lblSummary.setText(""); // Clear summary initially, updateValidation will set it
+         btnRegister.setEnabled(false); // Disable until validation
+     }
+
+
+    // Method to show the dialog
+    public void open() {
+        this.setVisible(true);
     }
 }

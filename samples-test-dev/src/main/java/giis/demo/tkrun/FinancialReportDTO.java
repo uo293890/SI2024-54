@@ -1,18 +1,21 @@
 package giis.demo.tkrun;
 
+import java.util.Objects; // Import Objects for potential future use if needed
+
 /**
  * DTO (Data Transfer Object) que representa la información financiera de un evento.
  * Incluye datos como nombre, estado, fechas, ingresos y gastos tanto estimados como reales.
+ * Los campos de ingreso y gasto representan los totales combinados (Sponsorship + Other Income, Total Expenses).
  */
 public class FinancialReportDTO {
     private String activityName;
     private String status;
     private String startDate;
     private String endDate;
-    private double estimatedIncome;
-    private double estimatedExpenses;
-    private double actualIncome;
-    private double actualExpenses;
+    private double estimatedIncome; // Combined Estimated Sponsorship + Estimated Other Income
+    private double estimatedExpenses; // Total Estimated Expenses
+    private double actualIncome; // Combined Actual Sponsorship + Actual Other Income
+    private double actualExpenses; // Total Actual Expenses
 
     public FinancialReportDTO(String activityName, String status, String startDate, String endDate,
                               double estimatedIncome, double estimatedExpenses,
@@ -43,6 +46,7 @@ public class FinancialReportDTO {
         return endDate;
     }
 
+    // Getters return the calculated total values
     public double getEstimatedIncome() {
         return estimatedIncome;
     }
@@ -59,6 +63,7 @@ public class FinancialReportDTO {
         return actualExpenses;
     }
 
+    // Balances calculated as Income - Expenses (using the total values)
     public double getEstimatedBalance() {
         return estimatedIncome - estimatedExpenses;
     }

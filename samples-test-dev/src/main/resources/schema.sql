@@ -69,19 +69,19 @@ CREATE TABLE IF NOT EXISTS Agreement (
 
 CREATE TABLE IF NOT EXISTS Invoice (
     invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    agreement_id INTEGER NOT NULL,
-    invoice_date DATE ,
-    invoice_number TEXT NOT NULL CHECK (invoice_number GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
-    invoice_vat DOUBLE NOT NULL,
+    agreement_id INTEGER,
+    invoice_date DATE,
+    invoice_number TEXT,
+    invoice_vat DOUBLE,
     FOREIGN KEY (agreement_id) REFERENCES Agreement(agreement_id)
 );
 
 CREATE TABLE IF NOT EXISTS IncomesExpenses (
     incexp_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_id INTEGER NOT NULL,
-    incexp_concept TEXT NOT NULL,
-    incexp_amount INTEGER NOT NULL,
-    incexp_status TEXT NOT NULL CHECK(incexp_status IN ('Estimated', 'Paid')) DEFAULT 'Estimated',
+    event_id INTEGER,
+    incexp_concept TEXT,
+    incexp_amount DOUBLE,
+    incexp_status TEXT CHECK(incexp_status IN ('Estimated', 'Paid')) DEFAULT 'Estimated',
     FOREIGN KEY (event_id) REFERENCES Event(event_id)
 );
 
@@ -89,9 +89,9 @@ CREATE TABLE IF NOT EXISTS Movement (
     movement_id INTEGER PRIMARY KEY AUTOINCREMENT,
     incexp_id INTEGER,
     invoice_id INTEGER,
-    movement_date DATE NOT NULL,
-    movement_concept TEXT NOT NULL,
-    movement_amount DOUBLE NOT NULL,
+    movement_date DATE ,
+    movement_concept TEXT ,
+    movement_amount DOUBLE ,
     FOREIGN KEY (incexp_id) REFERENCES IncomesExpenses(incexp_id),
     FOREIGN KEY (invoice_id) REFERENCES Invoice(invoice_id)
 );

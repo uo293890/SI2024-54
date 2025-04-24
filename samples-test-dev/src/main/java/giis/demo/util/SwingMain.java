@@ -147,7 +147,7 @@ public class SwingMain {
         JButton btnInvoice = createMinimalButton("Manage Invoices", buttonFont, buttonColor, borderColor);
         btnInvoice.addActionListener(e -> {
             InvoiceView view = new InvoiceView();
-            new InvoiceController(new InvoiceModel(), view);
+            new InvoiceController(new InvoiceModel(), view, workingDate);
             view.setVisible(true);
         });
         financialPanel.add(btnInvoice, "grow, wrap");
@@ -155,23 +155,23 @@ public class SwingMain {
         JButton btnRegisterPayment = createMinimalButton("Register Payment", buttonFont, buttonColor, borderColor);
         btnRegisterPayment.addActionListener(e -> {
             RegisterPaymentView view = new RegisterPaymentView();
-            new RegisterPaymentController(new RegisterPaymentModel(), view);
+            new RegisterPaymentController(new RegisterPaymentModel(), view, workingDate);
             view.setVisible(true);
         });
         financialPanel.add(btnRegisterPayment, "grow, wrap");
 
-        JButton btnOtherMovement = createMinimalButton("Other Financial Movement", buttonFont, buttonColor, borderColor);
+        /*JButton btnOtherMovement = createMinimalButton("Other Financial Movement", buttonFont, buttonColor, borderColor);
         btnOtherMovement.addActionListener(e -> {
             OtherMovementView view = new OtherMovementView();
             new OtherMovementController(new OtherMovementModel(), view);
             view.setVisible(true);
         });
-        financialPanel.add(btnOtherMovement, "grow, wrap");
+        financialPanel.add(btnOtherMovement, "grow, wrap");*/
 
-        JButton btnRegisterEstimatedIncomeExpense = createMinimalButton("Register Estimated Income/Expense", buttonFont, buttonColor, borderColor);
+        JButton btnRegisterEstimatedIncomeExpense = createMinimalButton("Register/Pay Other Income/Expense", buttonFont, buttonColor, borderColor);
         btnRegisterEstimatedIncomeExpense.addActionListener(e -> {
             OtherIncomeExpenseView view = new OtherIncomeExpenseView(frame);
-            new OtherIncomeExpenseController(new OtherIncomeExpenseModel(), view);
+            new OtherIncomeExpenseController(new OtherIncomeExpenseModel(), view, workingDate);
             view.setVisible(true);
         });
         financialPanel.add(btnRegisterEstimatedIncomeExpense, "grow, wrap");
@@ -179,7 +179,7 @@ public class SwingMain {
         JButton btnReport = createMinimalButton("Generate Financial Report", buttonFont, buttonColor, borderColor);
         btnReport.addActionListener(e -> {
             FinancialReportView view = new FinancialReportView();
-            new FinancialReportController(new FinancialReportModel(), view);
+            new FinancialReportController(new FinancialReportModel(), view, workingDate);
             view.setVisible(true);
         });
         financialPanel.add(btnReport, "grow");
