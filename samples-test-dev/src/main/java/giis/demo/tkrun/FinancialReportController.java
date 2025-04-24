@@ -164,21 +164,5 @@ public class FinancialReportController {
         );
     }
 
-    // The FinancialReportModel and FinancialReportView classes are assumed to be
-    // correctly implemented with the methods called by this controller.
-
-    // Example of how this controller might be instantiated in your main application:
-    /*
-    public static void main(String[] args) {
-        // Assuming Database is initialized and passed or managed within the model
-        FinancialReportModel model = new FinancialReportModel();
-        FinancialReportView view = new FinancialReportView();
-        // Provide the desired working date, e.g., today's date
-        LocalDate today = LocalDate.now();
-        // Instantiate the controller, injecting dependencies and the workingDate
-        FinancialReportController controller = new FinancialReportController(model, view, today);
-        // Make the view visible to the user
-        view.setVisible(true);
-    }
-    */
+    
 }

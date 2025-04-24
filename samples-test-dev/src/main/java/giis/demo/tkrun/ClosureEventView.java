@@ -2,7 +2,11 @@ package giis.demo.tkrun;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+// Import necessary AWT classes for GridBagLayout
+// Explicitly import GridBagBagConstraints
 import java.awt.*;
 
 public class ClosureEventView extends JDialog {
@@ -26,9 +30,11 @@ public class ClosureEventView extends JDialog {
         setTitle("Event Closure Management");
         setModal(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(1100, 700); // Proportional size, not full screen
+        setSize(1100, 700);
+        setMinimumSize(new Dimension(800, 600));
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(15, 15));
+        setResizable(true);
 
         JPanel contentPanel = new JPanel(new BorderLayout(15, 15));
         contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -48,15 +54,23 @@ public class ClosureEventView extends JDialog {
         tableEvents = new JTable();
         tableEvents.setFont(new Font("Arial", Font.PLAIN, 15));
         tableEvents.setRowHeight(28);
+        tableEvents.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane scrollEvents = new JScrollPane(tableEvents);
         scrollEvents.setBorder(BorderFactory.createTitledBorder("Events (Planned or Closed)"));
-        scrollEvents.setPreferredSize(new Dimension(500, 300));
+        scrollEvents.setPreferredSize(new Dimension(600, 300));
         contentPanel.add(scrollEvents, BorderLayout.WEST);
 
         // Dynamic status panel
-        panelStatus = new JPanel(new GridLayout(5, 1, 10, 10));
+        panelStatus = new JPanel(new GridBagLayout());
         panelStatus.setBorder(BorderFactory.createTitledBorder("Closure Requirements Status"));
+        GridBagConstraints gbcStatus = new GridBagConstraints(); // Use the imported class
+        gbcStatus.insets = new Insets(5, 5, 5, 5);
+        gbcStatus.anchor = GridBagConstraints.WEST;
+        gbcStatus.fill = GridBagConstraints.HORIZONTAL;
+        gbcStatus.weightx = 1.0;
 
+        int row = 0;
         lblAgreementStatus = createStatusLabel();
         lblInvoicesStatus = createStatusLabel();
         lblIncomeExpensesStatus = createStatusLabel();
@@ -64,11 +78,15 @@ public class ClosureEventView extends JDialog {
         lblFinalResult = new JLabel("", SwingConstants.CENTER);
         lblFinalResult.setFont(new Font("SansSerif", Font.BOLD, 16));
 
-        panelStatus.add(lblAgreementStatus);
-        panelStatus.add(lblInvoicesStatus);
-        panelStatus.add(lblIncomeExpensesStatus);
-        panelStatus.add(lblPendingMovementsStatus);
-        panelStatus.add(lblFinalResult);
+        // Add labels to the status panel
+        gbcStatus.gridx = 0; gbcStatus.gridy = row++; panelStatus.add(lblAgreementStatus, gbcStatus);
+        gbcStatus.gridx = 0; gbcStatus.gridy = row++; panelStatus.add(lblInvoicesStatus, gbcStatus);
+        gbcStatus.gridx = 0; gbcStatus.gridy = row++; panelStatus.add(lblIncomeExpensesStatus, gbcStatus);
+        gbcStatus.gridx = 0; gbcStatus.gridy = row++; panelStatus.add(lblPendingMovementsStatus, gbcStatus);
+
+        // Final result label
+        gbcStatus.gridx = 0; gbcStatus.gridy = row++; gbcStatus.gridwidth = 1; gbcStatus.anchor = GridBagConstraints.CENTER; panelStatus.add(lblFinalResult, gbcStatus);
+
 
         JScrollPane scrollPanelStatus = new JScrollPane(panelStatus);
         contentPanel.add(scrollPanelStatus, BorderLayout.CENTER);
@@ -97,13 +115,19 @@ public class ClosureEventView extends JDialog {
         btnCloseEvent.setEnabled(false);
         btnForceClose.setEnabled(false);
         btnReopen.setEnabled(false);
+
+        // Clear status labels initially
+        clearStatusLabels();
     }
 
+    /** Helper method to create a standard status label */
     private JLabel createStatusLabel() {
         JLabel label = new JLabel("", SwingConstants.LEFT);
+        label.setFont(new Font("Arial", Font.PLAIN, 14));
         return label;
     }
 
+    // --- Getters for Controller ---
     public JTable getTableEvents() {
         return tableEvents;
     }
@@ -111,6 +135,13 @@ public class ClosureEventView extends JDialog {
     public void setTableModelEvents(DefaultTableModel model) {
         tableEvents.setModel(model);
         tableEvents.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // Optional: Hide the ID column (index 0) if it's in the model
+        if (tableEvents.getColumnModel().getColumnCount() > 0) {
+            tableEvents.getColumnModel().getColumn(0).setMinWidth(0);
+            tableEvents.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableEvents.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableEvents.getColumnModel().getColumn(0).setResizable(false);
+        }
     }
 
     public JPanel getPanelStatus() {
@@ -157,35 +188,44 @@ public class ClosureEventView extends JDialog {
         return filterComboBox;
     }
 
+    /**
+     * Clears the text of all status labels and the final result label.
+     */
     public void clearStatusLabels() {
         lblAgreementStatus.setText("");
         lblInvoicesStatus.setText("");
         lblIncomeExpensesStatus.setText("");
         lblPendingMovementsStatus.setText("");
         lblFinalResult.setText("");
+        // Reset colors to default (optional, setStatusLabel handles color)
+        lblAgreementStatus.setForeground(Color.BLACK);
+        lblInvoicesStatus.setForeground(Color.BLACK);
+        lblIncomeExpensesStatus.setForeground(Color.BLACK);
+        lblPendingMovementsStatus.setForeground(Color.BLACK);
+        lblFinalResult.setForeground(Color.BLACK);
     }
 
+    /**
+     * Sets the text and color of a status label based on a boolean check result.
+     * @param label The JLabel to update.
+     * @param ok The boolean result of the check (true for OK, false for issues).
+     * @param okMessage The message to display if the check is OK.
+     * @param failMessage The message to display if the check fails.
+     */
     public void setStatusLabel(JLabel label, boolean ok, String okMessage, String failMessage) {
         String prefix = ok ? "✔ " : "X ";
         label.setText(prefix + (ok ? okMessage : failMessage));
         label.setForeground(ok ? new Color(0, 128, 0) : Color.RED);
     }
 
+    /**
+     * Clears the closure status panel and resets button states to initial (disabled).
+     * Called when table selection is cleared.
+     */
     public void clearClosurePanel() {
-        panelStatus.removeAll();
-        lblAgreementStatus.setText("");
-        lblInvoicesStatus.setText("");
-        lblIncomeExpensesStatus.setText("");
-        lblPendingMovementsStatus.setText("");
-        lblFinalResult.setText("");
-
-        panelStatus.add(lblAgreementStatus);
-        panelStatus.add(lblInvoicesStatus);
-        panelStatus.add(lblIncomeExpensesStatus);
-        panelStatus.add(lblPendingMovementsStatus);
-        panelStatus.add(lblFinalResult);
-
-        panelStatus.revalidate();
-        panelStatus.repaint();
+        clearStatusLabels();
+        btnCloseEvent.setEnabled(false);
+        btnForceClose.setEnabled(false);
+        btnReopen.setEnabled(false);
     }
 }

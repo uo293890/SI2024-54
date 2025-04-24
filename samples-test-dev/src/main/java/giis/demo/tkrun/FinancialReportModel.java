@@ -182,20 +182,5 @@ public class FinancialReportModel {
         }
     }
 
-    // The following methods were part of the OtherIncomeExpenseModel
-    // but are included here for context from the user's previous query.
-    // They should remain in the OtherIncomeExpenseModel class.
-
-    /*
-    public List<OtherIncomeExpenseDTO> getAllIncomesExpensesWithTotalPaid(List<String> allowedStatuses, Integer eventIdFilter) throws SQLException { ... }
-    public List<String> getAllRelevantStatusesForQuery() { ... }
-    public List<Map<String, Object>> getAllEvents() throws SQLException { ... }
-    public List<Object[]> getMovementsByIncexpId(int incexpId) throws SQLException { ... }
-    public void insertMovement(int incexpId, String movementDate, String concept, double amount) throws SQLException { ... }
-    public void insertIncomesExpensesEntry(int eventId, String concept, double amount) throws SQLException { ... }
-    public double getIncexpEstimatedAmount(int incexpId) throws SQLException { ... }
-    public double getIncexpTotalPaid(int incexpId) throws SQLException { ... }
-    public String getIncexpStatus(int incexpId) throws SQLException { ... }
-    public void updateIncexpStatus(int incexpId, String newStatus) throws SQLException { ... }
-    */
+    
 }
