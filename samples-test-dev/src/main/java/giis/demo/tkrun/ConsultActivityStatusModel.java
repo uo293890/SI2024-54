@@ -35,9 +35,10 @@ public class ConsultActivityStatusModel {
         "FROM IncomesExpenses WHERE event_id = ? AND incexp_amount > 0";
 
     private static final String SQL_GET_PAID_INCOMES = 
-        "SELECT incexp_amount as incexpAmount " +
-        "FROM IncomesExpenses " +
-        "WHERE event_id = ? AND incexp_amount > 0 AND incexp_status = 'Paid'";
+    	"SELECT ie.incexp_amount as incexpAmount " +
+    	"FROM IncomesExpenses ie " +
+    	"JOIN Movement m ON ie.incexp_id = m.incexp_id " +
+    	"WHERE ie.event_id = ? AND ie.incexp_amount > 0";
 
     private static final String SQL_GET_EXPENSES = 
         "SELECT incexp_id as incexpId, incexp_concept as incexpConcept, " +
@@ -45,9 +46,10 @@ public class ConsultActivityStatusModel {
         "FROM IncomesExpenses WHERE event_id = ? AND incexp_amount < 0";
 
     private static final String SQL_GET_PAID_EXPENSES = 
-        "SELECT ABS(incexp_amount) as incexpAmount " +
-        "FROM IncomesExpenses " +
-        "WHERE event_id = ? AND incexp_amount < 0 AND incexp_status = 'Paid'";
+    	"SELECT ABS(ie.incexp_amount) as incexpAmount " +
+    	"FROM IncomesExpenses ie " +
+    	"JOIN Movement m ON ie.incexp_id = m.incexp_id " +
+    	"WHERE ie.event_id = ? AND ie.incexp_amount < 0";
 
     public List<ConsultActivityStatusDTO> getAllEvents() {
         return db.executeQueryPojo(ConsultActivityStatusDTO.class, SQL_GET_EVENTS);
