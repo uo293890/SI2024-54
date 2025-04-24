@@ -124,6 +124,14 @@ public class SwingMain {
         // 4. Sponsorship Management Section
         JPanel sponsorshipPanel = createSectionPanel("Sponsorship Management", sectionColor);
         
+        JButton btnRegisterSponsor = createMinimalButton("Register New Sponsor", buttonFont, buttonColor, borderColor);
+        btnRegisterSponsor.addActionListener(e -> {
+            RegisterSponsorView view = new RegisterSponsorView();
+            new RegisterSponsorController(new RegisterSponsorModel(), view);
+            view.setVisible(true);
+        });
+        sponsorshipPanel.add(btnRegisterSponsor, "grow, wrap");
+        
         JButton btnRegisterAgreement = createMinimalButton("Register Sponsorship Agreement", buttonFont, buttonColor, borderColor);
         btnRegisterAgreement.addActionListener(e -> {
             RegisterSponsorshipAgreementView view = new RegisterSponsorshipAgreementView();
@@ -226,20 +234,12 @@ public class SwingMain {
             LocalDate newDate = LocalDate.parse(textDate.getText());
             LocalDate currentDate = LocalDate.now();
             
-            if (newDate.isBefore(currentDate)) {
-                JOptionPane.showMessageDialog(frame, 
-                    "Date cannot be earlier than today (" + currentDate + ")",
-                    "Invalid Date", 
-                    JOptionPane.ERROR_MESSAGE);
-                textDate.setText(currentDate.toString());
-                workingDate = currentDate;
-            } else {
-                workingDate = newDate;
-                JOptionPane.showMessageDialog(frame, 
-                    "Date set correctly to " + workingDate.toString(), 
-                    "Date set", 
-                    JOptionPane.INFORMATION_MESSAGE);
-            }
+            workingDate = newDate;
+            JOptionPane.showMessageDialog(frame, 
+                "Date set correctly to " + workingDate.toString(), 
+                "Date set", 
+                JOptionPane.INFORMATION_MESSAGE);
+            
         } catch (DateTimeParseException ex) {
             JOptionPane.showMessageDialog(frame, 
                 "Invalid date format. Use YYYY-MM-DD", 
