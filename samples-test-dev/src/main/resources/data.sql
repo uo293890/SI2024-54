@@ -1,7 +1,7 @@
 INSERT INTO Type (type_name)
 VALUES
- ('Week Event'),
- ('Educational');
+ ('ImpulsoTIC Week'),
+ ('Hour of Code');
 
 -- Eventos (todos válidos ahora)
 INSERT INTO Event (type_id, event_name, event_inidate, event_enddate, event_location, event_status)
