@@ -115,7 +115,7 @@ public class SwingMain {
         JButton btnEventClosure = createMinimalButton("Close Event", buttonFont, buttonColor, borderColor);
         btnEventClosure.addActionListener(e -> {
             ClosureEventView view = new ClosureEventView();
-            new ClosureEventController(new CloseEventModel(), view);
+            new ClosureEventController(new CloseEventModel(), view, workingDate);
             view.setVisible(true);
         });
         eventPanel.add(btnEventClosure, "grow");
@@ -152,7 +152,7 @@ public class SwingMain {
         // 5. Financial Operations Section
         JPanel financialPanel = createSectionPanel("Financial Operations", sectionColor);
         
-        JButton btnInvoice = createMinimalButton("Manage Invoices", buttonFont, buttonColor, borderColor);
+        JButton btnInvoice = createMinimalButton("Generate and send the invoices to the sponsors", buttonFont, buttonColor, borderColor);
         btnInvoice.addActionListener(e -> {
             InvoiceView view = new InvoiceView();
             new InvoiceController(new InvoiceModel(), view, workingDate);
@@ -184,13 +184,23 @@ public class SwingMain {
         });
         financialPanel.add(btnRegisterEstimatedIncomeExpense, "grow, wrap");
 
-        JButton btnReport = createMinimalButton("Generate Financial Report", buttonFont, buttonColor, borderColor);
+        JButton btnReport = createMinimalButton("Report of total income and expenses", buttonFont, buttonColor, borderColor);
         btnReport.addActionListener(e -> {
             FinancialReportView view = new FinancialReportView();
             new FinancialReportController(new FinancialReportModel(), view, workingDate);
             view.setVisible(true);
+        });financialPanel.add(btnReport, "grow, wrap");
+        
+        
+        JButton btnReport1 = createMinimalButton("Close Event", buttonFont, buttonColor, borderColor);
+        btnReport1.addActionListener(e -> {
+            ClosureEventView view = new ClosureEventView();
+            new ClosureEventController(new CloseEventModel(), view, workingDate);
+            view.setVisible(true);
         });
-        financialPanel.add(btnReport, "grow");
+        
+        
+        financialPanel.add(btnReport1, "grow");
         contentPanel.add(financialPanel, "grow");
 
         scrollPane.setViewportView(contentPanel);
